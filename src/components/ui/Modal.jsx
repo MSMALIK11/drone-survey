@@ -5,18 +5,30 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { CANCEL } from "../../constant/constant";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, IconButton } from "@mui/material";
 import { blue } from "@mui/material/colors";
-const Modal = ({ isOpen, onClose, onClick, loading, submitText, children }) => {
+import Close from "@mui/icons-material/Close";
+const Modal = ({ isOpen, onClose, onClick, loading, submitText, children,title,disabled }) => {
   return (
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>Confirmation </DialogTitle>
+      <DialogTitle>{ title}  <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: "inherit",
+          }}
+        >
+          <Close />
+        </IconButton>  </DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={onClose}>
+        <Button variant="outlined" size="small" sx={{borderRadius:'25px'}} onClick={onClose}>
           {CANCEL}
         </Button>
-        <Button variant="contained" disabled={loading} onClick={onClick}>
+        <Button variant="contained" size="small" sx={{borderRadius:'25px'}} disabled={loading || disabled} onClick={onClick}>
           {" "}
           {loading && (
             <CircularProgress size={22} sx={{ color: blue[500], mr: 2 }} />

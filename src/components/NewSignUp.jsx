@@ -15,7 +15,7 @@ import useToast from "../hooks/useToast";
 // import { Turnstile } from '@marsidev/react-turnstile'
 import { errorHandler } from "../helper/handleError";
 import PasswordControl from "./ui/PasswordControl";
-import InputControl from "./ui/InutControl";
+import InputControl from "./ui/InputControl";
 
 // site key in the HTML code your site serves to users. =>  6Lfk-dEpAAAAAFKRUVL3DOCB3gjiX3Ib5PQ7XPoX
 // communicate btw site and recapcha => 6Lfk-dEpAAAAAOrMp7sVP7AjNZ77ek5j_8vOFQam

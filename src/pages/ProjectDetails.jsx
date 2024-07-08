@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "../shared/BackButton";
 import api from "../services";
@@ -12,14 +12,24 @@ const ProjectDetails = () => {
   const parmas = useParams();
   const { id } = parmas;
   const auth = JSON.parse(localStorage.getItem("auth-user"));
-
-  const { isLoading, data } = useQuery(["getProjectDetails"], () =>
+  const navigate=useNavigate()
+  console.log('id',id)
+  const[placeName,setPlaceName]=useState("")
+  const { isLoading, data,isError } = useQuery(["getProjectDetails"], () =>
     api.dashboardApi.getProjectDetailsById(id, auth.email)
   );
 
+  if(isError){
+    navigate('/')
+    return
+    
+  }
   if (isLoading) return <Loading isVisible={true} />;
 
   const project = data && data.data;
+  const getPlaceName=(name)=>{
+    setPlaceName(name)
+  }
   return (
     <div>
       <header className="bg-black text-white h-[50px] flex items-center px-4 justify-between">
@@ -29,21 +39,29 @@ const ProjectDetails = () => {
       {project ? (
         <main className="p-4">
           <DetailsHeader />
-          <div className="flex gap-4">
-<div>
+          <div className="flex gap-4 " >
+<div className="flex-1 bg-green-40">
           <Details
             project_name={project?.project_name}
             category={project?.category}
-            decription={project?.decription}
+            description={project?.description}
             trashed_time={project?.trashed_time}
             created_at={project.created_at}
             updated_at={project.updated_at}
+            status={project.status}
+            placeName={placeName}
           />
-          <Map lat={project.latitude} lng={project.longitude} />
+          <div >
+          <Map lat={project.latitude} lng={project.longitude} getPlaceName={getPlaceName} />
+
+          </div>
           
 
 </div>
+
           <UserList />
+
+
           </div>
 
         </main>

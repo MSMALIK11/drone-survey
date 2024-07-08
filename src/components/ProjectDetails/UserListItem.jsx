@@ -11,20 +11,19 @@ import React from "react";
 import { formatName } from "../../helper/formatName";
 import { deepPurple } from "@mui/material/colors";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
+import { TRANSFER_OWNERSHIP,REMOVE_USER,EDIT_USER } from "../../constant/constant";
 const UserListItem = ({
   user,
-  onMenuClick,
-  onTransferOwnership,
-  onRemoveUser,
+  onMenuClick,onMenuItemClick,
   anchorEl,
   open,
   onClose,
+  index
 }) => (
-  <ListItem className="border-b w-full">
+<ListItem className={`border-t-2 border-b-2 border-list w-full h-[66px] ${index%2===0?"bg-white":"bg-list"}`} >
     <ListItemAvatar>
       <Avatar
-        sx={{ bgcolor: deepPurple[500], width: 32, height: 32, fontSize: 14 }}
+        sx={{ bgcolor: "#303D78", width: 32, height: 32, fontSize: 14 }}
       >
         {formatName(user?.name)}
       </Avatar>
@@ -35,7 +34,7 @@ const UserListItem = ({
       aria-controls={open ? "basic-menu" : undefined}
       aria-haspopup="true"
       aria-expanded={open ? "true" : undefined}
-      onClick={onMenuClick}
+      onClick={(e)=>onMenuClick(e,user?.email)}
     >
       <MoreVertIcon />
     </IconButton>
@@ -46,10 +45,13 @@ const UserListItem = ({
       onClose={onClose}
       MenuListProps={{ "aria-labelledby": "basic-button" }}
     >
-      <MenuItem onClick={() => onTransferOwnership(user.email)}>
+      <MenuItem onClick={() => onMenuItemClick(TRANSFER_OWNERSHIP)}>
         Transfer Ownership
       </MenuItem>
-      <MenuItem onClick={() => onRemoveUser(user.email)}>Remove User</MenuItem>
+      <MenuItem onClick={() => onMenuItemClick(EDIT_USER)}>
+       Edit
+      </MenuItem>
+      <MenuItem onClick={() => onMenuItemClick(REMOVE_USER)}>Remove User</MenuItem>
     </Menu>
   </ListItem>
 );

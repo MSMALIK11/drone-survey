@@ -48,11 +48,11 @@ export default function ConfirmationAlert({open,message,onClose,onConfirm,isLoad
           </Typography>
           
         </DialogContent>
-        <DialogActions>
-          <Button size='small' autoFocus onClick={onClose} variant='outlined'>
+        <DialogActions> 
+          <Button size='small' sx={{borderRadius:'25px'}} autoFocus onClick={onClose} variant='outlined'>
             Cancel
           </Button>
-          <Button size='small'  disabled={isLoading} variant='contained' autoFocus onClick={onConfirm} className='loginBtn'>
+          <Button size='small' sx={{borderRadius:'25px'}}  disabled={isLoading} variant='contained' autoFocus onClick={onConfirm} className='loginBtn'>
             {
               isLoading &&  <CircularProgress size={18}  />
             }

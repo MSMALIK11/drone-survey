@@ -1,29 +1,41 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { List, IconButton, Tooltip } from "@mui/material";
+import { List, IconButton, Tooltip, Badge } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
 import TransferOwnership from "./TransferOwnership";
 import RemoveUser from "./RemoveUser";
 import UserListItem from "./UserListItem";
 import Modal from "../../components/ui/Modal";
-import InputControl from "../../components/ui/InutControl";
-import Switch from "@mui/material/Switch";
+import InputControl from "../../components/ui/InputControl";
+import api from "../../services";
+import { errorHandler } from "../../helper/handleError";
+import useToast from "../../hooks/useToast";
+import ComboBox from "../../components/ui/CompoBox";
+import { EDIT_USER, REMOVE_USER, TRANSFER_OWNERSHIP } from "../../constant/constant";
+import FilterMenu from "./FilterMenu";
+import { permissionOptionsList,analysisOptionsList } from "./data";
+import Each from '../Each'
+
+
 const UserList = () => {
   const [showTransferOwnershipModal, setShowTransferOwnership] =
     useState(false);
   const [showRemoveUserModal, setShowRemoveUserModal] = useState(false);
-  const [showAddUserModal,setShowAddUserModal]=useState(false)
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [memberEmail, setMemberEmail] = useState("");
-const [newUser,setNewUser]=useState({
-  new_member_email:'',
-  upload_permission:false,
-  analysis_permission:false,
-  report_permission:false
-})
+  const [isEditMode,setIsEditMode]=useState(false)
+  const [loading,setLoading]=useState(false)
+  const [newUser, setNewUser] = useState({
+    new_member_email: "",
+    upload_permission: "",
+    analysis_permission: "",
+    report_permission: "",
+  });
+  const toast = useToast();
   const open = Boolean(anchorEl);
 
-  const handleClick = useCallback((event) => {
+  const handleClick = useCallback((event, val) => {
+    setMemberEmail(val);
     setAnchorEl(event.currentTarget);
   }, []);
 
@@ -31,23 +43,16 @@ const [newUser,setNewUser]=useState({
     setAnchorEl(null);
   }, []);
 
-  const handleShowTransferOwnership = useCallback(
-    (email) => {
-      setMemberEmail(email);
-      setShowTransferOwnership(true);
-      handleClose();
-    },
-    [handleClose]
-  );
+  const handleShowTransferOwnership = () => {
+    setShowTransferOwnership(true);
+    handleClose();
+  };
 
-  const handleShowRemoveUserModal = useCallback(
-    (email) => {
-      setMemberEmail(email);
-      setShowRemoveUserModal(true);
-      handleClose();
-    },
-    [handleClose]
-  );
+  const handleShowRemoveUserModal = useCallback(() => {
+    setShowRemoveUserModal(true);
+    handleClose();
+  }, [handleClose]);
+ 
 
   const onCloseTransferOwnership = useCallback(() => {
     setShowTransferOwnership(false);
@@ -58,65 +63,106 @@ const [newUser,setNewUser]=useState({
     setShowRemoveUserModal(false);
     setMemberEmail("");
   }, []);
-
+// PENDING  change to actual api response  data
   const data = useMemo(
     () => [
-      { name: "Rohit Kumar", email: "rohit@gmail.com" },
+      { name: "Mr Shoaib", email: "mohd.shoaib@botlabdynamics.com" },
       { name: "John Vick", email: "john@gmail.com" },
       { name: "Willium", email: "willium@gmail.com" },
       { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      // Add more users as needed
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+      { name: "Jack Sparrow", email: "jackluim@jack.com" },
+
     ],
     []
   );
-  const handleMemberEmailChange=(e)=>{
-    const {name,value}=e.target
-    setNewUser(prev => ({
+
+  const handlePermissionChange = (val,name) => {
+  
+    setNewUser((prev) => ({
       ...prev,
-      [name]: value
+      [name]: val,
     }));
-  }
-  const handlePermissionChange=(e)=>{
-    const {name,checked} = e.target
-    setNewUser(prev => ({
-      ...prev,
-      [name]: checked
-    }));
-   
+  };
+  // Add New  user to project
+  const handleAddUserSubmit = async () => {
+    setLoading(true)
+    try {
+     
+      const res = await api.user.addUpdateUser(newUser);
+      if (res.status === 201) {
+        setShowAddUserModal(false);
+        setLoading(false)
+        setIsEditMode(false)
+      }
+    } catch (error) {
+      console.error("Error::while calling add new user api", error);
+      const message = errorHandler(error);
+      toast(message, "error");
+      setIsEditMode(false)
+      setShowAddUserModal(false);
+      setLoading(false)
+    }
+  };
+  const handleEditUser=()=>{
+    setIsEditMode(true)
+    setShowAddUserModal(true)
+    handleClose();
 
   }
-  const handleAddUserSubmit=()=>{
-    console.log('newUser',newUser)
-  }
+const onMenuItemClick=(value)=>{
+  switch(value){
+    case TRANSFER_OWNERSHIP:
+      handleShowTransferOwnership();
+      break;
+    case REMOVE_USER:
+      handleShowRemoveUserModal();
+      break;
+    case EDIT_USER:
+      handleEditUser();
+      break;
 
+
+  }
+}
+const onFilterMenuItemClick=()=>{
+
+}
   return (
-    <div className="shadow-lg p-4 flex-1">
-      <div className="flex items-center justify-between">
+    <div className="shadow-lg  border h-[80vh] border-softgray overflow-hidden rounded-lg !w-[400px] ">
+      <div className="flex h-[66px]  px-3 items-center justify-between" >
         <h1>Users List</h1>
-        <div>
+        <div className="flex items-center">
           <Tooltip title="Add new user" arrow>
-            <IconButton onClick={()=>setShowAddUserModal(true)}>
+            <IconButton onClick={() => setShowAddUserModal(true)}>
               <AddCircleOutlineIcon />
             </IconButton>
           </Tooltip>
+          <FilterMenu onItemClick={onFilterMenuItemClick} />
         </div>
       </div>
-      <div className="h-[60vh] overflow-scroll">
+      <div className="h-[64vh] overflow-scroll">
         <List
           sx={{ width: "100%", maxWidth: "100%", bgcolor: "background.paper" }}
         >
-          {data?.map((user) => (
-            <UserListItem
+          <Each of={data} render={(user,index)=> <UserListItem
               key={user.email}
               user={user}
               onMenuClick={handleClick}
-              onTransferOwnership={handleShowTransferOwnership}
-              onRemoveUser={handleShowRemoveUserModal}
+              onMenuItemClick={onMenuItemClick}
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
-            />
-          ))}
+              index={index}
+            />} />
+ 
         </List>
       </div>
 
@@ -130,25 +176,46 @@ const [newUser,setNewUser]=useState({
         isOpen={showRemoveUserModal}
         onClose={onCloseRemoveUser}
       />
-      <Modal isOpen={showAddUserModal}   submitText={"Add"} onClick={handleAddUserSubmit} onClose={()=>setShowAddUserModal(false)}>
+      <Modal
+      title={isEditMode?"Update Permission":"Add new user"}
+        isOpen={showAddUserModal}
+        submitText={isEditMode?"Update":"Add"}
+        onClick={handleAddUserSubmit}
+        onClose={() => setShowAddUserModal(false)}
+         loading={loading}
+      >
         <div className="w-[440px]">
-          <InputControl placeholder={"Enter email"} name="new_member_email" onChange={handleMemberEmailChange} />
-          <div className="mt-4">
-            <div className="flex items-center justify-between ">
-              <label>Upload Permission</label>
-              <Switch name="upload_permission"  onChange={handlePermissionChange} />
-            </div>
-            <div className="flex  items-center justify-between">
-              <label>Analysis Permission</label>
-              <Switch  name="analysis_permission" value={newUser.analysis_permission} onChange={handlePermissionChange} />
-            </div>
-            <div className="flex items-center justify-between">
-              <label>Report  Permission</label>
-              <Switch name="report_permission" value={newUser.report_permission} onChange={handlePermissionChange} />
-            </div>
+          {
+            !isEditMode && <InputControl label={"Email"} placeholder={"Enter email"} onChange={(event)=>handlePermissionChange(event.target.value,'new_member_email')} name="new_member_email" />
+          }
+          
+          <div className="space-y-3 mt-4">
+            <ComboBox
+              label={"Upload Permission"}
+              options={permissionOptionsList}
+              name={"upload_permission"}
+              onChange={handlePermissionChange}
+            />
+            <ComboBox
+              label={"Analysis Permission"}
+              options={analysisOptionsList}
+              name={"analysis_permission"}
+              onChange={handlePermissionChange}
+            />
+            <ComboBox
+              label={"Report Permission"}
+              options={permissionOptionsList}
+              name={"report_permission"}
+              onChange={handlePermissionChange}
+            />
+
           </div>
         </div>
       </Modal>
+
+
+
+      {/* Update User  */}
     </div>
   );
 };

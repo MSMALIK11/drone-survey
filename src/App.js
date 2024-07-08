@@ -1,78 +1,207 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import {
-  Routes,
-  Route,
-} from "react-router-dom";
-import Home from "./pages/Home";
-import Dataprocessing from "./pages/Dataprocessing";
-import Dashbord from "./pages/Dashbord";
+// import React, { useEffect, useLayoutEffect, useState } from "react";
+// import {
+//   Routes,
+//   Route,
+// } from "react-router-dom";
+// import Home from "./pages/Home";
+// import Dataprocessing from "./pages/Dataprocessing";
+// import Dashbord from "./pages/Dashbord";
+// import SideBar from "./components/SideBar";
+// import SignUp from "./components/SignUp";
+// import Login from "./components/Login";
+// import NewProject from "./components/NewProject";
+// import ProtectedRoute from "./protectedRoute/ProtectedRoute";
+// import UploadDataProcessing from "./components/UploadDataProcessing";
+// import ForgetPassword from "./components/ForgetPassword";
+// import NewSignUp from "./components/NewSignUp";
+// import OtpModel from "./components/OtpModel";
+// import LoadingScreen from "./components/LoadingScreen";
+// import api from './services'
+// import { startTokenRefreshInterval } from "./helper/refreshToken";
+// import ResetPasswordRequest from "./components/ResetPasswordRequest";
+// import ResetPasswordForm from "./components/ResetPaswordForm";
+// import ProjectDetails from "./pages/ProjectDetails";
+// const NotFound = React.lazy(() => import('./pages/NotFound'));
+// const UploadImageDashboard = React.lazy(() => import('./pages/UploadImageDashboard'));
+// const App = () => {
+//   const [loading, setLoading] = useState(true);
+//   const [isLogIn, setIsLogIn] = useState(true);
+//   const getUserProfile = async () => {
+//     setLoading(true)
+//     try {
+//       const res = await api.dashboardApi.getUserProfile()
+//       if (res.status === 200) {
+//         console.log('use profile response',res.data)
+//         if(!localStorage.getItem('intervalId')){
+//           startTokenRefreshInterval()
+//         }
+//         localStorage.setItem("auth-user", JSON.stringify(res.data))
+//         setLoading(false)
+//       }
+//     } catch (error) {
+//       console.error('Error while calling user data')
+//       setLoading(false)
+//       localStorage.removeItem("auth-user")
+//       localStorage.removeItem('intervalId')
+
+//     }
+//   }
+
+//   useEffect(() => {
+//     getUserProfile()
+//     console.log('app run')
+//   }, [])
+
+//   if (loading) return <LoadingScreen />
+
+
+//   return (
+//     <Routes>
+//       <Route path="/login" element={<Login isLoginData={setIsLogIn} />} />
+//       <Route path="/signUp" element={<SignUp />} />
+//       <Route path="/newSignUp" element={<NewSignUp />} />
+//       <Route path="/ForgetPassword" element={<ForgetPassword />} />
+//       <Route path="/otp" element={<OtpModel />} />
+//       <Route path="/password-reset/request" element={<ResetPasswordRequest />} />
+//       <Route path="/password-reset/verify" element={<ResetPasswordForm />} />
+//       <Route path="/uploadDataProcessing" element={<UploadDataProcessing />} />
+//       <Route path="/project/upload" element={<UploadImageDashboard />} />
+     
+//       <Route path="/" element={<SideBar />}>
+//         <Route
+//           path="/"
+//           element={
+//             <ProtectedRoute LogInstatus={isLogIn}>
+//               <Home />
+//             </ProtectedRoute>
+//           }
+//         />
+//         <Route
+//           path="/project/new"
+//           element={
+//             <ProtectedRoute>
+//               <NewProject />
+//             </ProtectedRoute>
+//           }
+//         />
+//         <Route
+//           path="/project/:id/details"
+//           element={
+//             <ProtectedRoute>
+//               <ProjectDetails />
+//             </ProtectedRoute>
+//           }
+//         />
+//          <Route
+//           path="/upload"
+//           element={
+//             <ProtectedRoute>
+//               <UploadImageDashboard />
+//             </ProtectedRoute>
+//           }
+//         />
+//         <Route
+//           path="/dataprocessing"
+//           element={
+//             <ProtectedRoute>
+//               <Dataprocessing />
+//             </ProtectedRoute>
+//           }
+//         />
+//         <Route
+//           path="/dashbord"
+//           element={
+//             <ProtectedRoute>
+//               <Dashbord />
+//             </ProtectedRoute>
+//           }
+//         />
+       
+//       </Route>
+//       <Route path="/*" element={<NotFound />} />
+
+
+//     </Routes>
+//   );
+// };
+
+// export default App;
+import React, { useEffect, useState, Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
 import SideBar from "./components/SideBar";
-import SignUp from "./components/SignUp";
-import Login from "./components/Login";
-import NewProject from "./components/NewProject";
 import ProtectedRoute from "./protectedRoute/ProtectedRoute";
-import UploadDataProcessing from "./components/UploadDataProcessing";
-import ForgetPassword from "./components/ForgetPassword";
-import NewSignUp from "./components/NewSignUp";
-import OtpModel from "./components/OtpModel";
 import LoadingScreen from "./components/LoadingScreen";
-import api from './services'
+import api from './services';
 import { startTokenRefreshInterval } from "./helper/refreshToken";
-import ResetPasswordRequest from "./components/ResetPasswordRequest";
-import ResetPasswordForm from "./components/ResetPaswordForm";
-import ProjectDetails from "./pages/ProjectDetails";
-const NotFound = React.lazy(() => import('./pages/NotFound'));
-const UploadImageDashboard = React.lazy(() => import('./pages/UploadImageDashboard'));
+
+// Lazy-loaded components
+const Home = React.lazy(() => import("./pages/Home"));
+const Dataprocessing = React.lazy(() => import("./pages/Dataprocessing"));
+const Dashbord = React.lazy(() => import("./pages/Dashbord"));
+const SignUp = React.lazy(() => import("./components/SignUp"));
+const Login = React.lazy(() => import("./components/Login"));
+const NewProject = React.lazy(() => import("./components/NewProject"));
+const UploadDataProcessing = React.lazy(() => import("./components/UploadDataProcessing"));
+const ForgetPassword = React.lazy(() => import("./components/ForgetPassword"));
+const NewSignUp = React.lazy(() => import("./components/NewSignUp"));
+const OtpModel = React.lazy(() => import("./components/OtpModel"));
+const ResetPasswordRequest = React.lazy(() => import("./components/ResetPasswordRequest"));
+const ResetPasswordForm = React.lazy(() => import("./components/ResetPaswordForm"));
+const ProjectDetails = React.lazy(() => import("./pages/ProjectDetails"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
+const UploadImageDashboard = React.lazy(() => import("./pages/UploadImageDashboard"));
+
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [isLogIn, setIsLogIn] = useState(true);
+
   const getUserProfile = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const res = await api.dashboardApi.getUserProfile()
+      const res = await api.dashboardApi.getUserProfile();
       if (res.status === 200) {
-        console.log('use profile response',res.data)
-        if(!localStorage.getItem('intervalId')){
-          startTokenRefreshInterval()
+        console.log('User profile response:', res.data);
+        if (!localStorage.getItem('intervalId')) {
+          startTokenRefreshInterval();
         }
-        localStorage.setItem("auth-user", JSON.stringify(res.data))
-        setLoading(false)
+        localStorage.setItem("auth-user", JSON.stringify(res.data));
+        setLoading(false);
       }
     } catch (error) {
-      console.error('Error while calling user data')
-      setLoading(false)
-      localStorage.removeItem("auth-user")
-      localStorage.removeItem('intervalId')
-
+      console.error('Error while fetching user data:', error);
+      setLoading(false);
+      localStorage.removeItem("auth-user");
+      localStorage.removeItem('intervalId');
     }
-  }
+  };
 
   useEffect(() => {
-    getUserProfile()
-    console.log('app run')
-  }, [])
+    getUserProfile();
+    console.log('App component mounted');
+  }, []);
 
-  if (loading) return <LoadingScreen />
-
+  if (loading) return <LoadingScreen />;
 
   return (
     <Routes>
-      <Route path="/login" element={<Login isLoginData={setIsLogIn} />} />
-      <Route path="/signUp" element={<SignUp />} />
-      <Route path="/newSignUp" element={<NewSignUp />} />
-      <Route path="/ForgetPassword" element={<ForgetPassword />} />
-      <Route path="/otp" element={<OtpModel />} />
-      <Route path="/password-reset/request" element={<ResetPasswordRequest />} />
-      <Route path="/password-reset/verify" element={<ResetPasswordForm />} />
-      <Route path="/uploadDataProcessing" element={<UploadDataProcessing />} />
-      <Route path="/project/upload" element={<UploadImageDashboard />} />
-     
+      <Route path="/login" element={<Suspense fallback={<LoadingScreen />}><Login isLoginData={setIsLogIn} /></Suspense>} />
+      <Route path="/signUp" element={<Suspense fallback={<LoadingScreen />}><SignUp /></Suspense>} />
+      <Route path="/newSignUp" element={<Suspense fallback={<LoadingScreen />}><NewSignUp /></Suspense>} />
+      <Route path="/ForgetPassword" element={<Suspense fallback={<LoadingScreen />}><ForgetPassword /></Suspense>} />
+      <Route path="/otp" element={<Suspense fallback={<LoadingScreen />}><OtpModel /></Suspense>} />
+      <Route path="/password-reset/request" element={<Suspense fallback={<LoadingScreen />}><ResetPasswordRequest /></Suspense>} />
+      <Route path="/password-reset/verify" element={<Suspense fallback={<LoadingScreen />}><ResetPasswordForm /></Suspense>} />
+      <Route path="/uploadDataProcessing" element={<Suspense fallback={<LoadingScreen />}><UploadDataProcessing /></Suspense>} />
+      <Route path="/project/upload" element={<Suspense fallback={<LoadingScreen />}><UploadImageDashboard /></Suspense>} />
+
       <Route path="/" element={<SideBar />}>
         <Route
           path="/"
           element={
             <ProtectedRoute LogInstatus={isLogIn}>
-              <Home />
+              <Suspense fallback={<LoadingScreen />}>
+                <Home />
+              </Suspense>
             </ProtectedRoute>
           }
         />
@@ -80,7 +209,9 @@ const App = () => {
           path="/project/new"
           element={
             <ProtectedRoute>
-              <NewProject />
+              <Suspense fallback={<LoadingScreen />}>
+                <NewProject />
+              </Suspense>
             </ProtectedRoute>
           }
         />
@@ -88,15 +219,19 @@ const App = () => {
           path="/project/:id/details"
           element={
             <ProtectedRoute>
-              <ProjectDetails />
+              <Suspense fallback={<LoadingScreen />}>
+                <ProjectDetails />
+              </Suspense>
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/upload"
           element={
             <ProtectedRoute>
-              <UploadImageDashboard />
+              <Suspense fallback={<LoadingScreen />}>
+                <UploadImageDashboard />
+              </Suspense>
             </ProtectedRoute>
           }
         />
@@ -104,7 +239,9 @@ const App = () => {
           path="/dataprocessing"
           element={
             <ProtectedRoute>
-              <Dataprocessing />
+              <Suspense fallback={<LoadingScreen />}>
+                <Dataprocessing />
+              </Suspense>
             </ProtectedRoute>
           }
         />
@@ -112,17 +249,17 @@ const App = () => {
           path="/dashbord"
           element={
             <ProtectedRoute>
-              <Dashbord />
+              <Suspense fallback={<LoadingScreen />}>
+                <Dashbord />
+              </Suspense>
             </ProtectedRoute>
           }
         />
-       
       </Route>
-      <Route path="/*" element={<NotFound />} />
-
-
+      <Route path="/*" element={<Suspense fallback={<LoadingScreen />}><NotFound /></Suspense>} />
     </Routes>
   );
 };
 
 export default App;
+

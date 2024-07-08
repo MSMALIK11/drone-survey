@@ -8,3 +8,7 @@
     export const ASSIGN="Assign"
     export const CONFIRM="Confirm"
     export const ACTIVATE_CONFIRMATION_MESAGE="Are you sure you want to activate this project?"
+    export const PROJECT_UPDATED_SUCCESS_MESSAGE="Project details have been successfully updated."
+    export const TRANSFER_OWNERSHIP="TRANSFER_OWNERSHIP"
+    export const REMOVE_USER="REMOVE_USER"
+    export const EDIT_USER="EDIT_USER"

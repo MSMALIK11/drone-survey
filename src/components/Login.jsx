@@ -14,7 +14,7 @@ import "../style/login.css";
 import api from '../services'
 import Loading from "../shared/Loading";
 import PasswordControl from "./ui/PasswordControl";
-import InputControl from "./ui/InutControl";
+import InputControl from "./ui/InputControl";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -107,7 +107,7 @@ const toast=useToast()
                     )}
         </Button>
         <p
-          className="text-muted text-sm mt-1 ms-2 text-xs"
+          className="text-muted text-sm mt-2 ms-2 text-xs"
         >
           Not Registered Yet ?{" "}
           <NavLink

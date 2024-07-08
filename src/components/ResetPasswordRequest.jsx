@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import logo from '../Images/logo2.png'
-import { Box, TextField, Button, Link } from "@mui/material";
 import OTPInput from "react-otp-input";
 import PrimaryButton from '../shared/PrimaryButton';
 import { isValidEmail } from '../helper/isValidemail';
@@ -9,6 +8,7 @@ import useToast from '../hooks/useToast';
 import api from '../services'
 import LoopIcon from '@mui/icons-material/Loop';
 import Loading from '../shared/Loading';
+import InputControl from './ui/InputControl';
 const ResetPasswordRequest = () => {
   const [otp, setOtp] = useState("")
   const [time, setTime] = useState(0);
@@ -51,7 +51,7 @@ const ResetPasswordRequest = () => {
 
         setLoading(false)
         setTime(59);
-        toast('OTP sent to your registered email.', 'succes')
+        toast('OTP sent to your registered email.', 'success')
       }
 
     } catch (error) {
@@ -95,37 +95,21 @@ const ResetPasswordRequest = () => {
     }
   }, [time]);
   let isDisabled = otp?.length !== 6
-  let disabledResend = time != 0
- 
-  
   return (
     <div className='flex items-center justify-center h-screen'>
-      <div className="border-2 rounded-sm px-8 pt-8 pb-12 w-[440px]">
+      <div className="border-2 rounded-sm px-8 pt-12  w-[440px]  h-[420px]">
         <div className="logInLogo flex justify-center">
           <img src={logo} alt="" width={250} />
         </div>
-        <div>
+        <div className='mt-6'>
           <h2 className="text-xl font-semibold">Reset Password</h2>
           <p className='text-muted text-sm mt-2 mb-8'>Please enter the OTP sent to your registered email Id.</p>
           <div>
             <div className='relative'>
+              
+<InputControl   placeholder="Type email"  error={error}  name="email"  onChange={handleEmail} />
 
-              <TextField
-                error={!!error}
-                helperText={error}
-                placeholder="Type email"
-                type="email"
-                name="email"
-                variant="outlined"
-                fullWidth
-                onChange={handleEmail}
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                className="loginField"
-              />
-              <p className='text-xs text-softBlue absolute right-0 top-[67px]  cursor-pointer text-right me-4 font-semibold' onClick={handleRequestToOTP}>
+              <p className='text-xs text-softBlue absolute right-0 top-[43px]  cursor-pointer text-right me-4 font-semibold' onClick={handleRequestToOTP}>
                 {
                   loading && <LoopIcon className='text-softBlue !text-sm spin' />
                 }
@@ -151,9 +135,9 @@ const ResetPasswordRequest = () => {
             <PrimaryButton isLoading={isLoading} onClick={()=>handleOTPVerify(otp)} label="OTP SUBMIT" disabled={isDisabled} />
             <div className="flex justify-between mt-2 ms-2">
               <p className='text-sm'>Remaining time: 00:<span className='text-softBlue'>{time === 0 ? '59' : time}s</span></p>
-              <p onClick={disabledResend ? null : handleRequestToOTP} className='!text-sm'>
+              {/* <p onClick={disabledResend ? null : handleRequestToOTP} className='!text-sm'>
                 Don't get the code? <span className={`resend-link`}>Resend</span>{" "}
-              </p>
+              </p> */}
             </div>
           </div>
 

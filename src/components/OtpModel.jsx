@@ -39,10 +39,10 @@ const OtpModel = () => {
   const handleOtpChange = (otp) => {
     const numericValue = otp.replace(/\D/g, "");
     setOtp(numericValue);
-    if (otp.length === 6) {
-      loginOtpVerifycation()
+    // if (otp.length === 6) {
+    //   loginOtpVerifycation()
      
-    }
+    // }
   };
 
   const forgetPassword = async () => {
@@ -242,8 +242,8 @@ const OtpModel = () => {
 
         <div className="flex justify-between mt-2 px-3">
           <p style={{ fontSize: "12px" }}>Remaining time: 00:{time}s</p>
-          <p onClick={disabledResend ? null : handleResend}  style={{ fontSize: "12px" }}>
-            Don't get the code? <span className={`resend-link ${disabledResend ? 'disabled' : ''}`}>Resend</span>{" "}
+          <p onClick={ handleResend}  style={{ fontSize: "12px" }}>
+            Don't get the code? <span className={`resend-link`}>Resend</span>{" "}
           </p>
         </div>
       </div>

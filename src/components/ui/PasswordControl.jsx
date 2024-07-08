@@ -26,7 +26,10 @@ const PasswordControl = ({ value, onChange,name ,onkeydown ,className}) => {
   };
 
   return (
-    <div className={`${className} bg-[#1c213e] input-control-wraper  flex items-center   h-[40px] rounded-full relative overflow-hidden ${isFocused?' border border-softBlue':''}`}>
+    <div>
+
+    <div className={`bg-softgray input-control-wraper border border-transparent flex items-center  relative overflow-hidden ${isFocused?' !border !border-softBlue':''}`}>
+    
       <input
         placeholder="Password"
         type={show ? "text" : "password"}
@@ -35,19 +38,20 @@ const PasswordControl = ({ value, onChange,name ,onkeydown ,className}) => {
         value={value}
         onChange={onChange}
 onKeyDown={onkeydown}
-        className='w-full input-control  bg-transparent  rounded-full px-4  text-white'
+        className='w-full input-control  bg-transparent  rounded-full px-4  text-background'
         onFocus={handleFocus}
         onBlur={handleBlur}
       />
       <div className='absolute right-0 top-0'>
       
           <StyledIconButton onClick={onShowToggle}>
-            {show ? <Visibility /> : <VisibilityOff />}
+            {show ? <Visibility className='text-background' /> : <VisibilityOff className='text-background' />}
           </StyledIconButton>
        
       </div>
 
 
+    </div>
     </div>
   );
 };

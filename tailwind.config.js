@@ -8,7 +8,11 @@ module.exports = {
         muted: "#6D6D6D",
         softgray:"#E7E7E7",
         softBlue:"#177CF0",
-        background:'#111'
+        background:'#1c213e',
+        list:"#DCDCDC",
+        blueTag:"#303D78",
+        yellowTag:"#FEF08A",
+        customGray: '#F8F8F8',
       },
     },
   },

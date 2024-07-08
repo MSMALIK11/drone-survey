@@ -113,10 +113,10 @@ const SideBar = () => {
                         </div>
 
                         {
-                            menuItem?.map((item, index) => {
+                            menuItem?.map((item) => {
                                 return (
                                     <>
-                                        <div key={index} className='relative'>
+                                        <div key={item.name} className='relative'>
 
                                             <Tooltip title={item.name} placement="right" arrow>
                                                 <NavLink to={item.path} className={`link ${pathname === item.path ? 'bg-[#6b61616a]' : ''}`} style={{ color: "white", whiteSpace: "nowrap" }}>
