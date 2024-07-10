@@ -36,20 +36,27 @@ const FilterMenu = ({onItemClick}) => {
     <div>
   
       <Tooltip title="Filter Users" arrow>
-        <IconButton
+      
+        <Button
+          onClick={onMenuClick}
           id="basic-button"
+          variant="outlined"
           aria-controls={open ? "basic-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
-          onClick={onMenuClick}
+          sx={{marginRight:'6px',borderRadius:'25px'}}
+          className="!text-background"
         >
             {
-               selectedCount>0 ? <Badge badgeContent={selectedCount} color="primary">
-                <FilterListIcon />
-              </Badge>:<FilterListIcon />
+               selectedCount>0 ? <Badge sx={{fontSize:'12px'}}  badgeContent={selectedCount} color="primary">
+                <FilterListIcon fontSize="small" sx={{marginRight:'8px'}}  />
+              </Badge>:<FilterListIcon fontSize="small" sx={{marginRight:'8px'}} />
             }
           
-        </IconButton>
+      
+        Filter
+
+        </Button>
       </Tooltip>
       <Menu
         id="basic-menu"

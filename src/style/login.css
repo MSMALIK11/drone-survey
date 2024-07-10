@@ -42,7 +42,6 @@
 
 .loginField .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input:focus {
     outline: none; /* Remove default focus outline */
-    /* Add any additional styles you want for the focused state */
 }
 .loginField .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input{
     color: #fff;

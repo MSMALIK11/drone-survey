@@ -178,14 +178,13 @@ display: none !important;
   outline: none;
   width: 100%;
   min-width: 120px;
-  padding: 0.5em 1em;
+  width: 216px;
+  padding: 0.5em 1.5em;
   color: #1C213E;
   height: 40px !important;
-  background-color: #E7E7E7; /* Adjust according to your bg-background */
+  background-color: #E7E7E7;
   border-radius: 25px !important;
   height: 40px;
-
-
 }
 
 .custom-select::after {
@@ -193,8 +192,8 @@ display: none !important;
   font-size: 20px; /* Adjust icon size */
   color:#1C213E;
   position: absolute;
-  right: 12px;
-  top: 50%;
+  right: 16px;
+  top: 49%;
   transform: translateY(-50%);
   pointer-events: none; /* Allows clicking through the icon */
 }

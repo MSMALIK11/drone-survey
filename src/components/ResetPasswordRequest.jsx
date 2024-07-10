@@ -97,21 +97,21 @@ const ResetPasswordRequest = () => {
   let isDisabled = otp?.length !== 6
   return (
     <div className='flex items-center justify-center h-screen'>
-      <div className="border-2 rounded-sm px-8 pt-12  w-[440px]  h-[420px]">
+      <div className="border-2 rounded-sm px-12 py-20 pb-12 w-[525px] h-[60%]">
         <div className="logInLogo flex justify-center">
-          <img src={logo} alt="" width={250} />
+          <img src={logo} alt="" width={360} />
         </div>
-        <div className='mt-6'>
-          <h2 className="text-xl font-semibold">Reset Password</h2>
-          <p className='text-muted text-sm mt-2 mb-8'>Please enter the OTP sent to your registered email Id.</p>
+        <div className='mt-9'>
+          <h2 className="text-3xl font-semibold">Reset Password</h2>
+          <p className='text-muted text-md '>Please enter the OTP sent to your registered email Id.</p>
           <div>
-            <div className='relative'>
+            <div className='relative mt-11'>
               
 <InputControl   placeholder="Type email"  error={error}  name="email"  onChange={handleEmail} />
 
-              <p className='text-xs text-softBlue absolute right-0 top-[43px]  cursor-pointer text-right me-4 font-semibold' onClick={handleRequestToOTP}>
+              <p className='text-md text-softBlue absolute right-0 top-[46px]  cursor-pointer text-right me-4 font-semibold' onClick={handleRequestToOTP}>
                 {
-                  loading && <LoopIcon className='text-softBlue !text-sm spin' />
+                  loading && <LoopIcon className='text-softBlue !text-md spin' />
                 }
                 <span className={`underline ${loading ? 'disabled' : ''}`}>
 
@@ -121,7 +121,7 @@ const ResetPasswordRequest = () => {
             </div>
 
 
-            <div className='mt-6 mb-4'>
+            <div className='mt-12 mb-4 flex gap-4 justify-center'>
 
               <OTPInput
                 value={otp}

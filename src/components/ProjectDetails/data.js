@@ -11,10 +11,7 @@ export  const permissionOptionsList = [
       label: "Write",
       value: "write",
     },
-    {
-      label: "Admin",
-      value: "admin",
-    },
+  
   ];
   export const analysisOptionsList = [
 
@@ -26,8 +23,5 @@ export  const permissionOptionsList = [
       label: "Write",
       value: "write",
     },
-    {
-      label: "Admin",
-      value: "admin",
-    },
+
   ];

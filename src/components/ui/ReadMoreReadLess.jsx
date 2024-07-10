@@ -15,7 +15,7 @@ const ReadMoreReadLess = ({ description }) => {
     if (showFullText) {
       return description;
     } else {
-      return description.slice(0,220) + (description.length > 200 ? '...' : '');
+      return description.slice(0,80) + (description.length > 80 ? '...' : '');
     }
   };
 

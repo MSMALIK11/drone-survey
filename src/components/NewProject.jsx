@@ -13,11 +13,15 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../style/newproject.css";
-import api from '../services'
+import api from "../services";
 import Loading from "../shared/Loading";
+import CompoBox from "./ui/CompoBox";
+import InputControl from "./ui/InputControl";
+import TextareaControl from "./ui/TextareaControl";
+import PrimaryButton from "../shared/PrimaryButton";
 const NewProject = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -40,21 +44,20 @@ const NewProject = () => {
     name: "",
     latitude: "",
     longitude: "",
-    category: "",
+    category: "solar",
     description: "",
     project_status: "",
     location: "",
-
   });
 
   const [locationName, setLocationName] = useState("");
   const [categories, setCategories] = useState([]);
-  
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response=await api.dashboardApi.getallCategory()
-        if (response.status===201) {
+        const response = await api.dashboardApi.getallCategory();
+        if (response.status === 201) {
           setCategories(response.data);
         } else {
           throw new Error("Failed to fetch categories");
@@ -82,6 +85,9 @@ const NewProject = () => {
     [formData]
   );
 
+  const handleCategoryChange = (value, name) => {
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  };
   const handleLatitudeChange = (e) => {
     const { value } = e.target;
     setLat(parseFloat(value) || 0);
@@ -123,14 +129,13 @@ const NewProject = () => {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
     setLoading(true);
     try {
-      const response = await api.dashboardApi.addProject(formData)
-      if (response.status==201) {
-      toast.success("Project added successfully");
+      const response = await api.dashboardApi.addProject(formData);
+      if (response.status == 201) {
+        toast.success("Project added successfully");
         navigate("/");
         // Reset all form fields
         setFormData({
@@ -142,10 +147,8 @@ const NewProject = () => {
           status: "true",
           latitude: "",
           longitude: "",
-
         });
 
-       
         setLat(0);
         setLng(0);
         setIsLocationEditable(false);
@@ -162,10 +165,6 @@ const NewProject = () => {
     }
   };
 
-
-
-
-  
   useEffect(() => {
     mapboxgl.accessToken =
       "pk.eyJ1IjoicmF3YXRhbW1pZSIsImEiOiJjbG5rNzgzN28wandvMnFwMm1qbWduZ25hIn0.zjWDLv9gL6YI1uIIwPgA7A";
@@ -236,15 +235,17 @@ const NewProject = () => {
 
   const mapContainerStyle = {
     position: "relative",
-    top: "0%",
-    bottom: "0%",
+  
     width: "100%",
     height: "80vh",
     borderRadius: "20px",
-    marginLeft: "50px",
-    marginTop: "-10px",
+    marginLeft: "20px",
   };
-  const isDisabled=!formData.name || !formData.category || !formData.latitude || !formData.longitude
+  const isDisabled =
+    !formData.name ||
+    !formData.category ||
+    !formData.latitude ||
+    !formData.longitude;
 
   return (
     <>
@@ -254,7 +255,7 @@ const NewProject = () => {
           style={{ paddingLeft: "20px" }}
         >
           <h4 className="pro_heading">New Project</h4>
-          <p style={{ fontSize: "12px",color:'#b0b0b0' }}>
+          <p style={{ fontSize: "12px", color: "#b0b0b0" }}>
             Enter project details and organize better with BotLab Dynamics
           </p>
         </Box>
@@ -281,167 +282,81 @@ const NewProject = () => {
         </Box>
       </Box>
       <div
-        className="newproject_head"
-        style={{ margin: "10px 12px", borderRadius: "2px" }}
+        className="newproject_head mt-4 p-4"
+        
       >
         <Grid container style={{ backgroundColor: "#F5F6FF" }}>
           <Grid item lg={5}>
-            <Box className="left-form-wraper">
-              <form  className="left_form" >
-                <TextField
-                  // label="Project Name"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  name="name"
-                  placeholder="Project Name"
-                  value={formData.project_name}
-                  onChange={handleChange}
-                  margin="normal"
-                  InputProps={{
-                    style: {
-                      backgroundColor: "#1c213e",
-                      color: "#96979f",
-                      fontWeight: "",
-                      border: "none",
-                      height: "45px",
-                      borderRadius: "45px",
-                    }, // Removes the border
-                  }}
-                />
-
-                <FormControl
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  required
-                  className="projectDropdown"
-                >
-                  <InputLabel>Select Project Type</InputLabel>
-
-                  <Select
-                    label="Project Type"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                  >
-                    {categories?.map((category,index) => (
-                      <MenuItem
-                        key={index}
-                        value={category.category_name}
-                      >
-                        {category?.category_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                <TextField
-                  // label="Project Description (Optional)"
-                  placeholder="Project Description (Optional)"
-                  variant="outlined"
-                  fullWidth
-                  multiline
-                  rows={2}
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  margin="normal"
+            <Box className="relative overflow-hidden newProjectFormWrapper ">
+              <div className="left-form-wraper  overflow-auto p-5 flex flex-col gap-5">
                 
-                  className="descriptionBox"
-                  style={{
-                    background: "#1c213e",
-                    color: "red",
-                    borderRadius: "8px",
-                    marginBottom: "20px",
-                  }}
-                />
+             
+              <InputControl
+                name={"name"}
+                placeholder={"Project Name"}
+                value={formData.project_name}
+                onChange={handleChange}
+              />
+              <CompoBox
+                selectLabel={"category_name"}
+                selectValue={"category_name"}
+                onChange={handleCategoryChange}
+                options={categories}
+                name="category"
+               
 
-                <TextField
-                  // label="Latitude"
-                  placeholder="Latitude"
-                  variant="outlined"
-                  fullWidth
-                  name="latitude"
-                  value={formData.latitude}
-                  onChange={handleLatitudeChange}
-                  disabled
-                  className="latitudeInputBox"
-                
-                  InputProps={{
-                    style: { color: "white" }, // Change input text color
-                    
-                  }}
-                  InputLabelProps={{
-                    style: { color: "white" }, // Change label color
-                  }}
-                  
-                   helperText="  Drag the marker on the map to set the Latitude*"
-                />
-                <TextField
-                  // label="Longitude"
-                  placeholder="Longitude"
-                  variant="outlined"
-                  fullWidth
-                  name="longitude"
-                  value={formData.longitude}
-                  onChange={handleLongitudeChange}
-                  margin="normal"
-                  disabled
-                  className={`${formData.longitude !== "" && "latitudeInputBoxFilled"} latitudeInputBox`}
-                  InputLabelProps={{ style: { color: "red" } }}
-                  helperText="Drag the marker on the map to set the Longitude*"
-                />
-                <TextField
-                  // label="Location Name"
-                  placeholder="Location Name"
-                  variant="outlined"
-                  fullWidth
-                  value={locationName}
-                  margin="normal"
-                  disabled
-                  // className="latitudeInputBox"
-                  className={`latitudeInputBox ${locationName !== "" ? "latitudeInputBox" : "latitudeInputBoxFilled"}`}
-                  InputLabelProps={{
-                    shrink: !!locationName, // Shrink label if input has content
-                    style: {
-                      color: "red",
-                      position: "absolute", // Set label position to absolute
-                      top: "-4px", // Adjust top position to move the label up or down
-                    },
-                  }}
-                  helperText="Drag the marker on the map to set the Location Name*"
-                />
+              />
+              <TextareaControl
+                name="description"
+                placeholder="Project Description (Optional)"
+                value={formData.description}
+                onChange={handleChange}
+              />
+              <InputControl
+                disabled
+                name="latitude"
+                placeholder="Latitude"
+                value={formData.latitude}
+                onChange={handleLatitudeChange}
+                helperText="  Drag the marker on the map to set the Latitude*"
+              />
 
-              </form>
-                <div className="btn-box">
-                  <div className="">
+              <InputControl
+                disabled
+                placeholder="Longitude"
+                name="longitude"
+                value={formData.longitude}
+                onChange={handleLongitudeChange}
+                helperText="Drag the marker on the map to set the Longitude*"
+              />
+              <InputControl
+                placeholder="Longitude"
+                name="longitude"
+                value={formData.longitude}
+                onChange={handleLongitudeChange}
+                disabled
+                helperText="Drag the marker on the map to set the Longitude*"
+              />
 
-                  <Button  
-                  onClick={handleSubmit}
-                    className="loginBtn"
-                    fullWidth
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disabled={isDisabled}
-                  >
-                    {loading ? (
-                      <CircularProgress style={{ color: "white" }} />
-                    ) : (
-                      "Create New Project"
-                    )}
-                  </Button>
-                  </div>
-                 
-
+              <InputControl
+                placeholder="Location Name"
+                value={locationName}
+                disabled
+                helperText="Drag the marker on the map to set the Location Name*"
+              />
+               </div>
+              <div className="absolute w-full bottom-0 left-0 p-5 bg-white">
+                <div className="w-full form-container">
+                <PrimaryButton onClick={handleSubmit} isLoading={loading} disabled={isDisabled} label={"Create New Project"} />
                  
                 </div>
+              </div>
+    
             </Box>
           </Grid>
 
           <Grid item lg={7}>
-            <Box className="Right_map  me-6">
+            <Box className="Right_map">
               <p
                 style={{
                   marginLeft: "50px",
@@ -452,14 +367,14 @@ const NewProject = () => {
                 Select Project Location
               </p>
 
-              <Box className="map_content" style={{ marginTop: "20px" }}>
+              <Box className="map_content " style={{ marginTop: "10px" }}>
                 <div style={mapContainerStyle} ref={mapContainer} />
               </Box>
             </Box>
           </Grid>
         </Grid>
       </div>
-      <Loading  isVisible={loading}/>
+      <Loading isVisible={loading} />
     </>
   );
 };

@@ -8,9 +8,12 @@ import { CANCEL } from "../../constant/constant";
 import { CircularProgress, IconButton } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import Close from "@mui/icons-material/Close";
-const Modal = ({ isOpen, onClose, onClick, loading, submitText, children,title,disabled }) => {
+const Modal = ({ isOpen, onClose, onClick, loading, submitText, children,title,disabled,width }) => {
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose}
+
+    sx={{ '& .MuiDialog-paper': { width: width } }}
+    >
       <DialogTitle>{ title}  <IconButton
           aria-label="close"
           onClick={onClose}

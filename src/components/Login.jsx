@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Link } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { Box, Button, Link } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { styled } from "@mui/system";
 import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "../Images/logo2.png";
 import useToast from "../hooks/useToast";
@@ -15,19 +10,28 @@ import api from '../services'
 import Loading from "../shared/Loading";
 import PasswordControl from "./ui/PasswordControl";
 import InputControl from "./ui/InputControl";
-
+import Turnstile  from "react-turnstile";
+import { isValidEmail } from "../helper/isValidemail";
+import { FORGOT_PASSWORD, INVALID_EMAIL_ERROR_MESSAGE, NOT_REGISTER_YET, SIGNUP_NOW } from "../constant/constant";
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
+  const [token, setToken] = useState(false)
+  const [error,setError]=useState(false)
 const toast=useToast()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === 'email') {
+    const isValid=isValidEmail(value)
+    if(!isValid){
+      setError(true)
+    }else{
+      setError(false)
+      
+    } 
       setEmail(value);
     } else if (name === 'password') {
       setPassword(value);
@@ -61,36 +65,68 @@ const toast=useToast()
 
     }
   }
+  const handleVerify = async (token) => {
+    console.log('verified', token)
+    const SECRET_KEY = "0x4AAAAAAAc19MLJ4z2_D4v-oDvm2R_Gv1o"
+    setToken(token)
+    // try {
+    //   // const res=await api.register.verifyTurnstile(secretkey,token)
+    //   // console.log('transtile res',res)
+    //   const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //     },
+    //     body: `secret=${SECRET_KEY}&response=${token}`,
+    //   });
 
-  const isDisabled = !email || !password;
+    // } catch (error) {
+    //   console.error("Error::", error)
+
+    // }
+
+
+  }
+
+  const isDisabled = !email || !password || !token || !!error;
 
   return (
-    <Box className="main-login">
-      <Box className="border-2 rounded-sm px-8 pt-8 pb-12 w-[440px]">
-        <div className="logInLogo flex justify-center">
-          <img src={Logo} alt="" width={200} />
+    <Box className=" h-screen overflow-hidden flex items-center justify-center">
+      <Box className="border-2 rounded-sm px-12 py-20 pb-12 w-[525px] min-h-[70%]">
+        <div className=" flex justify-center">
+          <img src={Logo} alt="" width={360} />
         </div>
-        <h2 className="text-2xl font-semibold">Login</h2>
+        <h2 className="!text-3xl mt-9 font-semibold">Login</h2>
         <p
-         className="text-muted mt-4 mb-12 text-sm"
+         className="text-muted mt-4 text-sm"
         >
           Enter your Credentials to access your account
         </p>
  
-        <div>
-          <div className="space-y-4">
-            <InputControl name={"email"} onChange={handleChange} placeholder={"Email"} />
-          <PasswordControl name={"password"} key={"password"} value={password} onChange={handleChange} onkeydown={handleKeyDown}  />
+        <div className="mt-11">
+          <div className="space-y-7">
+            <InputControl error={error?INVALID_EMAIL_ERROR_MESSAGE:null} name={"email"} onChange={handleChange} placeholder={"Email"} />
+          <PasswordControl onFocus={()=>{}} name={"password"} key={"password"} value={password} onChange={handleChange} onkeydown={handleKeyDown}  />
           </div>
         <div className="flex justify-end mt-1">
         <NavLink
           to="/password-reset/request"
-          className="text-sm !text-softBlue"
+          className="text-md !text-softBlue underline"
         >
-          Forgot Password?
+          {FORGOT_PASSWORD}
         </NavLink>
           
         </div>
+        <div className=" mt-4">
+             <Turnstile
+              className="mb-4 !w-full !rounded-lg"
+              // executution="execute"
+              // appearance="always"
+              sitekey="0x4AAAAAAAc19PLhfHqn4C6y"
+              onVerify={handleVerify}
+
+            />
+          </div>
 
         </div>
         <Button
@@ -107,15 +143,15 @@ const toast=useToast()
                     )}
         </Button>
         <p
-          className="text-muted text-sm mt-2 ms-2 text-xs"
+          className="text-muted text-md mt-2 ms-2"
         >
-          Not Registered Yet ?{" "}
+         {NOT_REGISTER_YET}
           <NavLink
           to="/newSignUp"
           style={{ textDecoration: "none", fontWeight: 700 }}
-          className="forgotpassword"
+          className="forgotpassword text-md"
         >
-        <span className="text-softBlue">  Sign Up Now ?</span>
+        <span className="text-softBlue !text-md"> {SIGNUP_NOW}</span>
         </NavLink>
              
         </p>

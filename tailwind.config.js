@@ -13,6 +13,7 @@ module.exports = {
         blueTag:"#303D78",
         yellowTag:"#FEF08A",
         customGray: '#F8F8F8',
+        inputDisabled:"#D3D3D3"
       },
     },
   },

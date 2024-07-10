@@ -9,7 +9,9 @@ import {
 } from "@mui/material";
 import React from "react";
 import { formatName } from "../../helper/formatName";
-import { deepPurple } from "@mui/material/colors";
+import PersonIcon from '@mui/icons-material/Person';
+import CachedIcon from '@mui/icons-material/Cached';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { TRANSFER_OWNERSHIP,REMOVE_USER,EDIT_USER } from "../../constant/constant";
 const UserListItem = ({
@@ -34,7 +36,7 @@ const UserListItem = ({
       aria-controls={open ? "basic-menu" : undefined}
       aria-haspopup="true"
       aria-expanded={open ? "true" : undefined}
-      onClick={(e)=>onMenuClick(e,user?.email)}
+      onClick={(e)=>onMenuClick(e,user)}
     >
       <MoreVertIcon />
     </IconButton>
@@ -46,12 +48,12 @@ const UserListItem = ({
       MenuListProps={{ "aria-labelledby": "basic-button" }}
     >
       <MenuItem onClick={() => onMenuItemClick(TRANSFER_OWNERSHIP)}>
-        Transfer Ownership
+     <SyncAltIcon sx={{marginRight:'8px'}} /> Transfer Ownership
       </MenuItem>
       <MenuItem onClick={() => onMenuItemClick(EDIT_USER)}>
-       Edit
+      <CachedIcon sx={{marginRight:'8px'}} /> Edit
       </MenuItem>
-      <MenuItem onClick={() => onMenuItemClick(REMOVE_USER)}>Remove User</MenuItem>
+      <MenuItem onClick={() => onMenuItemClick(REMOVE_USER)}><PersonIcon sx={{marginRight:'8px'}} /> Remove User</MenuItem>
     </Menu>
   </ListItem>
 );

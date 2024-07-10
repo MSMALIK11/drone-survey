@@ -12,6 +12,7 @@ import api from '../services'
 import { sortProjectsByDate } from "../helper/sortProjectsByDate";
 import InputSearchControl from "../components/ui/InputSearchControl";
 import Loading from "../shared/Loading";
+import Wrapper from "../components/Wrapper";
 const Home = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -90,7 +91,7 @@ const Home = () => {
     top: "0%",
     bottom: "0%",
     width: "90%",
-    height: "57vh",
+    height: `calc(100vh - 160px)`,
     borderRadius: "20px",
     marginLeft: "10px",
     marginTop: "-10px",
@@ -153,19 +154,14 @@ const handleChange = (event) => {
     markers.current.forEach((marker) => marker.remove());
     markers.current = [];
   };
-
-
   const  handleProjectCardClick=(id)=>{
     navigate(`/project/${id}/details`)
-  
-
   }
-
-
   return (
     <>
       <HomeDashbordHeader />
-      <Box className="outer_wraper">
+      <Wrapper>
+      <Box>
         <Box className="outer_header mr-9 pb-2">
           <Box className="flex gap-4">
           <InputSearchControl handleSearch={handleSearch} hintText={"Search project by name"} />
@@ -181,6 +177,7 @@ const handleChange = (event) => {
                id="demo-simple-select"
                value={selectedValue}
                onChange={handleChange}
+               sx={{borderRadius:'25px',fontSize:'14px'}}
               >
                 <MenuItem value="1">  
                 </MenuItem>
@@ -191,7 +188,7 @@ const handleChange = (event) => {
           </Box>
         </Box>
 
-        <Box className="inner_wraper mt-4">
+        <Box className="h-full">
           <Grid container spacing={1}>
             <Grid item xs={12} md={6} lg={5} mt={0} className="card-content">
               <div className="flex w-full flex-col gap-4 bg-white p-4">
@@ -229,13 +226,14 @@ const handleChange = (event) => {
             <Grid xs={12} md={6} lg={7} style={{marginTop:"12px"}}>
               <Box
                 className="header_map"
-                style={{ height: "auto", width: "98%" }}>
+                style={{ height: "h-auto", width: "98%" }}>
                 <div style={mapContainerStyle} ref={mapContainer} />
               </Box>
             </Grid>
           </Grid>
         </Box>
       </Box>
+      </Wrapper>
       <Loading isVisible={loading} />
     </>
   );

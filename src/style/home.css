@@ -33,11 +33,12 @@
 .card-content {
   display: flex;
   width: 100%;
-  height: 68vh;
+  height: calc(100vh - 160px);
   overflow-y: auto;
   overflow-x: hidden;
  padding-bottom: 80px;
   transition: transform 0.3s ease;
+background-color: #F5F6FF;
 }
 
 .card-content-wrapper {
@@ -48,7 +49,22 @@
   border-radius: 17px;
 }
 
+#wrapper{
+  height:calc(100vh - 80px);
+  /* overflow-y: auto; */
+  background-color: #F5F6FF;
+ 
+}
+#project-details{
+  height:calc(100vh - 80px);
+  /* overflow-y: auto; */
+  height:calc(100vh - 80px);
 
+}
+#users-list{
+  height: calc(100vh - 300px);
+  overflow: auto;
+}
 .nameField .css-1q6at85-MuiInputBase-root-MuiOutlinedInput-root{
   border-radius: 40px !important;
-}
+} 

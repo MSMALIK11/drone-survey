@@ -198,12 +198,7 @@ const ProjectDetails = ({
        Edit
         </Button>
       </Tooltip>
-      {/* <button
-        onClick={trashed_time ? handleShowActivateConfirm : onShowDeactivateAlert}
-        className="bg-background cursor-pointer text-white rounded-full px-3 text-xs py-1 transition-transform active:scale-[0.9]"
-      >
-        {trashed_time ? "Activate" : "Deactivate"}
-      </button> */}
+ 
     <Button 
     sx={{borderRadius:'25px'}}
     startIcon={<BlockIcon  />}

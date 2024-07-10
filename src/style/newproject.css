@@ -17,26 +17,22 @@
  overflow-x:hidden ;
   
 }
-.left-form-wraper{
-  height:84vh;
-  position: relative;
+.newProjectFormWrapper{
+  height: calc(100vh - 130px);
   margin: 14px 16px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+background-color: white;
+border-radius: 10px;
+
  
 }
-.btn-box{
-  position: absolute;
-  bottom: 0;
-  /* height: 40px; */
-  background-color: #FFFFFF;
-  width: 100%;
-padding: 6px 0;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.left-form-wraper{
+  height:calc(100vh - 180px);
+  position: relative;
+  border-radius: 10px;
+  padding-bottom: 100px;
 }
+
+
 .Right_map {
   padding: 12px 30px;
 }

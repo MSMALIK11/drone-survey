@@ -64,9 +64,9 @@ const [locationName,setLocationName]=useState("")
   }, [lng, lat, zoom, defaultLng, defaultLat]);
     
   return (
-    <div className='mt-12'>
+    <div className='mt-9'>
         <div
-                style={{ height: "auto", width: "99%" }}>
+                style={{ height: "238px", width: "99%" }}>
                 <div style={mapContainerStyle} ref={mapContainer} />
               </div>
     </div>

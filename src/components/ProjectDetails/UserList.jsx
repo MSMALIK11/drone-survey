@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { List, IconButton, Tooltip, Badge } from "@mui/material";
+import { List, IconButton, Tooltip, Badge, Checkbox, Button } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TransferOwnership from "./TransferOwnership";
 import RemoveUser from "./RemoveUser";
@@ -10,11 +10,21 @@ import api from "../../services";
 import { errorHandler } from "../../helper/handleError";
 import useToast from "../../hooks/useToast";
 import ComboBox from "../../components/ui/CompoBox";
-import { EDIT_USER, REMOVE_USER, TRANSFER_OWNERSHIP } from "../../constant/constant";
+import {
+  EDIT_USER,
+  REMOVE_USER,
+  TRANSFER_OWNERSHIP,
+  USER_ADDED_SUCCESS 
+} from "../../constant/constant";
 import FilterMenu from "./FilterMenu";
-import { permissionOptionsList,analysisOptionsList } from "./data";
-import Each from '../Each'
-
+import { permissionOptionsList, analysisOptionsList } from "./data";
+import Each from "../Each";
+const initialState={
+    new_member_email: "",
+    upload_permission: "basic",
+    analysis_permission: "read",
+    report_permission: "",
+  }
 
 const UserList = () => {
   const [showTransferOwnershipModal, setShowTransferOwnership] =
@@ -23,20 +33,18 @@ const UserList = () => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [memberEmail, setMemberEmail] = useState("");
-  const [isEditMode,setIsEditMode]=useState(false)
-  const [loading,setLoading]=useState(false)
-  const [newUser, setNewUser] = useState({
-    new_member_email: "",
-    upload_permission: "",
-    analysis_permission: "",
-    report_permission: "",
-  });
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [newUser, setNewUser] = useState(initialState);
   const toast = useToast();
   const open = Boolean(anchorEl);
 
-  const handleClick = useCallback((event, val) => {
-    setMemberEmail(val);
+  const handleClick = useCallback((event, user) => {
+    setMemberEmail(user.email);
+    // setNewUser((prev)=>({...prev,...user,new_member_email:user.email}))
+    setNewUser(user)
     setAnchorEl(event.currentTarget);
+    console.log('newUser',newUser,user)
   }, []);
 
   const handleClose = useCallback(() => {
@@ -52,7 +60,6 @@ const UserList = () => {
     setShowRemoveUserModal(true);
     handleClose();
   }, [handleClose]);
- 
 
   const onCloseTransferOwnership = useCallback(() => {
     setShowTransferOwnership(false);
@@ -63,29 +70,27 @@ const UserList = () => {
     setShowRemoveUserModal(false);
     setMemberEmail("");
   }, []);
-// PENDING  change to actual api response  data
+  // PENDING  change to actual api response  data
   const data = useMemo(
     () => [
-      { name: "Mr Shoaib", email: "mohd.shoaib@botlabdynamics.com" },
-      { name: "John Vick", email: "john@gmail.com" },
-      { name: "Willium", email: "willium@gmail.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-      { name: "Jack Sparrow", email: "jackluim@jack.com" },
-
+      { name: "Mr Shoaib", email: "mohd.shoaib@botlabdynamics.com",
+      new_member_email: "john@gmail.com",
+        upload_permission: "basic",
+        analysis_permission: "read",
+        isAdmin:false,
+        report_permission: "write", },
+      { name: "Mr Shoaib", email: "msm76441@gmail.com",
+        new_member_email: "msm76441@gmail.com",
+        upload_permission: "basic",
+        analysis_permission: "read",
+        isAdmin:false,
+        report_permission: "write", },
+     
     ],
     []
   );
 
-  const handlePermissionChange = (val,name) => {
-  
+  const handlePermissionChange = (val, name) => {
     setNewUser((prev) => ({
       ...prev,
       [name]: val,
@@ -93,76 +98,92 @@ const UserList = () => {
   };
   // Add New  user to project
   const handleAddUserSubmit = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-     
       const res = await api.user.addUpdateUser(newUser);
       if (res.status === 201) {
+        toast(USER_ADDED_SUCCESS ,'success')
         setShowAddUserModal(false);
-        setLoading(false)
-        setIsEditMode(false)
+        setLoading(false);
+        setIsEditMode(false);
+        setNewUser(initialState)
       }
     } catch (error) {
       console.error("Error::while calling add new user api", error);
       const message = errorHandler(error);
       toast(message, "error");
-      setIsEditMode(false)
       setShowAddUserModal(false);
-      setLoading(false)
+      setLoading(false);
+      setIsEditMode(false);
+      setNewUser(initialState)
     }
   };
-  const handleEditUser=()=>{
-    setIsEditMode(true)
-    setShowAddUserModal(true)
+  const handleEditUser = () => {
+    setIsEditMode(true);
+    setShowAddUserModal(true);
     handleClose();
-
+  };
+  const onMenuItemClick = (value) => {
+    switch (value) {
+      case TRANSFER_OWNERSHIP:
+        handleShowTransferOwnership();
+        break;
+      case REMOVE_USER:
+        handleShowRemoveUserModal();
+        break;
+      case EDIT_USER:
+        handleEditUser();
+        break;
+    }
+  };
+  const handleIsAdminChange=(event)=>{
+    setNewUser((prev)=>({...prev,isAdmin:event.target.checked}))
   }
-const onMenuItemClick=(value)=>{
-  switch(value){
-    case TRANSFER_OWNERSHIP:
-      handleShowTransferOwnership();
-      break;
-    case REMOVE_USER:
-      handleShowRemoveUserModal();
-      break;
-    case EDIT_USER:
-      handleEditUser();
-      break;
-
-
-  }
-}
-const onFilterMenuItemClick=()=>{
-
+  const onFilterMenuItemClick = () => {};
+  const isDisabledBtn=!newUser.new_member_email?true:false
+  
+const handleCloseAddUerModal=()=>{
+  setIsEditMode(false);
+      setNewUser(initialState)
+      setShowAddUserModal(false)
 }
   return (
-    <div className="shadow-lg  border h-[80vh] border-softgray overflow-hidden rounded-lg !w-[400px] ">
-      <div className="flex h-[66px]  px-3 items-center justify-between" >
+    <div
+      id="usersListWrapper"
+      className="shadow-lg  border   border-softgray overflow-hidden rounded-lg !w-[400px] "
+    >
+      <div className="flex h-[66px]  px-3 items-center justify-between">
         <h1>Users List</h1>
         <div className="flex items-center">
-          <Tooltip title="Add new user" arrow>
-            <IconButton onClick={() => setShowAddUserModal(true)}>
-              <AddCircleOutlineIcon />
-            </IconButton>
-          </Tooltip>
           <FilterMenu onItemClick={onFilterMenuItemClick} />
+          <Tooltip title="Add new user" arrow>
+            
+            <Button sx={{fontSize:'14px',borderRadius:'25px'}}  variant="outlined" onClick={() => setShowAddUserModal(true)}>
+              <AddCircleOutlineIcon fontSize="small" sx={{marginRight:'8px'}} />
+              Add user
+            </Button>
+          </Tooltip>
         </div>
       </div>
-      <div className="h-[64vh] overflow-scroll">
+      <div id="users-list" className=" overflow-scroll">
         <List
           sx={{ width: "100%", maxWidth: "100%", bgcolor: "background.paper" }}
         >
-          <Each of={data} render={(user,index)=> <UserListItem
-              key={user.email}
-              user={user}
-              onMenuClick={handleClick}
-              onMenuItemClick={onMenuItemClick}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              index={index}
-            />} />
- 
+          <Each
+            of={data}
+            render={(user, index) => (
+              <UserListItem
+                key={user.email}
+                user={user}
+                onMenuClick={handleClick}
+                onMenuItemClick={onMenuItemClick}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                index={index}
+              />
+            )}
+          />
         </List>
       </div>
 
@@ -176,44 +197,84 @@ const onFilterMenuItemClick=()=>{
         isOpen={showRemoveUserModal}
         onClose={onCloseRemoveUser}
       />
+
+      {/* Edit user or permissions */}
       <Modal
-      title={isEditMode?"Update Permission":"Add new user"}
+        title={isEditMode ? "Update User" : "Add new user"}
         isOpen={showAddUserModal}
-        submitText={isEditMode?"Update":"Add"}
+        submitText={isEditMode ? "Update" : "Add"}
         onClick={handleAddUserSubmit}
-        onClose={() => setShowAddUserModal(false)}
-         loading={loading}
+        onClose={handleCloseAddUerModal}
+        loading={loading}
+        width={"632px"}
+        disabled={isDisabledBtn}
       >
-        <div className="w-[440px]">
-          {
-            !isEditMode && <InputControl label={"Email"} placeholder={"Enter email"} onChange={(event)=>handlePermissionChange(event.target.value,'new_member_email')} name="new_member_email" />
-          }
-          
+        <div>
+          <div className="flex items-end  relative">
+            <div className="w-[340px]">
+              <InputControl
+              // error="Please enter a valid email"
+                label={"Email"}
+                placeholder={"Enter email"}
+                onChange={(event) =>
+                  handlePermissionChange(event.target.value, "new_member_email")
+                }
+                value={newUser.new_member_email}
+                name="new_member_email"
+              />
+            </div>
+            <div>
+              <Checkbox checked={newUser.isAdmin} onChange={handleIsAdminChange} />
+              <label htmlFor="admin-permission">Admin Permission</label>
+            </div>
+          </div>
+
           <div className="space-y-3 mt-4">
-            <ComboBox
-              label={"Upload Permission"}
-              options={permissionOptionsList}
-              name={"upload_permission"}
-              onChange={handlePermissionChange}
-            />
-            <ComboBox
-              label={"Analysis Permission"}
+            <div className="flex items-center justify-between">
+              <label className="text-md text-background">
+                Upload Permission
+              </label>
+              <div>
+              <ComboBox
+                options={permissionOptionsList}
+                name={"upload_permission"}
+                onChange={handlePermissionChange}
+                disabled={newUser.isAdmin}
+              />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <label className="text-md text-background">
+              Analysis Permission
+              </label>
+             <div>
+             <ComboBox
               options={analysisOptionsList}
               name={"analysis_permission"}
               onChange={handlePermissionChange}
+              disabled={newUser.isAdmin}
             />
-            <ComboBox
-              label={"Report Permission"}
+             </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <label className="text-md text-background">
+              Report Permission
+              </label>
+              <div>
+              <ComboBox
               options={permissionOptionsList}
               name={"report_permission"}
               onChange={handlePermissionChange}
+              disabled={newUser.isAdmin}
             />
 
+              </div>
+            </div>
+            
+           
           </div>
         </div>
       </Modal>
-
-
 
       {/* Update User  */}
     </div>

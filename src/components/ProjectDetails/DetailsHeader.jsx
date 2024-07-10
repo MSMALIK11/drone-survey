@@ -9,7 +9,8 @@ const DetailsHeader = () => {
   const buttonStyles = "bg-white rounded-full flex items-center gap-2 border px-4 py-1 h-[40px] text-sm hover:bg-softBlue hover:text-white transition duration-300";
 
   return (
-    <div className="bg-gray-200 shadow-sm border border-gray-200 p-4 mb-4 rounded-sm">
+ 
+    <div className="bg-customGray shadow-sm border border-gray-200 p-4 mb-4 rounded-sm">
       <div className="flex items-center gap-4">
         <Tooltip title="Upload project-related images" arrow>
           <NavLink to='/upload'>
@@ -30,6 +31,7 @@ const DetailsHeader = () => {
         </Tooltip>
       </div>
     </div>
+
   );
 };
 
