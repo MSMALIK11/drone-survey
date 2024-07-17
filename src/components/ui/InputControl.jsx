@@ -20,7 +20,7 @@ const InputControl = ({name,label, value, onChange,placeholder,error=null,disabl
         label &&    <label className='text-md !text-background' htmlFor={name}>{label}</label>
       }
 
-    <div className={`bg-softgray ${disabled?'bg-inputDisabled':''}  input-control-wraper border border-transparent flex items-center  relative overflow-hidden ${isFocused?' !border !border-softBlue':''} ${error?'!border !border-red-400':''}`}>
+    <div className={`bg-softgray   ${disabled?'bg-inputDisabled':''}  input-control-wraper border border-transparent flex items-center  relative overflow-hidden ${!error && isFocused?' !border !border-softBlue':''} ${error?'!border !border-red-400':''}`}>
     
       <input
       id={name}

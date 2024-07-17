@@ -33,7 +33,6 @@ const App = () => {
     try {
       const res = await api.dashboardApi.getUserProfile();
       if (res.status === 200) {
-        console.log('User profile response:', res.data);
         if (!localStorage.getItem('intervalId')) {
           startTokenRefreshInterval();
         }
@@ -50,7 +49,6 @@ const App = () => {
 
   useEffect(() => {
     getUserProfile();
-    console.log('App component mounted');
   }, []);
 
   if (loading) return <LoadingScreen />;

@@ -48,6 +48,7 @@ const NewProject = () => {
     description: "",
     project_status: "",
     location: "",
+    progress:""
   });
 
   const [locationName, setLocationName] = useState("");

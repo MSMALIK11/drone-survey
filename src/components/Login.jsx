@@ -12,7 +12,7 @@ import PasswordControl from "./ui/PasswordControl";
 import InputControl from "./ui/InputControl";
 import Turnstile  from "react-turnstile";
 import { isValidEmail } from "../helper/isValidemail";
-import { FORGOT_PASSWORD, INVALID_EMAIL_ERROR_MESSAGE, NOT_REGISTER_YET, SIGNUP_NOW } from "../constant/constant";
+import { useTranslation } from 'react-i18next';
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -20,6 +20,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(false)
   const [error,setError]=useState(false)
+  const{t}=useTranslation()
 const toast=useToast()
 
   const handleChange = (e) => {
@@ -89,31 +90,30 @@ const toast=useToast()
   }
 
   const isDisabled = !email || !password || !token || !!error;
-
   return (
     <Box className=" h-screen overflow-hidden flex items-center justify-center">
       <Box className="border-2 rounded-sm px-12 py-20 pb-12 w-[525px] min-h-[70%]">
         <div className=" flex justify-center">
           <img src={Logo} alt="" width={360} />
         </div>
-        <h2 className="!text-3xl mt-9 font-semibold">Login</h2>
+        <h2 className="!text-3xl mt-9 font-semibold">{t('label.login')}</h2>
         <p
          className="text-muted mt-4 text-sm"
         >
-          Enter your Credentials to access your account
+          {t('label.accessMessage')}
         </p>
  
         <div className="mt-11">
           <div className="space-y-7">
-            <InputControl error={error?INVALID_EMAIL_ERROR_MESSAGE:null} name={"email"} onChange={handleChange} placeholder={"Email"} />
-          <PasswordControl onFocus={()=>{}} name={"password"} key={"password"} value={password} onChange={handleChange} onkeydown={handleKeyDown}  />
+            <InputControl error={error?t('errorMessage.invalidEmailError'):null} name={"email"} onChange={handleChange} placeholder={t('placeholder.enterEmail')} />
+          <PasswordControl onFocus={()=>{}} name={"password"} key={"password"} value={password} onChange={handleChange} onkeydown={handleKeyDown} placeholder={t('placeholder.enterPassword')} />
           </div>
         <div className="flex justify-end mt-1">
         <NavLink
           to="/password-reset/request"
           className="text-md !text-softBlue underline"
         >
-          {FORGOT_PASSWORD}
+         {t('label.forgotPassword')}
         </NavLink>
           
         </div>
@@ -145,13 +145,13 @@ const toast=useToast()
         <p
           className="text-muted text-md mt-2 ms-2"
         >
-         {NOT_REGISTER_YET}
+         {t('label.notRegisteredYet')}
           <NavLink
           to="/newSignUp"
           style={{ textDecoration: "none", fontWeight: 700 }}
           className="forgotpassword text-md"
         >
-        <span className="text-softBlue !text-md"> {SIGNUP_NOW}</span>
+        <span className="text-softBlue !text-md"> {t('label.signUpNow')}</span>
         </NavLink>
              
         </p>

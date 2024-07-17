@@ -5,11 +5,12 @@ const mapContainerStyle = {
     position: "relative",
     top: "0%",
     bottom: "0%",
-    width: "100%",
-    height: "40vh",
+    width: "800",
+    height: "100%",
     borderRadius: "20px",
     marginLeft: "10px",
     marginTop: "-10px",
+    flex:1
   };
 const Map = ({lat=78.9629,lng=20.5937,getPlaceName}) => {
       const mapContainer = useRef(null);
@@ -66,7 +67,7 @@ const [locationName,setLocationName]=useState("")
   return (
     <div className='mt-9'>
         <div
-                style={{ height: "238px", width: "99%" }}>
+                style={{ height: "36vh", width: "99%" }}>
                 <div style={mapContainerStyle} ref={mapContainer} />
               </div>
     </div>

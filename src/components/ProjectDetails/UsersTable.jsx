@@ -1,0 +1,544 @@
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { alpha, styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from '@mui/icons-material/Close';
+import { visuallyHidden } from "@mui/utils";
+import { Button, Menu, MenuItem, Skeleton } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import CachedIcon from "@mui/icons-material/Cached";
+import SyncAltIcon from "@mui/icons-material/SyncAlt";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
+import DescriptionIcon from "@mui/icons-material/Description";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import api from "../../services";
+import {
+  TRANSFER_OWNERSHIP,
+  REMOVE_USER,
+  EDIT_USER,
+} from "../../constant/constant";
+import FilterMenu from "./FilterMenu";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
+import RemoveUser from "./RemoveUser";
+import { getUserType } from "../../helper/getUserType";
+
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+function getComparator(order, orderBy) {
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) {
+      return order;
+    }
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
+const headCells = [
+  {
+    id: "name",
+    numeric: false,
+    disablePadding: false,
+    label: "Name/Email",
+    sortable: true,
+  },
+  {
+    id: "type",
+    numeric: false,
+    disablePadding: false,
+    label: "Type",
+    sortable: false,
+  },
+  {
+    id: "permission",
+    numeric: false,
+    disablePadding: false,
+    label: "Permission",
+    sortable: false,
+  },
+  {
+    id: "actions",
+    numeric: true,
+    disablePadding: false,
+    label: "Actions",
+    sortable: false,
+  },
+];
+
+function EnhancedTableHead(props) {
+  const {
+    onSelectAllClick,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onRequestSort,
+  } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            color="primary"
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{
+              "aria-label": "select all desserts",
+            }}
+          />
+        </TableCell>
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            align={
+              headCell.numeric
+                ? "right"
+                : headCell.id === "permission"
+                ? "left"
+                : "left"
+            }
+            padding={headCell.disablePadding ? "none" : "normal"}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            {!headCell.sortable && headCell.label}
+            {headCell.sortable && (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : "asc"}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            )}
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+EnhancedTableHead.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
+
+const initialPayload = {
+  is_admin:false,
+  is_owner: false,
+  is_analyzer: "",
+  is_reporter: "",
+  is_uploader: "",
+  last_evaluated_key: {},
+};
+// Component start
+ function UsersTable({
+  onMenuClick,
+  onMenuItemClick,
+  anchorEl,
+  open,
+  onClose,
+  onAddClick,
+  handleSelection,
+  onDeleteSelection
+}) {
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("calories");
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const { t } = useTranslation();
+
+  const [selectedFilter,setSelectedFilter]=useState(initialPayload)
+  const { isLoading, data ,refetch} = useQuery(["getProjectUsersList"], () =>
+    api.user.getListOfUsers(selectedFilter),{
+      enabled:false
+      
+    }
+  );
+  const usersList = !isLoading && data && Array.isArray(data?.data) ? data?.data : [];
+
+  // Refetch data when selectedFilter changes
+  useEffect(() => {
+    refetch();
+  }, [selectedFilter, refetch]);
+
+  const rows = usersList ? [...usersList] : [];
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = rows.map((n) => n.user_email);
+      setSelected(newSelected);
+      handleSelection(newSelected)
+      return;
+    }
+    handleSelection([])
+    setSelected([]);
+  };
+  const onFilterMenuItemClick=(val)=>{
+    setSelectedFilter(val)
+
+  }
+
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+    setSelected(newSelected);
+    handleSelection(newSelected)
+  };
+
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
+  const visibleRows = React.useMemo(
+    () =>
+      stableSort(rows, getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+      ),
+    [order, orderBy, page, rowsPerPage]
+  );
+
+  const handleMenuClick = (event, item) => {
+    event.stopPropagation();
+    onMenuClick(event, item);
+  };
+
+
+  function EnhancedTableToolbar(props) {
+    const { numSelected } = props;
+const handleClearSelection=()=>{
+  setSelected([]);
+  handleSelection([])
+
+}
+
+
+    return (
+      <Toolbar
+        sx={{
+          background: "#DCDCDC",
+          height: "66px",
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(numSelected > 0 && {}),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography
+            sx={{ flex: "1 1 100%" }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} Selected
+            <Tooltip title="Clear selection" arrow sx={{marginLeft:'5px'}}>
+            <IconButton onClick={handleClearSelection}>
+            <CloseIcon />
+
+            </IconButton>
+
+            </Tooltip>
+            
+          </Typography>
+        ) : (
+          <Typography
+            sx={{ flex: "1 1 100%" }}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+            className="text-background text-md"
+          >
+            {t("label.usersList")}
+          </Typography>
+        )}
+
+        {numSelected > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton onClick={onDeleteSelection}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <div className=" w-[400px]">
+            <div className="flex gap-4 items-center justify-end">
+              <FilterMenu onItemClick={onFilterMenuItemClick} />
+              <Tooltip title="Add new user" arrow>
+                <Button
+                  sx={{
+                    fontSize: "14px",
+                    borderRadius: "25px",
+                    minWidth: "140px",
+                  }}
+                  variant="outlined"
+                  onClick={() => onAddClick()}
+                >
+                  <AddCircleOutlineIcon
+                    fontSize="small"
+                    sx={{ marginRight: "8px" }}
+                  />
+                  {t("actions.addUser")}
+                </Button>
+              </Tooltip>
+            </div>
+          </div>
+        )}
+      </Toolbar>
+    );
+  }
+
+ 
+
+  return (
+    <Box sx={{ width: "100%" }}>
+      <Paper sx={{ width: "100%", mb: 2 }}>
+        <EnhancedTableToolbar numSelected={selected?.length} />
+        <TableContainer sx={{ height: "68vh" }}>
+          <Table stickyHeader aria-label="sticky table">
+            <EnhancedTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {isLoading
+                ? Array.from(new Array(5)).map((_, index) => (
+                    <TableRow key={index}>
+                      <TableCell padding="checkbox">
+                        <Skeleton
+                          variant="rectangular"
+                          width={24}
+                          height={24}
+                        />
+                      </TableCell>
+                      {headCells.map((headCell) => (
+                        <TableCell key={headCell.id}>
+                          <Skeleton variant="text" />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                : usersList?.length > 0 ?
+                  usersList?.map((row, index) => {
+                    const isItemSelected = isSelected(row.user_email);
+                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                    return (
+                      <StyledTableRow
+                        hover
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.user_email}
+                        selected={isItemSelected}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <StyledTableCell
+                          padding="checkbox"
+                          onClick={(event) =>
+                            handleClick(event, row?.user_email)
+                          }
+                        >
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                        >
+                          {row.name}
+                          <p className="text-xs text-muted">{row.user_email}</p>
+                        </StyledTableCell>
+                        <StyledTableCell>{row.type} {getUserType(row)}</StyledTableCell>
+                        <StyledTableCell>
+                          <div className="flex gap-4">
+                            <Tooltip title={`Upload photo / ${row?.is_uploader}`} arrow>
+                              <IconButton sx={{ background: "#EFF6FF" }}>
+                                <InsertPhotoIcon color="primary" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title={`Analyze photo / ${row?.is_analyzer}`} arrow>
+                              <IconButton sx={{ background: "#EFF6FF" }}>
+                                <AnalyticsIcon color="primary" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title={`Generate report / ${row.is_reporter}`} arrow>
+                              <IconButton sx={{ background: "#EFF6FF" }}>
+                                <DescriptionIcon color="primary" />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          <Tooltip title="More actions" arrow>
+                          <IconButton
+                         disabled={selected.length>1
+                         }
+                            id="basic-button"
+                            aria-controls={open ? "basic-menu" : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? "true" : undefined}
+                            onClick={(e) => handleMenuClick(e, row)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+
+                          </Tooltip>
+
+                          <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={onClose}
+                            MenuListProps={{
+                              "aria-labelledby": "basic-button",
+                            }}
+                          >
+                            <MenuItem
+                              onClick={() =>
+                                onMenuItemClick(TRANSFER_OWNERSHIP)
+                              }
+                            >
+                              <SyncAltIcon sx={{ marginRight: "8px" }} />{" "}
+                              {t("actions.transferOwnership")}
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() => onMenuItemClick(EDIT_USER)}
+                            >
+                              <CachedIcon sx={{ marginRight: "8px" }} />{" "}
+                              {t("actions.editUser")}
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() =>
+                                onMenuItemClick(REMOVE_USER)
+                              }
+                            >
+                          
+                              <PersonIcon sx={{ marginRight: "8px" }} />{" "}
+                              {t("actions.removeUser")}
+                            </MenuItem>
+                          </Menu>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    );
+                  }):
+            
+                <TableRow
+                  style={{
+                    height: (dense ? 33 : 53) * emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={6} >
+                    users not found {data?.data?.length }
+                  </TableCell>
+                </TableRow>
+}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      
+    </Box>
+  );
+}
+
+export default React.memo(UsersTable)

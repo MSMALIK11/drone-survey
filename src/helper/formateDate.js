@@ -1,4 +1,5 @@
 export function formatDate(timestamp) {
+    if(!timestamp) return null
     let day = timestamp.slice(0, 2);
     let month = timestamp.slice(2, 4);
     let year = timestamp.slice(4, 8);

@@ -9,12 +9,14 @@ import UserList from "../components/ProjectDetails/UserList";
 import DetailsHeader from "../components/ProjectDetails/DetailsHeader";
 import Map from "../components/ProjectDetails/Map";
 import Wrapper from "../components/Wrapper";
+import { useTranslation } from 'react-i18next';
 const ProjectDetails = () => {
   const parmas = useParams();
   const { id } = parmas;
   const auth = JSON.parse(localStorage.getItem("auth-user"));
-  const navigate = useNavigate();
   const [placeName, setPlaceName] = useState("");
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const { isLoading, data, isError } = useQuery(["getProjectDetails"], () =>
     api.dashboardApi.getProjectDetailsById(id, auth.email)
   );
@@ -40,8 +42,8 @@ const ProjectDetails = () => {
           <Wrapper>
             <div className="p-3 bg-white rounded-[10px]">
               <DetailsHeader />
-              <div className="flex gap-4">
-                <div className="flex-1">
+              <div id="details-container-box" className="flex gap-4 ">
+                <div className="w-[50%]">
                   <Details
                     project_name={project?.project_name}
                     category={project?.category}
@@ -53,13 +55,14 @@ const ProjectDetails = () => {
                     placeName={placeName}
                   />
                   <div>
-                    <Map
+                    {/* <Map
                       lat={project.latitude}
                       lng={project.longitude}
                       getPlaceName={getPlaceName}
-                    />
+                    /> */}
                   </div>
                 </div>
+             
               <UserList />
               </div>
 

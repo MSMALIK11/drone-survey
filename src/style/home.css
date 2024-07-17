@@ -50,21 +50,27 @@ background-color: #F5F6FF;
 }
 
 #wrapper{
-  height:calc(100vh - 80px);
+  height:calc(100vh - 60px);
   /* overflow-y: auto; */
   background-color: #F5F6FF;
+  /* background-color: red; */
+  padding-bottom: 20px;
  
+}
+#details-container-box{
+  height: calc(100vh - 200px);
 }
 #project-details{
   height:calc(100vh - 80px);
   /* overflow-y: auto; */
-  height:calc(100vh - 80px);
+  /* height:calc(100vh - 80px); */
+  /* background-color: green !important; */
 
 }
-#users-list{
+/* #users-list{
   height: calc(100vh - 300px);
   overflow: auto;
-}
+} */
 .nameField .css-1q6at85-MuiInputBase-root-MuiOutlinedInput-root{
   border-radius: 40px !important;
 } 

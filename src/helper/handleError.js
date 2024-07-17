@@ -1,6 +1,5 @@
 export const errorHandler = (error) => {
     let message = "";
-  console.log(error?.response?.data?.detail)
   if(error?.response?.data?.detail && typeof error?.response?.data?.detail==="string"){
     message=error?.response?.data?.detail
     return message

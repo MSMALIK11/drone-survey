@@ -27,11 +27,11 @@ const Modal = ({ isOpen, onClose, onClick, loading, submitText, children,title,d
           <Close />
         </IconButton>  </DialogTitle>
       <DialogContent>{children}</DialogContent>
-      <DialogActions>
-        <Button variant="outlined" size="small" sx={{borderRadius:'25px'}} onClick={onClose}>
+      <DialogActions className="mb-3 mx-4">
+        <Button variant="outlined" size="" sx={{borderRadius:'25px'}} onClick={onClose}>
           {CANCEL}
         </Button>
-        <Button variant="contained" size="small" sx={{borderRadius:'25px'}} disabled={loading || disabled} onClick={onClick}>
+        <Button variant="contained"  sx={{borderRadius:'25px',padding:"4px 16px",minWidth:'100px'}} disabled={loading || disabled} onClick={onClick}>
           {" "}
           {loading && (
             <CircularProgress size={22} sx={{ color: blue[500], mr: 2 }} />

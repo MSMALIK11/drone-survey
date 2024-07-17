@@ -13,7 +13,7 @@ import {
 } from "../../constant/constant";
 import { formatDate } from "../../helper/formateDate";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { Button, IconButton, Tooltip } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import Modal from "../ui/Modal";
 import BlockIcon from '@mui/icons-material/Block';
@@ -21,6 +21,7 @@ import ComboBox from "../../components/ui/CompoBox";
 import Status from "./Status";
 import ReadMoreReadLess from "../ui/ReadMoreReadLess";
 import TextareaControl from "../ui/TextareaControl";
+import { useTranslation } from 'react-i18next';
 const options = [
   { value: "INITIATED", label: "Initiated" },
   { value: "IN-PROGRESS", label: "In Progress" },
@@ -50,6 +51,7 @@ const ProjectDetails = ({
   });
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const handleDeactivateConfirm = async () => {
     setIsLoading(true);
@@ -138,7 +140,7 @@ const ProjectDetails = ({
   }
 
   const DetailRow = ({ label, value, extraClasses = '' }) => (
-  <div className={`text-md flex  min-h-[44px]   flex items-center   min-w-[320px]    ${extraClasses}`}>
+  <div className={`text-md flex  min-h-[44px]  items-center   min-w-[320px]    ${extraClasses}`}>
     <p className="w-[300px]">
       {label}:
     </p>
@@ -150,7 +152,7 @@ const ProjectDetails = ({
   </div>
   );
   const DateRow = ({ label, date }) => (
-    <p className="text-md mt-4 flex flex-col gap-1 w-[264px]">
+    <p className="text-md mt-4 flex flex-col gap-2">
       {label}: 
       <span className="bg-blueTag !text-white px-4 py-1 rounded-full flex gap-2 items-center">
         <AccessTimeIcon /> {formatDate(date)}
@@ -163,12 +165,12 @@ const ProjectDetails = ({
       <main>
   <div className="bg-customGray  text-background shadow-lg  pb-6  min-h-[380px] rounded-lg p-5 border border-softgray relative">
     <div>
-      <p className="text-background text-lg mb-2">Project Details</p>
+      <p className="text-background text-lg mb-2">{t('project.projectDetails')}</p>
     </div>
     <hr />
     <DetailRow label="Project Name" value={project_name} />
     <hr />
-    <div className="flex">
+    <div className="flex min-h-[44px] items-center">
       <p className="w-[300px]">Description</p>
       <p className="block min-h-[20px] max-h-[120px] overflow-y-auto flex-1 py-2"><ReadMoreReadLess description={description} /></p>
     </div>
@@ -221,8 +223,8 @@ variant="contained"
 
       >
         <div className="w-[440px] flex flex-col gap-4">
-          <div className="">
 
+          <div className="">
           <TextareaControl
             value={project.description}
             label={"Description :"}
@@ -235,12 +237,13 @@ variant="contained"
             name="permission"
             label={"Status :"}
             options={options}
-            value={project.project_status}
+
+            value={project.project_status || "default"}
             selectedOption={project.project_status}
             onChange={handlePermissionChange}
           />
           <div className="flex flex-col gap-1">
-          <label className="text-background">
+          <label className="text-background text-md">
             Estimate Time :
           </label>
           <input type="date" onChange={handleDateChange} name="estimated_date" />

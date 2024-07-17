@@ -43,7 +43,6 @@ const Home = () => {
     
       if (response.status===200) {
         const data= sortProjectsByDate(response?.data,1)
-        console.log("data", data)
         if(Array.isArray(data)){
           
           setFilteredProjects(data);
@@ -53,7 +52,7 @@ const Home = () => {
         setLoading(false);
       } 
     } catch (error) {
-      console.log("Error fetching projects:", error);
+      console.error("Error fetching projects:", error);
     } finally {
       setLoading(false);
     }
@@ -90,7 +89,7 @@ const Home = () => {
     position: "relative",
     top: "0%",
     bottom: "0%",
-    width: "90%",
+    width: "100%",
     height: `calc(100vh - 160px)`,
     borderRadius: "20px",
     marginLeft: "10px",
@@ -146,17 +145,36 @@ const handleChange = (event) => {
     map.current.flyTo({
       center: [markerLng, markerLat],
       essential: true,
+      zoom: 8,
     });
   };
 
   const handleMouseLeave = () => {
     setExpandedProject(null);
-    markers.current.forEach((marker) => marker.remove());
-    markers.current = [];
+    // markers.current.forEach((marker) => marker.remove());
+    map.current.flyTo({
+      center: mapCenter, // Center it back to the default or any desired coordinates
+      zoom: 4, // Set the zoom level to 4
+      essential: true,
+    });
   };
   const  handleProjectCardClick=(id)=>{
     navigate(`/project/${id}/details`)
   }
+  useEffect(() => {
+    if (map.current) {
+      markers.current.forEach((marker) => marker.remove());
+      markers.current = [];
+      projects.forEach((project) => {
+        if (project.latitude && project.longitude) {
+          const marker = new mapboxgl.Marker({ color: "blue" })
+            .setLngLat([project.longitude, project.latitude])
+            .addTo(map.current);
+          markers.current.push(marker);
+        }
+      });
+    }
+  }, [projects]);
   return (
     <>
       <HomeDashbordHeader />

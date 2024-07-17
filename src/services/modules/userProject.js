@@ -8,16 +8,20 @@ export const user={
         return mappingService.delete('/user-project/deactivate-project')
     },
     async transferOwnership(payload){
-        return mappingService.delete('user-project/transfer-ownership',{ data: payload })
+        return mappingService.post('user-project/transfer-ownership',payload)
     },
-    async removeUser(){
-        return mappingService.delete('/user-project/remove-user')
+    async removeUser(delUsersList){
+
+        return mappingService.delete('/user-project/remove-user',{data:delUsersList})
     },
     async addUpdateUser(payload){
-        return await mappingService.put('/user-project/add-update-user',payload)
+        return await mappingService.post('/user-project/add-update-user',payload)
     },
     async updateProjectDetails(){
         return await mappingService.put('/user-project/update-project-details')
+    },
+    async getListOfUsers(payload){
+        return await mappingService.post('/user-project/list-project-users',payload)
     }
     
 

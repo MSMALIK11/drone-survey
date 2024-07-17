@@ -11,26 +11,10 @@ import { errorHandler } from "../../helper/handleError";
 import useToast from "../../hooks/useToast";
 import { CircularProgress } from "@mui/material";
 import { blue } from "@mui/material/colors";
-const RemoveUser = ({ isOpen, onClose, memberEmail }) => {
+const RemoveUser = ({ isOpen, onClose, memberEmail,delUsersList,handleRemoveUser }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const handleRemoveUser = async () => {
-    setLoading(true);
-    const payload = {
-      member_email: memberEmail,
-    };
-    try {
-      const res = await api.user.removeUser(payload);
-      setLoading(false);
-      onClose();
-    } catch (error) {
-      setLoading(false);
-      const message = errorHandler(error);
-      toast(message, "error");
-      onClose();
-      console.error("Error:: while calling transfer ownership api", error);
-    }
-  };
+
   return (
     <div className="mt-6">
       <Dialog open={isOpen} onClose={onClose}>
@@ -38,7 +22,7 @@ const RemoveUser = ({ isOpen, onClose, memberEmail }) => {
         <DialogContent>
           <DialogContentText>
             Are you sure you want to remove{" "}
-            <span className="font-semibold text-black">{memberEmail}</span> from
+            <span className="font-semibold text-black">{delUsersList.length>1?delUsersList.length:delUsersList[0]} {delUsersList.length>1?'users':'user'}</span> from
             the project? This will remove their access and permissions.
           </DialogContentText>
         </DialogContent>

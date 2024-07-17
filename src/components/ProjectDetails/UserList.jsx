@@ -1,9 +1,16 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { List, IconButton, Tooltip, Badge, Checkbox, Button } from "@mui/material";
+import {
+  List,
+  IconButton,
+  Tooltip,
+  Badge,
+  Checkbox,
+  Button,
+} from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TransferOwnership from "./TransferOwnership";
 import RemoveUser from "./RemoveUser";
-import UserListItem from "./UserListItem";
+import UserListItem from "./UsersTable";
 import Modal from "../../components/ui/Modal";
 import InputControl from "../../components/ui/InputControl";
 import api from "../../services";
@@ -14,17 +21,19 @@ import {
   EDIT_USER,
   REMOVE_USER,
   TRANSFER_OWNERSHIP,
-  USER_ADDED_SUCCESS 
+  USER_ADDED_SUCCESS,
 } from "../../constant/constant";
-import FilterMenu from "./FilterMenu";
 import { permissionOptionsList, analysisOptionsList } from "./data";
-import Each from "../Each";
-const initialState={
-    new_member_email: "",
-    upload_permission: "basic",
-    analysis_permission: "read",
-    report_permission: "",
-  }
+import UsersTable from "./UsersTable";
+import { useQuery } from "react-query";
+const initialState = {
+  new_member_email: "",
+  upload_permission: "",
+  analysis_permission: "",
+  report_permission: "",
+  new_member_name:"",
+  admin_permission:false
+};
 
 const UserList = () => {
   const [showTransferOwnershipModal, setShowTransferOwnership] =
@@ -32,6 +41,7 @@ const UserList = () => {
   const [showRemoveUserModal, setShowRemoveUserModal] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [selected,setSelected]=useState([])
   const [memberEmail, setMemberEmail] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,12 +50,16 @@ const UserList = () => {
   const open = Boolean(anchorEl);
 
   const handleClick = useCallback((event, user) => {
-    setMemberEmail(user.email);
-    // setNewUser((prev)=>({...prev,...user,new_member_email:user.email}))
-    setNewUser(user)
+    event.preventDefault();
+    setMemberEmail(user.user_email
+    );
+    if(selected.length==0){
+      setSelected([user.user_email])
+
+    }
+    setNewUser(user);
     setAnchorEl(event.currentTarget);
-    console.log('newUser',newUser,user)
-  }, []);
+  }, [selected]);
 
   const handleClose = useCallback(() => {
     setAnchorEl(null);
@@ -71,24 +85,34 @@ const UserList = () => {
     setMemberEmail("");
   }, []);
   // PENDING  change to actual api response  data
-  const data = useMemo(
-    () => [
-      { name: "Mr Shoaib", email: "mohd.shoaib@botlabdynamics.com",
-      new_member_email: "john@gmail.com",
-        upload_permission: "basic",
-        analysis_permission: "read",
-        isAdmin:false,
-        report_permission: "write", },
-      { name: "Mr Shoaib", email: "msm76441@gmail.com",
-        new_member_email: "msm76441@gmail.com",
-        upload_permission: "basic",
-        analysis_permission: "read",
-        isAdmin:false,
-        report_permission: "write", },
-     
-    ],
-    []
-  );
+  // const data = useMemo(
+  //   () => [
+  //     {id:new Date(), name: "John", email: "john@mail.com",
+  //     new_member_email: "john@gmail.com",
+  //       upload_permission: "basic",
+  //       analysis_permission: "read",
+  //       isAdmin:true,
+  //       report_permission: "write",
+  //       type:"admin"
+  //      },
+  //     {id:new Date(), name: "Jack", email: "jack@gmail.com",
+  //       new_member_email: "jack@gmail.com",
+  //       upload_permission: "basic",
+  //       analysis_permission: "read",
+  //       isAdmin:false,
+  //       type:"Member",
+  //       report_permission: "write", },
+  //     {id:new Date(), name: "Jack", email: "jack@gmail.com",
+  //       new_member_email: "jack@gmail.com",
+  //       upload_permission: "basic",
+  //       analysis_permission: "read",
+  //       isAdmin:false,
+  //       type:"Member",
+  //       report_permission: "write", }
+
+  //   ],
+  //   []
+  // );
 
   const handlePermissionChange = (val, name) => {
     setNewUser((prev) => ({
@@ -102,20 +126,20 @@ const UserList = () => {
     try {
       const res = await api.user.addUpdateUser(newUser);
       if (res.status === 201) {
-        toast(USER_ADDED_SUCCESS ,'success')
+        toast(USER_ADDED_SUCCESS, "success");
         setShowAddUserModal(false);
         setLoading(false);
         setIsEditMode(false);
-        setNewUser(initialState)
+        setNewUser(initialState);
       }
     } catch (error) {
       console.error("Error::while calling add new user api", error);
       const message = errorHandler(error);
       toast(message, "error");
-      setShowAddUserModal(false);
-      setLoading(false);
-      setIsEditMode(false);
-      setNewUser(initialState)
+      // setShowAddUserModal(false);
+      // setLoading(false);
+      // setIsEditMode(false);
+      // setNewUser(initialState);
     }
   };
   const handleEditUser = () => {
@@ -136,55 +160,58 @@ const UserList = () => {
         break;
     }
   };
-  const handleIsAdminChange=(event)=>{
-    setNewUser((prev)=>({...prev,isAdmin:event.target.checked}))
-  }
+  const handleIsAdminChange = (event) => {
+    setNewUser((prev) => ({ ...prev, isAdmin: event.target.checked }));
+  };
   const onFilterMenuItemClick = () => {};
-  const isDisabledBtn=!newUser.new_member_email?true:false
-  
-const handleCloseAddUerModal=()=>{
-  setIsEditMode(false);
-      setNewUser(initialState)
-      setShowAddUserModal(false)
+  const isDisabledBtn = !newUser.new_member_email ? true : false;
+const handleSelection=(selection)=>{
+  setSelected(selection)
 }
+  const handleCloseAddUerModal = () => {
+    setIsEditMode(false);
+    setNewUser(initialState);
+    setShowAddUserModal(false);
+  };
+  const handleShowAddUserModal = () => {
+    setShowAddUserModal(true);
+  };
+
+  const handleRemoveUser = async () => {
+    setLoading(true);
+    const payload = {
+      member_emails:selected.length>0 ?selected:[selected[0]],
+    };
+    try {
+      const res = await api.user.removeUser(payload);
+      console.log('red',res)
+      setLoading(false);
+      onCloseRemoveUser();
+    } catch (error) {
+      setLoading(false);
+      const message = errorHandler(error);
+      toast(message, "error");
+      onCloseRemoveUser();
+      console.error("Error:: while calling transfer ownership api", error);
+    }
+  };
   return (
     <div
       id="usersListWrapper"
-      className="shadow-lg  border   border-softgray overflow-hidden rounded-lg !w-[400px] "
+      className="shadow-lg  border flex-1  border-softgray  overflow-hidden rounded-lg min-w-[542px] "
     >
-      <div className="flex h-[66px]  px-3 items-center justify-between">
-        <h1>Users List</h1>
-        <div className="flex items-center">
-          <FilterMenu onItemClick={onFilterMenuItemClick} />
-          <Tooltip title="Add new user" arrow>
-            
-            <Button sx={{fontSize:'14px',borderRadius:'25px'}}  variant="outlined" onClick={() => setShowAddUserModal(true)}>
-              <AddCircleOutlineIcon fontSize="small" sx={{marginRight:'8px'}} />
-              Add user
-            </Button>
-          </Tooltip>
-        </div>
-      </div>
-      <div id="users-list" className=" overflow-scroll">
-        <List
-          sx={{ width: "100%", maxWidth: "100%", bgcolor: "background.paper" }}
-        >
-          <Each
-            of={data}
-            render={(user, index) => (
-              <UserListItem
-                key={user.email}
-                user={user}
-                onMenuClick={handleClick}
-                onMenuItemClick={onMenuItemClick}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                index={index}
-              />
-            )}
-          />
-        </List>
+      <div id="users-list">
+        <UsersTable
+          key="users-list-table"
+          onMenuClick={handleClick}
+          onMenuItemClick={onMenuItemClick}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          onAddClick={handleShowAddUserModal}
+          handleSelection={handleSelection}
+          onDeleteSelection={()=>setShowRemoveUserModal(true)}
+        />
       </div>
 
       <TransferOwnership
@@ -196,6 +223,8 @@ const handleCloseAddUerModal=()=>{
         memberEmail={memberEmail}
         isOpen={showRemoveUserModal}
         onClose={onCloseRemoveUser}
+        delUsersList={selected}
+        handleRemoveUser={handleRemoveUser}
       />
 
       {/* Edit user or permissions */}
@@ -213,7 +242,6 @@ const handleCloseAddUerModal=()=>{
           <div className="flex items-end  relative">
             <div className="w-[340px]">
               <InputControl
-              // error="Please enter a valid email"
                 label={"Email"}
                 placeholder={"Enter email"}
                 onChange={(event) =>
@@ -224,10 +252,23 @@ const handleCloseAddUerModal=()=>{
               />
             </div>
             <div>
-              <Checkbox checked={newUser.isAdmin} onChange={handleIsAdminChange} />
+              <Checkbox
+                checked={newUser.isAdmin}
+                onChange={handleIsAdminChange}
+                name="admin_permission"
+              />
               <label htmlFor="admin-permission">Admin Permission</label>
             </div>
           </div>
+          <InputControl
+                label={"Name"}
+                placeholder={"Enter name"}
+                onChange={(event) =>
+                  handlePermissionChange(event.target.value, "new_member_name")
+                }
+                value={newUser.new_member_name}
+                name="new_member_name"
+              />
 
           <div className="space-y-3 mt-4">
             <div className="flex items-center justify-between">
@@ -235,43 +276,43 @@ const handleCloseAddUerModal=()=>{
                 Upload Permission
               </label>
               <div>
-              <ComboBox
-                options={permissionOptionsList}
-                name={"upload_permission"}
-                onChange={handlePermissionChange}
-                disabled={newUser.isAdmin}
-              />
+                <ComboBox
+                  options={permissionOptionsList}
+                  name={"upload_permission"}
+                  onChange={handlePermissionChange}
+                  disabled={newUser.isAdmin}
+                  value={"default"}
+                />
               </div>
             </div>
             <div className="flex items-center justify-between">
               <label className="text-md text-background">
-              Analysis Permission
-              </label>
-             <div>
-             <ComboBox
-              options={analysisOptionsList}
-              name={"analysis_permission"}
-              onChange={handlePermissionChange}
-              disabled={newUser.isAdmin}
-            />
-             </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <label className="text-md text-background">
-              Report Permission
+                Analysis Permission
               </label>
               <div>
-              <ComboBox
-              options={permissionOptionsList}
-              name={"report_permission"}
-              onChange={handlePermissionChange}
-              disabled={newUser.isAdmin}
-            />
-
+                <ComboBox
+                  options={analysisOptionsList}
+                  name={"analysis_permission"}
+                  onChange={handlePermissionChange}
+                  disabled={newUser.isAdmin}
+                  value={"default"}
+                />
               </div>
             </div>
-            
-           
+            <div className="flex items-center justify-between">
+              <label className="text-md text-background">
+                Report Permission
+              </label>
+              <div>
+                <ComboBox
+                  options={permissionOptionsList}
+                  name={"report_permission"}
+                  onChange={handlePermissionChange}
+                  disabled={newUser.isAdmin}
+                  value={"default"}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </Modal>

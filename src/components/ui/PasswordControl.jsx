@@ -9,7 +9,7 @@ const StyledIconButton = styled(IconButton)({
 
 
 
-const PasswordControl = ({ value, onChange,name ,onkeydown ,className,onFocus}) => {
+const PasswordControl = ({ value, onChange,name ,onkeydown ,className,onFocus,placeholder}) => {
   const [show, setShow] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -34,7 +34,7 @@ const PasswordControl = ({ value, onChange,name ,onkeydown ,className,onFocus}) 
     <div className={`bg-softgray input-control-wraper border border-transparent flex items-center  relative overflow-hidden ${isFocused?' !border !border-softBlue':''}`}>
     
       <input
-        placeholder="Password"
+        placeholder={placeholder}
         type={show ? "text" : "password"}
         name={name}
         autoComplete="new-password"

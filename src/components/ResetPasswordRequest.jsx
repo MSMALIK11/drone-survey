@@ -20,7 +20,6 @@ const ResetPasswordRequest = () => {
   const toast = useToast()
 
   const handleOtpChange = (otp) => {
-    console.log(otp)
     const numericValue = otp.replace(/\D/g, "");
     setOtp(numericValue);
     if (otp.length === 6) {
@@ -97,11 +96,11 @@ const ResetPasswordRequest = () => {
   let isDisabled = otp?.length !== 6
   return (
     <div className='flex items-center justify-center h-screen'>
-      <div className="border-2 rounded-sm px-12 py-20 pb-12 w-[525px] h-[60%]">
+      <div className="border-2 rounded-sm px-12 py-20 pb-12 w-[525px] h-[60%] min-h-[540px]">
         <div className="logInLogo flex justify-center">
           <img src={logo} alt="" width={360} />
         </div>
-        <div className='mt-9'>
+        <div className='mt-9 '>
           <h2 className="text-3xl font-semibold">Reset Password</h2>
           <p className='text-muted text-md '>Please enter the OTP sent to your registered email Id.</p>
           <div>

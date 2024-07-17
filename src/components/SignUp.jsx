@@ -24,8 +24,7 @@ const SignUp = () => {
     
       const handleSubmit = (e) => {
         e.preventDefault();
-        // Add logic to handle form submission (e.g., sending data to server)
-        console.log('Form data submitted:', formData);
+
       };
 
       const navigate = useNavigate();

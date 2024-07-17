@@ -30,7 +30,6 @@ const DemoMap = () => {
 
     // Add a click event listener to update the marker location
     const handleMapClick = (e) => {
-      console.log("value",e.target.value)
       const { lng, lat } = e.lngLat;
       setLng(lng);
       setLat(lat);

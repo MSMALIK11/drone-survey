@@ -53,7 +53,6 @@ const ForgetPassword = () => {
     setShowPassword(!showPassword);
   };
   const handleClickShowConfirmPassword = () => {
-    console.log(showConfirmPassword, "value of passwordata");
     setShowConfirmPassword(!showConfirmPassword);
   };
 
@@ -111,7 +110,6 @@ const ForgetPassword = () => {
 
   const isDisabled = !password || !confirmPassword || !isValidPassword;
 
-  console.log('isDisabled', isDisabled)
   return (
     <>
       <Box className="main-login">

@@ -7,7 +7,6 @@ const newprojectSlice = createSlice({
   },
   reducers: {
 
-
   },
 });
 

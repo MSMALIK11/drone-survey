@@ -4,7 +4,7 @@ const ReadMoreReadLess = ({ description }) => {
   const [showFullText, setShowFullText] = useState(false);
 
   // Check if description length is more than 180 characters
-  const isLongText = description.length > 180;
+  const isLongText = description?.length > 180;
 
   const toggleText = () => {
     setShowFullText(!showFullText);
@@ -15,7 +15,7 @@ const ReadMoreReadLess = ({ description }) => {
     if (showFullText) {
       return description;
     } else {
-      return description.slice(0,80) + (description.length > 80 ? '...' : '');
+      return description?.slice(0,80) + (description.length > 80 ? '...' : '');
     }
   };
 

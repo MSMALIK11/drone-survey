@@ -1,0 +1,70 @@
+{
+  "project": {
+    "transferOwnership": "Transfer Ownership",
+    "removeUser": "Remove User",
+    "projectDetails":"Project details",
+    "editUser": "Edit User"
+  },
+  "label": {
+    "accessMessage": "Enter your Credentials to access your account",
+    "notRegisteredYet": "Not Registered Yet?",
+    "login":"Login",
+    "forgetPassword":"Forgot password?",
+    "signUpNow":"Sig Up Now",
+    "forgotPassword": "Forgot Password?",
+    "alreadyHaveAccount":"Already have an account?",
+    "signup":"Sign up",
+    "name":"Name",
+    "usersList":" Users List",
+    "select":"Select"
+    
+  },
+  "actions": {
+    "forgotPassword": "Forgot Password?",
+    "signupNow": "Sign Up Now?",
+    "cancel": "Cancel",
+    "yes": "YES",
+    "assign": "Assign",
+    "confirm": "Confirm",
+    "apply":"Apply",
+    "ok":"Ok",
+    "register":"Register",
+    "login":"Login",
+    "addUser":"Add user",
+    "transferOwnership":"Transfer ownership",
+    "removeUser":"Remove User",
+    "editUser":"Edit User"
+  },
+  "errorMessage": {
+    "invalidEmailError": "Please enter a valid email",
+    "invalidString": "Invalid name. Allowed characters: A-Z, a-z, 0-9, + = , . @ _ -"
+  },
+  "messages": {
+    "deactivationSuccess": "Project successfully deactivated.",
+    "activationSuccess": "Project successfully activated.",
+    "deactivationConfirmation": "Are you sure you want to deactivate this project?",
+    "activationConfirmation": "Are you sure you want to activate this project?",
+    "transferOwnershipMessage": "Are you sure you want to assign project ownership to this member?",
+    "updatedSuccessMessage": "Project details have been updated successfully.",
+    "userAddedSuccess": "User successfully added to the project."
+  },
+  "passwordRequirements": {
+    "atLeastOneLowercase": "At least one lowercase letter",
+    "atLeastOneUppercase": "At least one uppercase letter",
+    "atLeastOneNumber": "At least one number",
+    "minimumLength": "Minimum 8 characters",
+    "passwordsDoNotMatch": "Passwords do not match"
+  },
+  "placeholder":{
+    "enterEmail":"Enter you email *",
+    "email":"Enter you email *",
+    "enterPassword":"Enter your Password *",
+    "name":"Enter your name *"
+
+  },
+  "tooltip":{
+    "upload":"Upload",
+    "analysis":"Analysis",
+    "report":"Report"
+  }
+}

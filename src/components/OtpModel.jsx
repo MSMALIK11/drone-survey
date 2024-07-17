@@ -152,7 +152,7 @@ const OtpModel = () => {
 
         }
       } catch (error) {
-        console.log(error)
+        console.error(error)
         if (error.response.status === 400 && error?.response?.data) {
           toast('Please enter a valid OTP.', 'error')
           setOtp("")
