@@ -28,7 +28,6 @@ const { t }=useTranslation()
         value={val}
         name={name}
         disabled={disabled}
-        className='bg-softgray'
     
       >
          <MenuItem value="default"  disabled>{t('label.select')}</MenuItem>

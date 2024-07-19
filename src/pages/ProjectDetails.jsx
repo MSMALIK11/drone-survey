@@ -43,7 +43,7 @@ const ProjectDetails = () => {
             <div className="p-3 bg-white rounded-[10px]">
               <DetailsHeader />
               <div id="details-container-box" className="flex gap-4 ">
-                <div className="w-[50%]">
+                <div>
                   <Details
                     project_name={project?.project_name}
                     category={project?.category}
@@ -51,15 +51,17 @@ const ProjectDetails = () => {
                     trashed_time={project?.trashed_time}
                     created_at={project.created_at}
                     updated_at={project.updated_at}
-                    status={project.status}
+                    status={project?.progress}
                     placeName={placeName}
+
+                    active={project.active}
                   />
                   <div>
-                    {/* <Map
+                    <Map
                       lat={project.latitude}
                       lng={project.longitude}
                       getPlaceName={getPlaceName}
-                    /> */}
+                    />
                   </div>
                 </div>
              

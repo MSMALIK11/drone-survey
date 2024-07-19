@@ -8,7 +8,7 @@ export const dashboardApi={
         return  await mappingService.post('/project/add-project',formData)
     },
     async updateProjectDetails(data){
-        return  await mappingService.put('/user-project/update-project-details',data)
+        return  await mappingService.post('/user-project/update-project-details',data)
     },
     async getAllProjectstList(){
         return  await mappingService.get('/project/my-projects')

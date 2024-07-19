@@ -4,7 +4,7 @@ import '../style/sideBar.css'
 import HomeIcon from '@mui/icons-material/Home';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import LoginInfo from './LoginInfo';
+import LoginInfo from './Account/LoginInfo';
 import api from '../services'
 import ConfirmationAlert from '../shared/ConfirmationAlert';
 import logo from '../assets/bl.jfif'

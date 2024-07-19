@@ -5,15 +5,16 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import LinearProgress from '@mui/material/LinearProgress';
 import { CANCEL, CONFIRM } from "../../constant/constant";
 import api from "../../services";
 import { errorHandler } from "../../helper/handleError";
 import useToast from "../../hooks/useToast";
 import { CircularProgress } from "@mui/material";
 import { blue } from "@mui/material/colors";
-const RemoveUser = ({ isOpen, onClose, loading,delUsersList,handleRemoveUser }) => {
+const DeleteMultipleUserModal = ({ isOpen, onClose,delUsersList,handleRemoveUser }) => {
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
+
   return (
     <div className="mt-6">
       <Dialog open={isOpen} onClose={onClose}>
@@ -46,4 +47,4 @@ const RemoveUser = ({ isOpen, onClose, loading,delUsersList,handleRemoveUser }) 
   );
 };
 
-export default RemoveUser;
+export default DeleteMultipleUserModal;

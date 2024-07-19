@@ -43,9 +43,8 @@ const [locationName,setLocationName]=useState("")
 
     const zoomControls = new mapboxgl.NavigationControl();
     map.current.addControl(zoomControls, "top-right");
-    const markerLng = isNaN(lng) ? defaultLng : lng;
-    const markerLat = isNaN(lat) ? defaultLat : lat;
-
+    const markerLng = isNaN(lng) || lng < -180 || lng > 180 ? defaultLng : lng;
+    const markerLat = isNaN(lat) || lat < -90 || lat > 90 ? defaultLat : lat;
     // Create a new marker object
     const newMarker = new mapboxgl.Marker({ color: "blue" })
       .setLngLat([markerLng, markerLat])
@@ -67,7 +66,7 @@ const [locationName,setLocationName]=useState("")
   return (
     <div className='mt-9'>
         <div
-                style={{ height: "36vh", width: "99%" }}>
+                style={{ height: "31vh", width: "99%" }}>
                 <div style={mapContainerStyle} ref={mapContainer} />
               </div>
     </div>

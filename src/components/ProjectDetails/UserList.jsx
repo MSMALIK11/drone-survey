@@ -1,38 +1,32 @@
 import React, { useState, useCallback, useMemo } from "react";
 import {
-  List,
-  IconButton,
-  Tooltip,
-  Badge,
   Checkbox,
-  Button,
 } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TransferOwnership from "./TransferOwnership";
 import RemoveUser from "./RemoveUser";
-import UserListItem from "./UsersTable";
 import Modal from "../../components/ui/Modal";
 import InputControl from "../../components/ui/InputControl";
 import api from "../../services";
 import { errorHandler } from "../../helper/handleError";
 import useToast from "../../hooks/useToast";
 import ComboBox from "../../components/ui/CompoBox";
+
 import {
   EDIT_USER,
   REMOVE_USER,
   TRANSFER_OWNERSHIP,
-  USER_ADDED_SUCCESS,
 } from "../../constant/constant";
 import { permissionOptionsList, analysisOptionsList } from "./data";
 import UsersTable from "./UsersTable";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
+import { useTranslation } from "react-i18next";
 const initialState = {
   new_member_email: "",
   upload_permission: "",
   analysis_permission: "",
   report_permission: "",
-  new_member_name:"",
-  admin_permission:false
+  new_member_name: "",
+  admin_permission: false,
 };
 
 const UserList = () => {
@@ -41,28 +35,40 @@ const UserList = () => {
   const [showRemoveUserModal, setShowRemoveUserModal] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selected,setSelected]=useState([])
+  const [selected, setSelected] = useState([]);
   const [memberEmail, setMemberEmail] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [newUser, setNewUser] = useState(initialState);
+  const {t}=useTranslation()
   const toast = useToast();
   const open = Boolean(anchorEl);
-
-  const handleClick = useCallback((event, user) => {
-    event.preventDefault();
-    setMemberEmail(user.user_email
-    );
-    if(selected.length==0){
-      setSelected([user.user_email])
-
-    }
-    setNewUser(user);
-    setAnchorEl(event.currentTarget);
-  }, [selected]);
+  const queryClient = useQueryClient();
+  const handleClick = useCallback(
+    (event, user) => {
+      event.preventDefault();
+      const editData={
+        new_member_name: user?.name,
+        new_member_email:user?.user_email,
+        upload_permission:user?.is_uploader,
+        analysis_permission:user?.is_analyzer,
+        report_permission:user?.is_reporter,
+        admin_permission:user?.is_admin || false,
+      };
+      setNewUser(editData);
+      setMemberEmail(user.user_email);
+      if (selected.length == 0) {
+        setSelected([user.user_email]);
+      }
+    
+      setAnchorEl(event.currentTarget);
+    },
+    [selected]
+  );
 
   const handleClose = useCallback(() => {
     setAnchorEl(null);
+    
   }, []);
 
   const handleShowTransferOwnership = () => {
@@ -84,35 +90,7 @@ const UserList = () => {
     setShowRemoveUserModal(false);
     setMemberEmail("");
   }, []);
-  // PENDING  change to actual api response  data
-  // const data = useMemo(
-  //   () => [
-  //     {id:new Date(), name: "John", email: "john@mail.com",
-  //     new_member_email: "john@gmail.com",
-  //       upload_permission: "basic",
-  //       analysis_permission: "read",
-  //       isAdmin:true,
-  //       report_permission: "write",
-  //       type:"admin"
-  //      },
-  //     {id:new Date(), name: "Jack", email: "jack@gmail.com",
-  //       new_member_email: "jack@gmail.com",
-  //       upload_permission: "basic",
-  //       analysis_permission: "read",
-  //       isAdmin:false,
-  //       type:"Member",
-  //       report_permission: "write", },
-  //     {id:new Date(), name: "Jack", email: "jack@gmail.com",
-  //       new_member_email: "jack@gmail.com",
-  //       upload_permission: "basic",
-  //       analysis_permission: "read",
-  //       isAdmin:false,
-  //       type:"Member",
-  //       report_permission: "write", }
-
-  //   ],
-  //   []
-  // );
+ 
 
   const handlePermissionChange = (val, name) => {
     setNewUser((prev) => ({
@@ -120,28 +98,31 @@ const UserList = () => {
       [name]: val,
     }));
   };
-  // Add New  user to project
   const handleAddUserSubmit = async () => {
     setLoading(true);
     try {
       const res = await api.user.addUpdateUser(newUser);
-      if (res.status === 201) {
-        toast(USER_ADDED_SUCCESS, "success");
-        setShowAddUserModal(false);
-        setLoading(false);
-        setIsEditMode(false);
-        setNewUser(initialState);
+      const isSuccess =res.status === 201;
+      
+      if (isSuccess) {
+        const successMessage = isEditMode? t('messages.userUpdatedSuccess') : t('messages.userAddedSuccess',"success");
+        toast(successMessage, "success");
+        queryClient.invalidateQueries(["getProjectUsersList"]);
+        setIsEditMode(false)
       }
     } catch (error) {
       console.error("Error::while calling add new user api", error);
       const message = errorHandler(error);
       toast(message, "error");
-      // setShowAddUserModal(false);
-      // setLoading(false);
-      // setIsEditMode(false);
-      // setNewUser(initialState);
+    } finally {
+      setLoading(false);
+      setShowAddUserModal(false);
+      setIsEditMode(false);
+      setSelected([]);
+      setNewUser(initialState);
     }
   };
+  
   const handleEditUser = () => {
     setIsEditMode(true);
     setShowAddUserModal(true);
@@ -161,13 +142,13 @@ const UserList = () => {
     }
   };
   const handleIsAdminChange = (event) => {
-    setNewUser((prev) => ({ ...prev, isAdmin: event.target.checked }));
+    setNewUser((prev) => ({ ...prev, admin_permission: event.target.checked }));
   };
   const onFilterMenuItemClick = () => {};
   const isDisabledBtn = !newUser.new_member_email ? true : false;
-const handleSelection=(selection)=>{
-  setSelected(selection)
-}
+  const handleSelection = (selection) => {
+    setSelected(selection);
+  };
   const handleCloseAddUerModal = () => {
     setIsEditMode(false);
     setNewUser(initialState);
@@ -175,26 +156,51 @@ const handleSelection=(selection)=>{
   };
   const handleShowAddUserModal = () => {
     setShowAddUserModal(true);
+    setNewUser(initialState)
   };
 
   const handleRemoveUser = async () => {
     setLoading(true);
-    const payload = {
-      member_emails:selected.length>0 ?selected:[selected[0]],
-    };
+
+    // If no user is selected, exit early
+    if (selected.length === 0) {
+      setLoading(false);
+      return;
+    }
+
+    // Determine the payload based on the number of selected users
+    const isMultipleUsers = selected.length > 1;
+    const payload = isMultipleUsers
+      ? { member_emails: selected }
+      : { member_email: selected[0] };
+
     try {
-      const res = await api.user.removeUser(payload);
-      console.log('red',res)
-      setLoading(false);
-      onCloseRemoveUser();
+      const res = isMultipleUsers
+        ? await api.user.removeMultipleProjectUser(payload)
+        : await api.user.removeUser(payload);
+        if(res.status==201){
+          const length = res?.data[0]?.delete_users_list?.length ?? 0;
+          toast(t('messages.multipleUserDeleteSuccess',{count:length}),'success')
+          queryClient.invalidateQueries(["getProjectUsersList"]);
+        onCloseRemoveUser();
+
+
+        return 
+        }
+      if (res.status === 204) {
+        queryClient.invalidateQueries(["getProjectUsersList"]);
+        onCloseRemoveUser();
+        toast(t("messages.deleteUserSuccess"), "success");
+      }
     } catch (error) {
-      setLoading(false);
       const message = errorHandler(error);
       toast(message, "error");
-      onCloseRemoveUser();
-      console.error("Error:: while calling transfer ownership api", error);
+      console.error("Error:: while calling remove user API", error);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div
       id="usersListWrapper"
@@ -210,7 +216,7 @@ const handleSelection=(selection)=>{
           onClose={handleClose}
           onAddClick={handleShowAddUserModal}
           handleSelection={handleSelection}
-          onDeleteSelection={()=>setShowRemoveUserModal(true)}
+          onDeleteSelection={() => setShowRemoveUserModal(true)}
         />
       </div>
 
@@ -225,6 +231,7 @@ const handleSelection=(selection)=>{
         onClose={onCloseRemoveUser}
         delUsersList={selected}
         handleRemoveUser={handleRemoveUser}
+        loading={loading}
       />
 
       {/* Edit user or permissions */}
@@ -239,9 +246,22 @@ const handleSelection=(selection)=>{
         disabled={isDisabledBtn}
       >
         <div>
-          <div className="flex items-end  relative">
+          <InputControl
+            label={"Name"}
+            placeholder={"Enter name"}
+            onChange={(event) =>
+              handlePermissionChange(event.target.value, "new_member_name")
+            }
+            value={newUser.new_member_name}
+            name="new_member_name"
+            primary
+          />
+            <hr className="mt-4" />
+          <div className="flex items-end  relative mt-4">
+          
             <div className="w-[340px]">
               <InputControl
+              primary
                 label={"Email"}
                 placeholder={"Enter email"}
                 onChange={(event) =>
@@ -250,55 +270,51 @@ const handleSelection=(selection)=>{
                 value={newUser.new_member_email}
                 name="new_member_email"
               />
+
             </div>
+        
             <div>
               <Checkbox
-                checked={newUser.isAdmin}
+                checked={newUser.admin_permission}
                 onChange={handleIsAdminChange}
                 name="admin_permission"
               />
-              <label htmlFor="admin-permission">Admin Permission</label>
+              <label htmlFor="admin-permission">{t('label.adminPermission')}</label>
             </div>
           </div>
-          <InputControl
-                label={"Name"}
-                placeholder={"Enter name"}
-                onChange={(event) =>
-                  handlePermissionChange(event.target.value, "new_member_name")
-                }
-                value={newUser.new_member_name}
-                name="new_member_name"
-              />
+            <hr className="mt-4" />
 
           <div className="space-y-3 mt-4">
             <div className="flex items-center justify-between">
               <label className="text-md text-background">
-                Upload Permission
+               {t('label.uploadPermission')}
               </label>
               <div>
                 <ComboBox
                   options={permissionOptionsList}
                   name={"upload_permission"}
                   onChange={handlePermissionChange}
-                  disabled={newUser.isAdmin}
-                  value={"default"}
+                  disabled={newUser.admin_permission}
+                  value={newUser.upload_permission || "default"}
                 />
               </div>
             </div>
+            <hr className="" />
             <div className="flex items-center justify-between">
               <label className="text-md text-background">
-                Analysis Permission
+              {t('label.analysisPermission')}
               </label>
               <div>
                 <ComboBox
                   options={analysisOptionsList}
                   name={"analysis_permission"}
                   onChange={handlePermissionChange}
-                  disabled={newUser.isAdmin}
-                  value={"default"}
+                  disabled={newUser.admin_permission}
+                  value={newUser.analysis_permission ||  "default"}
                 />
               </div>
             </div>
+            <hr />
             <div className="flex items-center justify-between">
               <label className="text-md text-background">
                 Report Permission
@@ -308,8 +324,8 @@ const handleSelection=(selection)=>{
                   options={permissionOptionsList}
                   name={"report_permission"}
                   onChange={handlePermissionChange}
-                  disabled={newUser.isAdmin}
-                  value={"default"}
+                  disabled={newUser.admin_permission}
+                  value={newUser.report_permission || "default"}
                 />
               </div>
             </div>

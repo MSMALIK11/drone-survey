@@ -11,9 +11,16 @@ import { errorHandler } from "../../helper/handleError";
 import useToast from "../../hooks/useToast";
 import { CircularProgress } from "@mui/material";
 import { blue } from "@mui/material/colors";
+import InputControl from "../ui/InputControl";
+import { useQueryClient } from "react-query";
+import { useTranslation } from "react-i18next";
 const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const [email,setEmail]=useState(null)
+  const [isValid,setIsValid]=useState(false)
+  const queryClient=useQueryClient()
+  const {t}=useTranslation()
   const handleTransferOwnership = async () => {
     setLoading(true);
     const payload =JSON.stringify( {
@@ -21,8 +28,12 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
     })
     try {
       const res = await api.user.transferOwnership(payload);
-      setLoading(false);
-      onClose();
+      if(res.status==201){
+        toast(t('messages.ownershipTransferSuccessMessage',{email:memberEmail}),"success")
+        queryClient.invalidateQueries(["getProjectUsersList"]);
+        setLoading(false);
+        onClose();
+      }
     } catch (error) {
       setLoading(false);
       const message = errorHandler(error);
@@ -32,6 +43,16 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
     }
   };
   
+  const handleChange=(event)=>{
+    const {value}=event.target
+    if(memberEmail!=value){
+      setIsValid(false)
+    }else{
+      setIsValid(true)
+    }
+    setEmail(value)
+
+  }
   return (
     <div className="mt-6">
       <Dialog open={isOpen} onClose={onClose}>
@@ -40,8 +61,11 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
           <DialogContentText>
             Are you sure you want to assign project ownership to{" "}
             <span className="font-semibold text-black">{memberEmail}</span>? You
-            will transfer all administrative rights and responsibilities. This
-            action can be reversed if necessary.
+            will transfer all administrative rights and responsibilities. 
+            <div className="mt-6">
+
+          <InputControl onChange={handleChange} label={`To confirm, type "${memberEmail}" in the box below`} />
+            </div>  
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -50,8 +74,9 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
           </Button>
           <Button
             variant="contained"
-            disabled={loading}
+            disabled={loading || !isValid}
             onClick={handleTransferOwnership}
+
           >
             {" "}
             {loading && (

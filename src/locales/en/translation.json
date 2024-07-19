@@ -15,8 +15,17 @@
     "alreadyHaveAccount":"Already have an account?",
     "signup":"Sign up",
     "name":"Name",
-    "usersList":" Users List",
-    "select":"Select"
+    "usersList":"Project Users",
+    "select":"Select",
+    "adminPermission":"Admin Permission",
+    "uploadPermission":"Upload Permission",
+    "analysisPermission":"Analysis Permission",
+    "email":"Email",
+    "dob":"DOB",
+    "createdAt":"Created At",
+    "about":"About",
+    "userInfo":"User Info"
+  
     
   },
   "actions": {
@@ -45,8 +54,12 @@
     "deactivationConfirmation": "Are you sure you want to deactivate this project?",
     "activationConfirmation": "Are you sure you want to activate this project?",
     "transferOwnershipMessage": "Are you sure you want to assign project ownership to this member?",
+    "ownershipTransferSuccessMessage":"Ownership has been successfully transferred to {{email}}",
     "updatedSuccessMessage": "Project details have been updated successfully.",
-    "userAddedSuccess": "User successfully added to the project."
+    "userAddedSuccess": "User successfully added to the project.",
+    "userUpdatedSuccess": "User has been successfully updated.",
+    "deleteUserSuccess":"The user has been successfully deleted.",
+    "multipleUserDeleteSuccess":"{{count}} Users have been successfully deleted."
   },
   "passwordRequirements": {
     "atLeastOneLowercase": "At least one lowercase letter",

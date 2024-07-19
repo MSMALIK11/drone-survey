@@ -12,7 +12,7 @@ const getStatusColor = (status="INITIATED") => {
     case 'INITIATED':
       return 'bg-gray-200 text-background'; 
     default:
-      return 'bg-gray-500'; 
+      return 'bg-gray-300 text-red-400'; 
   }
 };
 

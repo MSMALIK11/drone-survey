@@ -12,7 +12,7 @@ const Modal = ({ isOpen, onClose, onClick, loading, submitText, children,title,d
   return (
     <Dialog open={isOpen} onClose={onClose}
 
-    sx={{ '& .MuiDialog-paper': { width: width } }}
+    sx={{ '& .MuiDialog-paper': { width: width,background:'#F8F8F8' } }}
     >
       <DialogTitle>{ title}  <IconButton
           aria-label="close"

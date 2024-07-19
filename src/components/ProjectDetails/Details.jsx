@@ -4,6 +4,7 @@ import { errorHandler } from "../../helper/handleError";
 import useToast from "../../hooks/useToast";
 import ConfirmationAlert from "../../shared//ConfirmationAlert";
 import { useQueryClient } from "react-query";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
   CONFIRMATION_MESAGE,
   PROJECT_DACTIVATION_SUCCESS,
@@ -24,11 +25,21 @@ import TextareaControl from "../ui/TextareaControl";
 import { useTranslation } from 'react-i18next';
 const options = [
   { value: "INITIATED", label: "Initiated" },
-  { value: "IN-PROGRESS", label: "In Progress" },
-  { value: "ON-HOLD", label: "ON HOLD" },
+  { value: "IN-PROGRESS", label: "In progress" },
+  { value: "ON-HOLD", label: "ON Hold" },
   { value: "CANCELLED", label: "Cancelled" },
   { value: "COMPLETED", label: "Completed" },
 ];
+const activeOptions=[
+  {
+  label:"Activate",
+  value:true
+  },
+  {
+    label:"Deactivate",
+    value:false
+  }
+]
 
 const ProjectDetails = ({
   project_name,
@@ -39,14 +50,16 @@ const ProjectDetails = ({
   status,
   estimated_date,
   updated_at,
-  placeName
+  placeName,
+  active
 }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [showActivateAlert, setShowActivateAlert] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [project, setProject] = useState({
     description: "",
-    project_status: "INITIATED",
+    progress: "INITIATED",
+    "active":false,
     estimated_date: "",
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -99,8 +112,8 @@ const ProjectDetails = ({
   const handleCloseAlert = () => {
     setShowAlert(false);
   };
-  const handlePermissionChange = (value) => {
-    setProject((prev) => ({ ...prev, ["project_status"]: value }));
+  const handlePermissionChange = (value,name) => {
+    setProject((prev) => ({ ...prev, [name]: value }));
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -109,7 +122,8 @@ const ProjectDetails = ({
   const handleUpdateProjectDetails = async () => {
     setIsLoading(true);
     try {
-      const res = await api.dashboardApi.updateProjectDetails(project);
+      const payload=JSON.stringify(project)
+      const res = await api.dashboardApi.updateProjectDetails(payload);
       if (res.status == 201) {
         toast(PROJECT_UPDATED_SUCCESS_MESSAGE, "SUCCESS");
         queryClient.invalidateQueries(["getProjectDetails"]);
@@ -130,7 +144,9 @@ const ProjectDetails = ({
       project_name,
       description,
       project_status:status,
-      estimated_date
+      active,
+      progress:"",
+      estimated_date:estimated_date || ""
     })
   }
   const handleDateChange=(e)=>{
@@ -154,16 +170,17 @@ const ProjectDetails = ({
   const DateRow = ({ label, date }) => (
     <p className="text-md mt-4 flex flex-col gap-2">
       {label}: 
-      <span className="bg-blueTag !text-white px-4 py-1 rounded-full flex gap-2 items-center">
+      <span className="bg-[#e3e3e1] shadow-sm border border-softgray min-w-[274px] !text-background px-4 py-1 rounded-full flex gap-2 items-center">
         <AccessTimeIcon /> {formatDate(date)}
       </span>
     </p>
   );
   return (
     <div>
+      
      
       <main>
-  <div className="bg-customGray  text-background shadow-lg  pb-6  min-h-[380px] rounded-lg p-5 border border-softgray relative">
+  <div className="bg-customGray text-background shadow-lg  pb-6  min-h-[380px] !min-w-[600px]  w-[40vw] rounded-lg p-5 border border-softgray relative">
     <div>
       <p className="text-background text-lg mb-2">{t('project.projectDetails')}</p>
     </div>
@@ -177,16 +194,18 @@ const ProjectDetails = ({
     <hr />
 
     <DetailRow label="Category" value={
-      <span className="bg-yellowTag text-background rounded-full px-4">
+      <span className=" text-background">
         {category}
       </span>
     }  />
     <hr />
     <DetailRow label="Location" value={placeName} />
     <hr />
-    <DetailRow label="Status" value={status && <Status status={status} />} />
+    <DetailRow label="Project Progress" value={status && <Status status={status} />} />
     <hr />
-    <div className="flex gap-4 space-x-5 " >
+    <DetailRow label="Status" value={active && <p>{active?<span className="text-green-500"><CheckCircleIcon className="text-green-400" /> Activate</span>:<span className="flex gap-1 items-center text-red-400"><BlockIcon/>Deactivate</span>}</p>} />
+    <hr/>
+    <div className="lg:flex gap-4 lg:space-x-5 " >
       <DateRow label="Created At" date={created_at} />
       <DateRow label="Updated At" date={updated_at} />
     </div>
@@ -200,14 +219,14 @@ const ProjectDetails = ({
        Edit
         </Button>
       </Tooltip>
- 
+{/*  
     <Button 
     sx={{borderRadius:'25px'}}
     startIcon={<BlockIcon  />}
 variant="contained"
      onClick={trashed_time ? handleShowActivateConfirm : onShowDeactivateAlert}>
     {trashed_time ? "Activate" : "Deactivate"}
-    </Button>
+    </Button> */}
     </div>
   </div>
 </main>
@@ -220,10 +239,12 @@ variant="contained"
         onClose={() => setShowEditModal(false)}
         onClick={handleUpdateProjectDetails}
         loading={isLoading}
+        // width={"600px"}
 
       >
-        <div className="w-[440px] flex flex-col gap-4">
-
+       
+        <div className="w-[440px] flex flex-col gap-3.5">
+<hr />
           <div className="">
           <TextareaControl
             value={project.description}
@@ -231,23 +252,37 @@ variant="contained"
             name={"description"}
             onChange={handleInputChange}
             placeholder="Description"
+            primary
           />
           </div>
+          <hr />
           <ComboBox
-            name="permission"
-            label={"Status :"}
+            name="progress"
+            label={"Project progress :"}
             options={options}
 
             value={project.project_status || "default"}
             selectedOption={project.project_status}
+          onChange={handlePermissionChange}
+          />
+          <hr />
+          {/* Project activate deactivate */}
+          <ComboBox
+            name="active"
+            label={"Status :"}
+            options={activeOptions}
+
+            value={project.active || true}
             onChange={handlePermissionChange}
           />
+          <hr />
           <div className="flex flex-col gap-1">
           <label className="text-background text-md">
             Estimate Time :
           </label>
-          <input type="date" onChange={handleDateChange} name="estimated_date" />
+          <input type="date" className="!bg-white !border-2 !border-softgray" onChange={handleDateChange} name="estimated_date" />
           </div>
+
         </div>
       </Modal>
 

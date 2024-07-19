@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ErrorIcon from '@mui/icons-material/Error';
-const InputControl = ({name,label, value, onChange,placeholder,error=null,disabled,helperText }) => {
+const InputControl = ({name,label, value, onChange,placeholder,error=null,disabled,helperText,primary=false,className }) => {
   const [isFocused, setIsFocused] = useState(false);
 
 
@@ -20,7 +20,7 @@ const InputControl = ({name,label, value, onChange,placeholder,error=null,disabl
         label &&    <label className='text-md !text-background' htmlFor={name}>{label}</label>
       }
 
-    <div className={`bg-softgray   ${disabled?'bg-inputDisabled':''}  input-control-wraper border border-transparent flex items-center  relative overflow-hidden ${!error && isFocused?' !border !border-softBlue':''} ${error?'!border !border-red-400':''}`}>
+    <div className={`${primary?'bg-white border-2 !border-softgray':'bg-softgray'} mt-1  ${className}  ${disabled?'bg-inputDisabled':''}  input-control-wraper border border-transparent flex items-center  relative overflow-hidden ${!error && isFocused?' !border !border-softBlue':''} ${error?'!border !border-red-400':''}`}>
     
       <input
       id={name}

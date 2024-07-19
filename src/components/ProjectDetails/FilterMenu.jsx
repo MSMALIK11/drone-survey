@@ -10,9 +10,9 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import Checkbox from "@mui/material/Checkbox";
 import {getAccessLevel} from '../../helper/getAccessLevel'
+import { useQueryClient } from "react-query";
 import {setFilters,setActiveFilterCount,resetFilters} from '../../store/filtersSlice'
 import {useDispatch, useSelector} from 'react-redux'
-import { filter } from "d3";
 const filterInitialState = {
   is_admin: false,
   is_owner: false,
@@ -43,6 +43,7 @@ const FilterMenu = ({ onItemClick }) => {
   const open = Boolean(anchorEl);
   const [selectedFilter, setSelectedFilter] = useState(filterInitialState);
   const [selectedItems, setSelectedItems] = useState([]);
+  const queryClient=useQueryClient()
 const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.userFilter)
   const [filtersData,setFiltersData]=useState({
     is_admin:false,
@@ -62,34 +63,19 @@ const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.
 
   })
   const dispatch=useDispatch()
- 
- 
-  
   const onMenuClick = (event) => {
-  console.log('filters',filters)
-console.log(Object.keys(filters)['initialState']===undefined)
     setAnchorEl(event.currentTarget);
-    if(Object.keys(filters)['initialState']===undefined) return 
+    console.log('Object.keys(filters)',Object.keys(filters).length)
+    if(Object.keys(filters).length===1) return 
     setFiltersData(filters)
   };
   const onClose = () => {
     setAnchorEl(null);
   };
 
-  const handleMenuItemClick = (e,val) => {
-    // setSelectedItems((prev) =>
-    //   prev.includes(val) ? prev.filter((item) => item !== val) : [...prev, val]
-    // );
-    // getActiveFilters()
-  };
-
   const handleFilterAdminAndOwner=(e)=>{
    const{name,checked}=e.target
    setFiltersData((prev)=>({...prev,[name]:checked}))
-  //  setSelectedItems((prev) =>
-  //   prev.includes(name) ? prev.filter((item) => item !== name) : [...prev, name]
-  // );
-  
 
   }
  
@@ -110,13 +96,15 @@ console.log(Object.keys(filters)['initialState']===undefined)
 
   const handleResetClick = () => {
     setSelectedItems([]);
+    onItemClick(filterInitialState);
     dispatch(resetFilters())
+    // queryClient.invalidateQueries(['getProjectUsersList']);
     onClose();
   };
   const handleReadWriteClick = (e) => {
     const { name, value } = e.target;
     const [key, subKey] = name.split('.');
-    console.log('key,subkey',key,subKey)
+ 
     setFiltersData((prev) => ({
       ...prev,
       [key]: {
@@ -124,8 +112,8 @@ console.log(Object.keys(filters)['initialState']===undefined)
         [subKey]: !prev[key][subKey],
       },
     }));
-    console.log('filterdData',filtersData)
-    console.log('filters',filters)
+    // console.log('filterdData',filtersData)
+    // console.log('filters',filters)
 
 
   };
@@ -178,7 +166,6 @@ console.log(Object.keys(filters)['initialState']===undefined)
             <div
               sx={{ minWidth: "270px" }}
               key={item.name}
-              onClick={() => handleMenuItemClick(item.name)}
               className="px-4 mt-3 border-b"
             >
               {/* <Checkbox
@@ -191,10 +178,10 @@ console.log(Object.keys(filters)['initialState']===undefined)
   <div className="flex">
   <div>
   
-    <Checkbox size="small" name={`${item.key}.read`} checked={filters[item.key]?.read} onClick={handleReadWriteClick} /> Read
+    <Checkbox size="small" name={`${item.key}.read`} checked={filtersData[item.key]?.read} onClick={handleReadWriteClick} /> Read
   </div>
   <div>
-    <Checkbox size="small" name={`${item.key}.write`} checked={filters[item.key]?.write} onClick={handleReadWriteClick} /> Write
+    <Checkbox size="small" name={`${item.key}.write`} checked={filtersData[item.key]?.write} onClick={handleReadWriteClick} /> Write
   </div>
 </div>
 )}

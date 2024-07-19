@@ -21,7 +21,7 @@ const TextareaControl = ({ name, value, onChange, placeholder, label }) => {
         value={value}
         onChange={onChange}
         rows={3}
-        className={`bg-softgray px-4 py-2 mt-2  w-full input-control-wraper border border-transparent flex items-center rounded-[20px] relative overflow-hidden ${
+        className={`bg-white  px-4 py-2 mt-2  w-full input-control-wraper border-2 border-softgray flex items-center rounded-[20px] relative overflow-hidden ${
           isFocused ? " border border-softBlue" : ""
         }`}
         onFocus={handleFocus}

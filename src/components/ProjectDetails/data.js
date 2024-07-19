@@ -1,8 +1,5 @@
 export  const permissionOptionsList = [
-    {
-      label: "Basic",
-      value: "basic",
-    },
+   
     {
       label: "Read",
       value: "read",

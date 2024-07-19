@@ -230,9 +230,10 @@ const handleChange = (event) => {
                       onClick={()=>handleProjectCardClick(project?.project_id)}
                   
                     >
-                      <div className="card-content-wrapper">
+                      <div className="card-content-wrapper relative">
                         <p><span className="text-white">Project Name : </span>{project.project_name}</p>
                         <p><span className="text-white">Project Category :</span> {project.category}</p>
+                        <p className="bg-yellowTag inline-block !text-background px-2 rounded-full w-[80px] text-center tex-sm absolute right-4">{!project.is_owner && "Shared"}</p>
                       </div>
                     </div> 
                   ))

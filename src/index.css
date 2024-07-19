@@ -45,7 +45,7 @@ h1,h2,h3,h4,h5,h6,p{
 
 
 ::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
+  width: 5px; /* Width of the scrollbar */
 }
 
 ::-webkit-scrollbar-track {
@@ -57,7 +57,7 @@ h1,h2,h3,h4,h5,h6,p{
 ::-webkit-scrollbar-thumb {
   background-color: #E5E7FF; /* Color of the scrollbar thumb */
   border-radius: 10px; /* Rounded corners */
-  border: 1px solid #1C213E; /* Space around the thumb */
+  border: 1px solid #3B82F6; /* Space around the thumb */
 
 }
 
@@ -238,5 +238,15 @@ border: 1px solid #177CF0;
  
 }
 
+#table-container{
 
+  min-height: 40vh;
+  height: calc(100vh - 260px);
+  overflow-y:auto ;
+  position: relative;
+}
+
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper{
+  background-color: #F8F8F8 !important;
+}
 

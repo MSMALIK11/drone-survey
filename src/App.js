@@ -1,12 +1,13 @@
 
 import React, { useEffect, useState, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import SideBar from "./components/SideBar";
 import ProtectedRoute from "./protectedRoute/ProtectedRoute";
 import LoadingScreen from "./components/LoadingScreen";
 import api from './services';
 import { startTokenRefreshInterval } from "./helper/refreshToken";
 import Test from './components/ProjectDetails/Test'
+import useToast from "./hooks/useToast";
 
 // Lazy-loaded components
 const Home = React.lazy(() => import("./pages/Home"));
@@ -26,8 +27,6 @@ const NotFound = React.lazy(() => import("./pages/NotFound"));
 const UploadImageDashboard = React.lazy(() => import("./pages/UploadImageDashboard"));
 const App = () => {
   const [loading, setLoading] = useState(true);
-  const [isLogIn, setIsLogIn] = useState(true);
-
   const getUserProfile = async () => {
     setLoading(true);
     try {
@@ -51,11 +50,13 @@ const App = () => {
     getUserProfile();
   }, []);
 
+ 
+
   if (loading) return <LoadingScreen />;
 
   return (
     <Routes>
-      <Route path="/login" element={<Suspense fallback={<LoadingScreen />}><Login isLoginData={setIsLogIn} /></Suspense>} />
+      <Route path="/login" element={<Suspense fallback={<LoadingScreen />}><Login  /></Suspense>} />
       <Route path="/signUp" element={<Suspense fallback={<LoadingScreen />}><SignUp /></Suspense>} />
       <Route path="/newSignUp" element={<Suspense fallback={<LoadingScreen />}><NewSignUp /></Suspense>} />
       <Route path="/ForgetPassword" element={<Suspense fallback={<LoadingScreen />}><ForgetPassword /></Suspense>} />
@@ -69,7 +70,7 @@ const App = () => {
         <Route
           path="/"
           element={
-            <ProtectedRoute LogInstatus={isLogIn}>
+            <ProtectedRoute >
               <Suspense fallback={<LoadingScreen />}>
                 <Home />
               </Suspense>

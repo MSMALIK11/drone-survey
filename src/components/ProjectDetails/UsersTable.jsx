@@ -16,7 +16,7 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import { visuallyHidden } from "@mui/utils";
 import { Button, Menu, MenuItem, Skeleton } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
@@ -192,7 +192,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const initialPayload = {
-  is_admin:false,
+  is_admin: false,
   is_owner: false,
   is_analyzer: "",
   is_reporter: "",
@@ -200,7 +200,7 @@ const initialPayload = {
   last_evaluated_key: {},
 };
 // Component start
- function UsersTable({
+function UsersTable({
   onMenuClick,
   onMenuItemClick,
   anchorEl,
@@ -208,24 +208,27 @@ const initialPayload = {
   onClose,
   onAddClick,
   handleSelection,
-  onDeleteSelection
+  onDeleteSelection,
 }) {
   const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("calories");
+  const [orderBy, setOrderBy] = useState("name");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { t } = useTranslation();
 
-  const [selectedFilter,setSelectedFilter]=useState(initialPayload)
-  const { isLoading, data ,refetch} = useQuery(["getProjectUsersList"], () =>
-    api.user.getListOfUsers(selectedFilter),{
-      enabled:false
-      
+  const [selectedFilter, setSelectedFilter] = useState(initialPayload);
+  const { isLoading, data, refetch } = useQuery(
+    ["getProjectUsersList"],
+    () => api.user.getListOfUsers(selectedFilter),
+    {
+      cacheTime: 0,
+      refetchOnMount: true,
     }
   );
-  const usersList = !isLoading && data && Array.isArray(data?.data) ? data?.data : [];
+  const usersList =
+    !isLoading && data && Array.isArray(data?.data) ? data?.data : [];
 
   // Refetch data when selectedFilter changes
   useEffect(() => {
@@ -243,16 +246,15 @@ const initialPayload = {
     if (event.target.checked) {
       const newSelected = rows.map((n) => n.user_email);
       setSelected(newSelected);
-      handleSelection(newSelected)
+      handleSelection(newSelected);
       return;
     }
-    handleSelection([])
+    handleSelection([]);
     setSelected([]);
   };
-  const onFilterMenuItemClick=(val)=>{
-    setSelectedFilter(val)
-
-  }
+  const onFilterMenuItemClick = (val) => {
+    setSelectedFilter(val);
+  };
 
   const handleClick = (event, id) => {
     const selectedIndex = selected.indexOf(id);
@@ -271,7 +273,7 @@ const initialPayload = {
       );
     }
     setSelected(newSelected);
-    handleSelection(newSelected)
+    handleSelection(newSelected);
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -293,16 +295,17 @@ const initialPayload = {
     onMenuClick(event, item);
   };
 
-
   function EnhancedTableToolbar(props) {
     const { numSelected } = props;
-const handleClearSelection=()=>{
-  setSelected([]);
-  handleSelection([])
+    const handleClearSelection = () => {
+      setSelected([]);
+      handleSelection([]);
+    };
 
-}
-
-
+    const handleDeleteSelection = () => {
+      onDeleteSelection();
+      setSelected([]);
+    };
     return (
       <Toolbar
         sx={{
@@ -321,14 +324,11 @@ const handleClearSelection=()=>{
             component="div"
           >
             {numSelected} Selected
-            <Tooltip title="Clear selection" arrow sx={{marginLeft:'5px'}}>
-            <IconButton onClick={handleClearSelection}>
-            <CloseIcon />
-
-            </IconButton>
-
+            <Tooltip title="Clear selection" arrow sx={{ marginLeft: "5px" }}>
+              <IconButton onClick={handleClearSelection}>
+                <CloseIcon />
+              </IconButton>
             </Tooltip>
-            
           </Typography>
         ) : (
           <Typography
@@ -338,13 +338,13 @@ const handleClearSelection=()=>{
             component="div"
             className="text-background text-md"
           >
-            {t("label.usersList")}
+            {t("label.usersList")} {`(${usersList?.length})`}
           </Typography>
         )}
 
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton onClick={onDeleteSelection}>
+            <IconButton onClick={handleDeleteSelection}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -376,13 +376,11 @@ const handleClearSelection=()=>{
     );
   }
 
- 
-
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected?.length} />
-        <TableContainer sx={{ height: "68vh" }}>
+        <TableContainer id="table-container">
           <Table stickyHeader aria-label="sticky table">
             <EnhancedTableHead
               numSelected={selected.length}
@@ -393,85 +391,89 @@ const handleClearSelection=()=>{
               rowCount={rows.length}
             />
             <TableBody>
-              {isLoading
-                ? Array.from(new Array(5)).map((_, index) => (
-                    <TableRow key={index}>
-                      <TableCell padding="checkbox">
-                        <Skeleton
-                          variant="rectangular"
-                          width={24}
-                          height={24}
-                        />
+              {isLoading ? (
+                Array.from(new Array(5)).map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell padding="checkbox">
+                      <Skeleton variant="rectangular" width={24} height={24} />
+                    </TableCell>
+                    {headCells.map((headCell) => (
+                      <TableCell key={headCell.id}>
+                        <Skeleton variant="text" />
                       </TableCell>
-                      {headCells.map((headCell) => (
-                        <TableCell key={headCell.id}>
-                          <Skeleton variant="text" />
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                : usersList?.length > 0 ?
-                  usersList?.map((row, index) => {
-                    const isItemSelected = isSelected(row.user_email);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                    ))}
+                  </TableRow>
+                ))
+              ) : usersList?.length > 0 ? (
+                usersList?.map((row, index) => {
+                  const isItemSelected = isSelected(row?.user_email);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
-                      <StyledTableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.user_email}
-                        selected={isItemSelected}
-                        sx={{ cursor: "pointer" }}
+                  return (
+                    <StyledTableRow
+                      hover
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row?.user_email}
+                      selected={isItemSelected}
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <StyledTableCell
+                        padding="checkbox"
+                        onClick={(event) => handleClick(event, row?.user_email)}
                       >
-                        <StyledTableCell
-                          padding="checkbox"
-                          onClick={(event) =>
-                            handleClick(event, row?.user_email)
-                          }
-                        >
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              "aria-labelledby": labelId,
-                            }}
-                          />
-                        </StyledTableCell>
-                        <StyledTableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                        >
-                          {row.name}
-                          <p className="text-xs text-muted">{row.user_email}</p>
-                        </StyledTableCell>
-                        <StyledTableCell>{row.type} {getUserType(row)}</StyledTableCell>
-                        <StyledTableCell>
-                          <div className="flex gap-4">
-                            <Tooltip title={`Upload photo / ${row?.is_uploader}`} arrow>
-                              <IconButton sx={{ background: "#EFF6FF" }}>
-                                <InsertPhotoIcon color="primary" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title={`Analyze photo / ${row?.is_analyzer}`} arrow>
-                              <IconButton sx={{ background: "#EFF6FF" }}>
-                                <AnalyticsIcon color="primary" />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title={`Generate report / ${row.is_reporter}`} arrow>
-                              <IconButton sx={{ background: "#EFF6FF" }}>
-                                <DescriptionIcon color="primary" />
-                              </IconButton>
-                            </Tooltip>
-                          </div>
-                        </StyledTableCell>
-                        <StyledTableCell align="right">
-                          <Tooltip title="More actions" arrow>
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId,
+                          }}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell component="th" id={labelId} scope="row">
+                        {row.name}
+                        <p className="text-xs text-muted">{row.user_email}</p>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        {row.type} {getUserType(row)}
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        {
+                          row.is_owner || row.is_admin ?"All Permissions Granted"
+                        :
+                        <div className="flex gap-4">
+                          <Tooltip
+                            title={`Upload photo / ${row?.is_uploader}`}
+                            arrow
+                          >
+                            <IconButton sx={{ background: "#EFF6FF",border:'1px solid #177CF0' }}>
+                              <InsertPhotoIcon color="primary" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip
+                            title={`Analyze photo / ${row?.is_analyzer}`}
+                            arrow
+                          >
+                            <IconButton sx={{ background: "#EFF6FF",border:'1px solid #177CF0' }}>
+                              <AnalyticsIcon color="primary" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip
+                            title={`Generate report / ${row.is_reporter}`}
+                            arrow
+                          >
+                            <IconButton sx={{ background: "#EFF6FF",border:'1px solid #177CF0' }}>
+                              <DescriptionIcon color="primary" />
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                }
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <Tooltip title="More actions" arrow>
                           <IconButton
-                         disabled={selected.length>1
-                         }
+                            disabled={selected.length > 1}
                             id="basic-button"
                             aria-controls={open ? "basic-menu" : undefined}
                             aria-haspopup="true"
@@ -480,65 +482,55 @@ const handleClearSelection=()=>{
                           >
                             <MoreVertIcon />
                           </IconButton>
+                        </Tooltip>
 
-                          </Tooltip>
-
-                          <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={open}
-                            onClose={onClose}
-                            MenuListProps={{
-                              "aria-labelledby": "basic-button",
-                            }}
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={onClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                          key={row?.user_email}
+                        >
+                          <MenuItem onClick={() => onMenuItemClick(EDIT_USER)}>
+                            <CachedIcon sx={{ marginRight: "8px" }} />{" "}
+                            {t("actions.editUser")}
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => onMenuItemClick(TRANSFER_OWNERSHIP)}
                           >
-                            <MenuItem
-                              onClick={() =>
-                                onMenuItemClick(TRANSFER_OWNERSHIP)
-                              }
-                            >
-                              <SyncAltIcon sx={{ marginRight: "8px" }} />{" "}
-                              {t("actions.transferOwnership")}
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => onMenuItemClick(EDIT_USER)}
-                            >
-                              <CachedIcon sx={{ marginRight: "8px" }} />{" "}
-                              {t("actions.editUser")}
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() =>
-                                onMenuItemClick(REMOVE_USER)
-                              }
-                            >
-                          
-                              <PersonIcon sx={{ marginRight: "8px" }} />{" "}
-                              {t("actions.removeUser")}
-                            </MenuItem>
-                          </Menu>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  }):
-            
+                            <SyncAltIcon sx={{ marginRight: "8px" }} />{" "}
+                            {t("actions.transferOwnership")}
+                          </MenuItem>
+
+                          <MenuItem
+                            onClick={() => onMenuItemClick(REMOVE_USER)}
+                          >
+                            <PersonIcon sx={{ marginRight: "8px" }} />{" "}
+                            {t("actions.removeUser")}
+                          </MenuItem>
+                        </Menu>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })
+              ) : (
                 <TableRow
                   style={{
                     height: (dense ? 33 : 53) * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={6} >
-                    users not found {data?.data?.length }
-                  </TableCell>
+                  <TableCell colSpan={6}>users not found</TableCell>
                 </TableRow>
-}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
-
-      
     </Box>
   );
 }
 
-export default React.memo(UsersTable)
+export default React.memo(UsersTable);
