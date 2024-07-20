@@ -38,7 +38,7 @@ const filterMenuItems = [
   },
  
 ];
-const FilterMenu = ({ onItemClick }) => {
+const FilterMenu = ({ onItemClick,onResetFilter }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [selectedFilter, setSelectedFilter] = useState(filterInitialState);
@@ -87,6 +87,7 @@ const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.
       is_reporter: getAccessLevel(filtersData.is_reporter),
       is_uploader: getAccessLevel(filtersData.is_uploader),
       last_evaluated_key: {},
+      initial: true,
     };
     onItemClick(accessLevel);
     dispatch(setFilters(filtersData))
@@ -98,6 +99,7 @@ const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.
     setSelectedItems([]);
     onItemClick(filterInitialState);
     dispatch(resetFilters())
+    onResetFilter()
     // queryClient.invalidateQueries(['getProjectUsersList']);
     onClose();
   };

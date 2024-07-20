@@ -303,6 +303,10 @@ function UsersTable({
     onMenuClick(event, item);
   };
 
+  const onResetFilter=()=>{
+    setSelectedFilter(initialPayload)
+  
+  }
   function EnhancedTableToolbar(props) {
     const { numSelected } = props;
     const handleClearSelection = () => {
@@ -360,7 +364,7 @@ function UsersTable({
         ) : (
           <div className=" w-[400px]">
             <div className="flex gap-4 items-center justify-end">
-              <FilterMenu onItemClick={onFilterMenuItemClick} />
+              <FilterMenu onItemClick={onFilterMenuItemClick} onResetFilter={onResetFilter} />
               <Tooltip title="Add new user" arrow>
                 <Button
                 disabled={!isActive}
