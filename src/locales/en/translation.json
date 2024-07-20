@@ -3,7 +3,8 @@
     "transferOwnership": "Transfer Ownership",
     "removeUser": "Remove User",
     "projectDetails":"Project details",
-    "editUser": "Edit User"
+    "editUser": "Edit User",
+    "inactiveMessage": "This project is currently inactive. Please activate it to make changes by clicking the 'Edit' button."
   },
   "label": {
     "accessMessage": "Enter your Credentials to access your account",

@@ -1,7 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
-import {
-  Checkbox,
-} from "@mui/material";
+import { Checkbox } from "@mui/material";
 import TransferOwnership from "./TransferOwnership";
 import RemoveUser from "./RemoveUser";
 import Modal from "../../components/ui/Modal";
@@ -40,27 +38,27 @@ const UserList = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [newUser, setNewUser] = useState(initialState);
-  const {t}=useTranslation()
+  const { t } = useTranslation();
   const toast = useToast();
   const open = Boolean(anchorEl);
   const queryClient = useQueryClient();
   const handleClick = useCallback(
     (event, user) => {
       event.preventDefault();
-      const editData={
+      const editData = {
         new_member_name: user?.name,
-        new_member_email:user?.user_email,
-        upload_permission:user?.is_uploader,
-        analysis_permission:user?.is_analyzer,
-        report_permission:user?.is_reporter,
-        admin_permission:user?.is_admin || false,
+        new_member_email: user?.user_email,
+        upload_permission: user?.is_uploader,
+        analysis_permission: user?.is_analyzer,
+        report_permission: user?.is_reporter,
+        admin_permission: user?.is_admin || false,
       };
       setNewUser(editData);
       setMemberEmail(user.user_email);
       if (selected.length == 0) {
         setSelected([user.user_email]);
       }
-    
+
       setAnchorEl(event.currentTarget);
     },
     [selected]
@@ -68,7 +66,6 @@ const UserList = () => {
 
   const handleClose = useCallback(() => {
     setAnchorEl(null);
-    
   }, []);
 
   const handleShowTransferOwnership = () => {
@@ -90,7 +87,6 @@ const UserList = () => {
     setShowRemoveUserModal(false);
     setMemberEmail("");
   }, []);
- 
 
   const handlePermissionChange = (val, name) => {
     setNewUser((prev) => ({
@@ -102,13 +98,15 @@ const UserList = () => {
     setLoading(true);
     try {
       const res = await api.user.addUpdateUser(newUser);
-      const isSuccess =res.status === 201;
-      
+      const isSuccess = res.status === 201;
+
       if (isSuccess) {
-        const successMessage = isEditMode? t('messages.userUpdatedSuccess') : t('messages.userAddedSuccess',"success");
+        const successMessage = isEditMode
+          ? t("messages.userUpdatedSuccess")
+          : t("messages.userAddedSuccess", "success");
         toast(successMessage, "success");
         queryClient.invalidateQueries(["getProjectUsersList"]);
-        setIsEditMode(false)
+        setIsEditMode(false);
       }
     } catch (error) {
       console.error("Error::while calling add new user api", error);
@@ -122,7 +120,7 @@ const UserList = () => {
       setNewUser(initialState);
     }
   };
-  
+
   const handleEditUser = () => {
     setIsEditMode(true);
     setShowAddUserModal(true);
@@ -156,7 +154,7 @@ const UserList = () => {
   };
   const handleShowAddUserModal = () => {
     setShowAddUserModal(true);
-    setNewUser(initialState)
+    setNewUser(initialState);
   };
 
   const handleRemoveUser = async () => {
@@ -178,15 +176,17 @@ const UserList = () => {
       const res = isMultipleUsers
         ? await api.user.removeMultipleProjectUser(payload)
         : await api.user.removeUser(payload);
-        if(res.status==201){
-          const length = res?.data[0]?.delete_users_list?.length ?? 0;
-          toast(t('messages.multipleUserDeleteSuccess',{count:length}),'success')
-          queryClient.invalidateQueries(["getProjectUsersList"]);
+      if (res.status == 201) {
+        const length = res?.data[0]?.delete_users_list?.length ?? 0;
+        toast(
+          t("messages.multipleUserDeleteSuccess", { count: length }),
+          "success"
+        );
+        queryClient.invalidateQueries(["getProjectUsersList"]);
         onCloseRemoveUser();
 
-
-        return 
-        }
+        return;
+      }
       if (res.status === 204) {
         queryClient.invalidateQueries(["getProjectUsersList"]);
         onCloseRemoveUser();
@@ -256,12 +256,11 @@ const UserList = () => {
             name="new_member_name"
             primary
           />
-            <hr className="mt-4" />
+          <hr className="mt-4" />
           <div className="flex items-end  relative mt-4">
-          
             <div className="w-[340px]">
               <InputControl
-              primary
+                primary
                 label={"Email"}
                 placeholder={"Enter email"}
                 onChange={(event) =>
@@ -270,24 +269,25 @@ const UserList = () => {
                 value={newUser.new_member_email}
                 name="new_member_email"
               />
-
             </div>
-        
+
             <div>
               <Checkbox
                 checked={newUser.admin_permission}
                 onChange={handleIsAdminChange}
                 name="admin_permission"
               />
-              <label htmlFor="admin-permission">{t('label.adminPermission')}</label>
+              <label htmlFor="admin-permission">
+                {t("label.adminPermission")}
+              </label>
             </div>
           </div>
-            <hr className="mt-4" />
+          <hr className="mt-4" />
 
           <div className="space-y-3 mt-4">
             <div className="flex items-center justify-between">
               <label className="text-md text-background">
-               {t('label.uploadPermission')}
+                {t("label.uploadPermission")}
               </label>
               <div>
                 <ComboBox
@@ -302,7 +302,7 @@ const UserList = () => {
             <hr className="" />
             <div className="flex items-center justify-between">
               <label className="text-md text-background">
-              {t('label.analysisPermission')}
+                {t("label.analysisPermission")}
               </label>
               <div>
                 <ComboBox
@@ -310,7 +310,7 @@ const UserList = () => {
                   name={"analysis_permission"}
                   onChange={handlePermissionChange}
                   disabled={newUser.admin_permission}
-                  value={newUser.analysis_permission ||  "default"}
+                  value={newUser.analysis_permission || "default"}
                 />
               </div>
             </div>

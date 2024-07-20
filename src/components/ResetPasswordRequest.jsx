@@ -134,9 +134,7 @@ const ResetPasswordRequest = () => {
             <PrimaryButton isLoading={isLoading} onClick={()=>handleOTPVerify(otp)} label="OTP SUBMIT" disabled={isDisabled} />
             <div className="flex justify-between mt-2 ms-2">
               <p className='text-sm'>Remaining time: 00:<span className='text-softBlue'>{time === 0 ? '59' : time}s</span></p>
-              {/* <p onClick={disabledResend ? null : handleRequestToOTP} className='!text-sm'>
-                Don't get the code? <span className={`resend-link`}>Resend</span>{" "}
-              </p> */}
+
             </div>
           </div>
 

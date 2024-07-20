@@ -38,6 +38,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import RemoveUser from "./RemoveUser";
 import { getUserType } from "../../helper/getUserType";
+import { useSelector } from "react-redux";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -106,6 +107,7 @@ function EnhancedTableHead(props) {
     numSelected,
     rowCount,
     onRequestSort,
+    isActive
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -116,6 +118,7 @@ function EnhancedTableHead(props) {
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
+            disabled={!isActive}
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
@@ -197,7 +200,8 @@ const initialPayload = {
   is_analyzer: "",
   is_reporter: "",
   is_uploader: "",
-  last_evaluated_key: {},
+  initial: true,
+  page_size: 20
 };
 // Component start
 function UsersTable({
@@ -217,16 +221,20 @@ function UsersTable({
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { t } = useTranslation();
-
+  const isActive=useSelector((state)=>state?.projectDetails?.data?.active)
   const [selectedFilter, setSelectedFilter] = useState(initialPayload);
   const { isLoading, data, refetch } = useQuery(
     ["getProjectUsersList"],
     () => api.user.getListOfUsers(selectedFilter),
     {
-      cacheTime: 0,
-      refetchOnMount: true,
+
+      staleTime: 0, // Data is considered stale immediately
+      cacheTime: 0, // Data is removed from the cache after 0 milliseconds
+      refetchOnMount: 'always', // Refetch data on every mount
+      refetchOnWindowFocus: true, // Refetch data when window regains focus
     }
   );
+  console.log('isActive',document.cookie)
   const usersList =
     !isLoading && data && Array.isArray(data?.data) ? data?.data : [];
 
@@ -306,6 +314,7 @@ function UsersTable({
       onDeleteSelection();
       setSelected([]);
     };
+    
     return (
       <Toolbar
         sx={{
@@ -354,6 +363,7 @@ function UsersTable({
               <FilterMenu onItemClick={onFilterMenuItemClick} />
               <Tooltip title="Add new user" arrow>
                 <Button
+                disabled={!isActive}
                   sx={{
                     fontSize: "14px",
                     borderRadius: "25px",
@@ -389,6 +399,7 @@ function UsersTable({
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
+              isActive={isActive}
             />
             <TableBody>
               {isLoading ? (
@@ -424,6 +435,7 @@ function UsersTable({
                         onClick={(event) => handleClick(event, row?.user_email)}
                       >
                         <Checkbox
+                         disabled={!isActive}
                           color="primary"
                           checked={isItemSelected}
                           inputProps={{
@@ -473,7 +485,7 @@ function UsersTable({
                       <StyledTableCell align="right">
                         <Tooltip title="More actions" arrow>
                           <IconButton
-                            disabled={selected.length > 1}
+                            disabled={selected.length > 1 ||  !isActive}
                             id="basic-button"
                             aria-controls={open ? "basic-menu" : undefined}
                             aria-haspopup="true"
@@ -493,6 +505,7 @@ function UsersTable({
                             "aria-labelledby": "basic-button",
                           }}
                           key={row?.user_email}
+                         
                         >
                           <MenuItem onClick={() => onMenuItemClick(EDIT_USER)}>
                             <CachedIcon sx={{ marginRight: "8px" }} />{" "}

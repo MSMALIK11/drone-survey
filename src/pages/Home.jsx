@@ -13,6 +13,7 @@ import { sortProjectsByDate } from "../helper/sortProjectsByDate";
 import InputSearchControl from "../components/ui/InputSearchControl";
 import Loading from "../shared/Loading";
 import Wrapper from "../components/Wrapper";
+import Cookies from 'js-cookie';
 const Home = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -28,7 +29,6 @@ const Home = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mapCenter, setMapCenter] = useState([defaultLng, defaultLat]);
-
   const [selectedValue, setSelectedValue] = useState("0");
   const navigate = useNavigate()
 
@@ -162,6 +162,7 @@ const handleChange = (event) => {
     navigate(`/project/${id}/details`)
   }
   useEffect(() => {
+    Cookies.remove('project', { path: '/', domain: '4h4k6l4naxdt4cgtcepmxtqave0cbmdw.lambda-url.ap-south-1.on.aws' });
     if (map.current) {
       markers.current.forEach((marker) => marker.remove());
       markers.current = [];
@@ -174,6 +175,7 @@ const handleChange = (event) => {
         }
       });
     }
+  
   }, [projects]);
   return (
     <>

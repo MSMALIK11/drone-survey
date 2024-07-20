@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BackButton from "../shared/BackButton";
 import api from "../services";
@@ -10,17 +10,26 @@ import DetailsHeader from "../components/ProjectDetails/DetailsHeader";
 import Map from "../components/ProjectDetails/Map";
 import Wrapper from "../components/Wrapper";
 import { useTranslation } from 'react-i18next';
+import { resetProjectDetails, setProjectDetails } from "../store/projectDetails";
+import { useDispatch, useSelector } from "react-redux";
 const ProjectDetails = () => {
   const parmas = useParams();
   const { id } = parmas;
   const auth = JSON.parse(localStorage.getItem("auth-user"));
   const [placeName, setPlaceName] = useState("");
   const navigate = useNavigate();
+  const dispatch=useDispatch()
+  // const project=useSelector((state)=>state.projectDetails.data)
   const { t } = useTranslation();
-  const { isLoading, data, isError } = useQuery(["getProjectDetails"], () =>
-    api.dashboardApi.getProjectDetailsById(id, auth.email)
+  const { isLoading,data, isError } = useQuery(["getProjectDetails"], () =>
+    api.dashboardApi.getProjectDetailsById(id, auth.email),
+    // {
+    //   staleTime: 0, // Data is considered stale immediately
+    //   cacheTime: 0, // Data is removed from the cache after 0 milliseconds
+    //   refetchOnMount: 'always', // Refetch data on every mount
+    //   refetchOnWindowFocus: true, // Refetch data when window regains focus
+    // }
   );
-
   if (isError) {
     navigate("/");
     return;
@@ -31,6 +40,7 @@ const ProjectDetails = () => {
   const getPlaceName = (name) => {
     setPlaceName(name);
   };
+ 
   return (
     <div>
       <header className="bg-black text-white h-[60px] flex items-center px-4 justify-between">
@@ -49,12 +59,11 @@ const ProjectDetails = () => {
                     category={project?.category}
                     description={project?.description}
                     trashed_time={project?.trashed_time}
-                    created_at={project.created_at}
-                    updated_at={project.updated_at}
+                    created_at={project?.created_at}
+                    updated_at={project?.updated_at}
                     status={project?.progress}
                     placeName={placeName}
-
-                    active={project.active}
+                    active={project?.active}
                   />
                   <div>
                     <Map
@@ -64,7 +73,7 @@ const ProjectDetails = () => {
                     />
                   </div>
                 </div>
-             
+            
               <UserList />
               </div>
 
