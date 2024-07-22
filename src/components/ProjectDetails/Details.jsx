@@ -25,6 +25,7 @@ import Status from "./Status";
 import ReadMoreReadLess from "../ui/ReadMoreReadLess";
 import TextareaControl from "../ui/TextareaControl";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 const options = [
   { value: "INITIATED", label: "Initiated" },
   { value: "IN-PROGRESS", label: "In progress" },
@@ -54,11 +55,13 @@ const ProjectDetails = ({
   updated_at,
   placeName,
   active,
+  name
 }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [showActivateAlert, setShowActivateAlert] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showMessageCard, setShowMessageCard] = useState(false);
+  const user=useSelector((state)=>state.projectDetails.permissions)
   const [project, setProject] = useState({
     description: "",
     progress: "INITIATED",
@@ -89,6 +92,7 @@ const ProjectDetails = ({
   };
   const handleActivateConfirm = async () => {
     setIsLoading(true);
+    
     try {
       const res = await api.user.activeProject();
       if (res.status == 201) {
@@ -169,7 +173,7 @@ const ProjectDetails = ({
  
   const DetailRow = ({ label, value, extraClasses = "" }) => (
     <div
-      className={`text-md flex  min-h-[44px]  items-center   min-w-[320px]    ${extraClasses}`}
+      className={`text-md flex  min-h-[40px]  items-center   min-w-[320px]    ${extraClasses}`}
     >
       <p className="w-[300px]">{label}:</p>
       <div>
@@ -221,6 +225,13 @@ const ProjectDetails = ({
             value={<span className=" text-background">{category}</span>}
           />
           <hr />
+          <hr />
+
+          <DetailRow
+            label="Created By"
+            value={<span className=" text-background">{name}</span>}
+          />
+          <hr />
           <DetailRow label="Location" value={placeName} />
           <hr />
           <DetailRow
@@ -258,6 +269,9 @@ const ProjectDetails = ({
             <DateRow label="Created At" date={created_at} />
             <DateRow label="Updated At" date={updated_at} />
           </div>
+          {
+            user.userRole!=="user" &&
+          
           <div className="absolute top-2 right-1 flex items-center gap-2">
             <Tooltip title="Edit details" arrow>
               <Button
@@ -272,6 +286,7 @@ const ProjectDetails = ({
               </Button>
             </Tooltip>
           </div>
+}
         </div>
       </main>
 

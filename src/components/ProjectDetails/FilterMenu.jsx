@@ -88,6 +88,7 @@ const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.
       is_uploader: getAccessLevel(filtersData.is_uploader),
       last_evaluated_key: {},
       initial: true,
+       page_size:15
     };
     onItemClick(accessLevel);
     dispatch(setFilters(filtersData))

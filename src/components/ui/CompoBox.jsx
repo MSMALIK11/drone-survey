@@ -30,7 +30,7 @@ const { t }=useTranslation()
         disabled={disabled}
     
       >
-         <MenuItem value="default"  disabled>{t('label.select')}</MenuItem>
+         <MenuItem value="default" >{t('label.select')}</MenuItem>
         {
           options?.map((option)=>  <MenuItem className='hover:text-softBlue' key={option.value} value={option[selectValue]}>
           {option[selectLabel]}

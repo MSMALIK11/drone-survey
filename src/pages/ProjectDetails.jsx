@@ -30,6 +30,11 @@ const ProjectDetails = () => {
     //   refetchOnWindowFocus: true, // Refetch data when window regains focus
     // }
   );
+   useEffect(()=>{
+    if(!isLoading){
+      dispatch(setProjectDetails(data?.data))
+    }
+ },[data])
   if (isError) {
     navigate("/");
     return;
@@ -40,7 +45,9 @@ const ProjectDetails = () => {
   const getPlaceName = (name) => {
     setPlaceName(name);
   };
- 
+//  useEffect(()=>{
+//   dispatch(setProjectDetails(data.data))
+//  },[])
   return (
     <div>
       <header className="bg-black text-white h-[60px] flex items-center px-4 justify-between">
@@ -64,6 +71,7 @@ const ProjectDetails = () => {
                     status={project?.progress}
                     placeName={placeName}
                     active={project?.active}
+                    name={project.name}
                   />
                   <div>
                     <Map

@@ -18,14 +18,16 @@ import { permissionOptionsList, analysisOptionsList } from "./data";
 import UsersTable from "./UsersTable";
 import { useQuery, useQueryClient } from "react-query";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 const initialState = {
-  new_member_email: "",
+  new_member_email: ``,
   upload_permission: "",
   analysis_permission: "",
   report_permission: "",
   new_member_name: "",
   admin_permission: false,
 };
+console.log(new  Date().getTime())
 
 const UserList = () => {
   const [showTransferOwnershipModal, setShowTransferOwnership] =
@@ -38,6 +40,7 @@ const UserList = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [newUser, setNewUser] = useState(initialState);
+ 
   const { t } = useTranslation();
   const toast = useToast();
   const open = Boolean(anchorEl);
