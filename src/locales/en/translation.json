@@ -1,10 +1,20 @@
 {
   "project": {
+    "headerTitle":"Project Details Dashboard ",
     "transferOwnership": "Transfer Ownership",
     "removeUser": "Remove User",
     "projectDetails":"Project details",
     "editUser": "Edit User",
-    "inactiveMessage": "This project is currently inactive. Please activate it to make changes by clicking the 'Edit' button."
+    "inactiveMessage": "This project is currently inactive. Please activate it to make changes by clicking the 'Edit' button.",
+    "projectName":"Project Name",
+    "description":"Description",
+    "category":"Category",
+    "owner":"Owner",
+    "location":"Location",
+    "projectProgress":"Project Progress",
+    "status":"Status",
+    "createdAt":"Created At",
+    "updatedAt":"Updated At"
   },
   "label": {
     "accessMessage": "Enter your Credentials to access your account",
@@ -25,7 +35,9 @@
     "dob":"DOB",
     "createdAt":"Created At",
     "about":"About",
-    "userInfo":"User Info"
+    "userInfo":"User Info",
+    "activated":"Activated",
+    "deactivated":"Deactivated"
   
     
   },
@@ -43,7 +55,10 @@
     "addUser":"Add user",
     "transferOwnership":"Transfer ownership",
     "removeUser":"Remove User",
-    "editUser":"Edit User"
+    "editUser":"Edit User",
+    "uploadPhoto":"Upload Photo",
+    "analyzePhoto":"Analyze Photo",
+    "generateReport":"Generate Report"
   },
   "errorMessage": {
     "invalidEmailError": "Please enter a valid email",
@@ -60,7 +75,8 @@
     "userAddedSuccess": "User successfully added to the project.",
     "userUpdatedSuccess": "User has been successfully updated.",
     "deleteUserSuccess":"The user has been successfully deleted.",
-    "multipleUserDeleteSuccess":"{{count}} Users have been successfully deleted."
+    "multipleUserDeleteSuccess":"{{count}} Users have been successfully deleted.",
+    "usersNotFound":"Users not found"
   },
   "passwordRequirements": {
     "atLeastOneLowercase": "At least one lowercase letter",

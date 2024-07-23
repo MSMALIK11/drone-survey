@@ -8,7 +8,7 @@ export const user={
         return mappingService.delete('/user-project/deactivate-project')
     },
     async transferOwnership(payload){
-        return mappingService.post('user-project/transfer-ownership',payload)
+        return mappingService.patch('user-project/transfer-ownership',payload)
     },
     async removeUser(payload){
    

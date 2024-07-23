@@ -14,6 +14,9 @@ import InputSearchControl from "../components/ui/InputSearchControl";
 import Loading from "../shared/Loading";
 import Wrapper from "../components/Wrapper";
 import Cookies from 'js-cookie';
+import { useDispatch } from "react-redux";
+import { resetProjectDetails } from "../store/projectDetails";
+import CompoBox from "../components/ui/CompoBox";
 const Home = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -31,12 +34,10 @@ const Home = () => {
   const [mapCenter, setMapCenter] = useState([defaultLng, defaultLat]);
   const [selectedValue, setSelectedValue] = useState("0");
   const navigate = useNavigate()
-
+const dispatch=useDispatch()
 
   const fetchProjects = async () => {
-    // startTokenRefreshInterval()
-    
-
+  
     try {
 
       const response = await api.dashboardApi.getAllProjectstList()
@@ -60,6 +61,8 @@ const Home = () => {
 
   useEffect(() => {
     fetchProjects();
+    dispatch(resetProjectDetails())
+    
   }, []);
 
   useEffect(() => {
@@ -71,7 +74,7 @@ const Home = () => {
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: "mapbox://styles/mapbox/satellite-streets-v12",
       center: mapCenter,
       zoom: zoom,
     });
@@ -96,17 +99,7 @@ const Home = () => {
     marginTop: "-10px",
   };
 
-const handleChange = (event) => {
-  const value = Number(event.target.value);
-  console.log('value change sort',value)
-  setSelectedValue(value);
-  let sortedProjects=sortProjectsByDate(projects,value)
 
-  console.log('sortedProjects:', sortedProjects)
-
-  setFilteredProjects(sortedProjects);
-};
-  
   
   const handleSearch = (event) => {
     const searchTerm = event.target.value;
@@ -145,7 +138,7 @@ const handleChange = (event) => {
     map.current.flyTo({
       center: [markerLng, markerLat],
       essential: true,
-      zoom: 8,
+      zoom: 17,
     });
   };
 
@@ -177,6 +170,22 @@ const handleChange = (event) => {
     }
   
   }, [projects]);
+  const sortList=[
+    {
+      label:'Asc',
+      value:1
+    },
+    {
+      label:'Desc',
+      value:0
+    }
+  ]
+  const handleSortProject=(value)=>{
+    setSelectedValue(value);
+    let sortedProjects=sortProjectsByDate(projects,value)
+    setFilteredProjects(sortedProjects);
+
+  }
   return (
     <>
       <HomeDashbordHeader />
@@ -186,26 +195,13 @@ const handleChange = (event) => {
           <Box className="flex gap-4">
           <InputSearchControl handleSearch={handleSearch} hintText={"Search project by name"} />
           <InputSearchControl handleSearch={handleCategorySearch} hintText={"Search project by category"} />
-        
+          <div>
+
+        <CompoBox onChange={handleSortProject} options={sortList} value={1} isDefaultVisible={false}  />
+          </div>
           </Box>
 
-          <Box className="outer_right">
-            <Box className="combo_value"></Box>
-            <FormControl  >
-              <Select 
-               size="small"
-               id="demo-simple-select"
-               value={selectedValue}
-               onChange={handleChange}
-               sx={{borderRadius:'25px',fontSize:'14px'}}
-              >
-                <MenuItem value="1">  
-                </MenuItem>
-                <MenuItem value="0">Sort By Asc Date</MenuItem>
-                <MenuItem value="1">Sort By Desc Date</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+          
         </Box>
 
         <Box className="h-full">

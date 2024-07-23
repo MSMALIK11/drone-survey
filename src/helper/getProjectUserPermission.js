@@ -9,8 +9,7 @@ export function getUserPermissions(apiResponse) {
     isVisibleAnalyze :true,
     isVisibleReport :true,
     isVisibleUpload :true,
-  
-    
+    canEdit:false,
   };
 
   // Check if the user is an admin

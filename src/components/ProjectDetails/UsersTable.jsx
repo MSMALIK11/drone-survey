@@ -113,6 +113,7 @@ function EnhancedTableHead(props) {
     onRequestSort,
     isActive,
     isVisible,
+    user
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -120,6 +121,9 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
+        {
+          user.userRole!=="user" && 
+        
         <TableCell padding="checkbox">
           <Checkbox
             disabled={!isActive}
@@ -132,6 +136,7 @@ function EnhancedTableHead(props) {
             }}
           />
         </TableCell>
+        }
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -145,7 +150,7 @@ function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            {!headCell.sortable && headCell.label}
+            {!headCell.sortable  && headCell.label}
             {headCell.sortable && (
               <TableSortLabel
                 active={orderBy === headCell.id}
@@ -223,19 +228,20 @@ function UsersTable({
   const [orderBy, setOrderBy] = useState("name");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { t } = useTranslation();
   const [tableData, setTableData] = useState([]);
   const isActive = useSelector((state) => state?.projectDetails?.data?.active);
   const { totalActiveFilterCount } = useSelector((state) => state.userFilter);
   const [selectedFilter, setSelectedFilter] = useState(initialPayload);
+  const res=useSelector((state)=>state.projectDetails.data)
   const tableContainerRef = useRef(null);
   const user = useSelector((state) => state.projectDetails.permissions);
   const { isLoading, data, refetch } = useQuery(
     ["getProjectUsersList"],
     () => api.user.getListOfUsers(selectedFilter),
     {
+      enabled:!!res,
       onSuccess: (res) => {
         const data = res.data;
         if (Array.isArray(data)) {
@@ -250,21 +256,18 @@ function UsersTable({
           console.error("Expected an array but got something else:", data.data);
         }
       },
-    },
-    {
-      staleTime: 0,
-      cacheTime: 0,
-      refetchOnMount: "always",
-      refetchOnWindowFocus: true,
+     
     }
   );
+  
   const usersList =
     !isLoading && data && Array.isArray(data?.data) ? data?.data : [];
 
   // Refetch data when selectedFilter changes
   useEffect(() => {
+    if (!res || !isActive) return;
     refetch();
-  }, [selectedFilter, refetch]);
+  }, [selectedFilter, refetch, res, isActive]);
 
   const rows = usersList ? [...usersList] : [];
   const handleRequestSort = (event, property) => {
@@ -473,6 +476,7 @@ function UsersTable({
               rowCount={rows.length}
               isActive={isActive}
               isVisible={user.userRole === "user"}
+              user={user}
             />
             <TableBody>
               {isLoading
@@ -492,12 +496,15 @@ function UsersTable({
                         selected={isItemSelected}
                         sx={{ cursor: "pointer" }}
                       >
+                        {
+                          user.userRole!=="user" &&
                         <StyledTableCell
                           padding="checkbox"
                           onClick={(event) =>
                             handleClick(event, row?.user_email)
                           }
                         >
+                          
                           <Checkbox
                             disabled={!isActive}
                             color="primary"
@@ -505,8 +512,10 @@ function UsersTable({
                             inputProps={{
                               "aria-labelledby": labelId,
                             }}
+                            
                           />
                         </StyledTableCell>
+                }
                         <StyledTableCell
                           component="th"
                           id={labelId}
@@ -601,6 +610,7 @@ function UsersTable({
                                 onClick={() =>
                                   onMenuItemClick(TRANSFER_OWNERSHIP)
                                 }
+                                sx={{display:user.userRole==="admin"?"none":''}}
                               >
                                 <SyncAltIcon sx={{ marginRight: "8px" }} />{" "}
                                 {t("actions.transferOwnership")}

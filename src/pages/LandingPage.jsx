@@ -8,7 +8,7 @@ import circleImage from "../assets/circle.svg";
 import dronRight from "../assets/dron1.png";
 import dronShadow from "../assets/spread.svg";
 import { NavLink } from "react-router-dom";
-import dronAnimation from '../assets/dronanimation.gif'
+import bgImage from '../assets/rightSide.svg'
 const LandingPage = () => {
   return (
     <div className="grid grid-cols-2   h-screen">
@@ -53,28 +53,10 @@ const LandingPage = () => {
 
         <img src={ellipsImg} className="absolute bottom-0 left-[15%]" />
       </div>
+{/*Right side */}
+      <div className="relative right-side">
 
-      <div className="relative">
-        <img src={circleImage} width={200} className="ms-10 mt-6" />
-        <div className="absolute right-10 top-[50px]">
-          <motion.img
-            src={dronRight}
-            className="w-[760px]"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-          />
-          <motion.img
-            src={dronShadow}
-            alt=""
-            className="absolute left-[160px] top-[265px]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, filter: "brightness(1.t)" }}
-            transition={{ duration: 1, delay: 1 }}
-          />
-        </div>
-
-        <div className="absolute left-[16px] top-[35%] w-[40%]">
+        <div className="absolute left-[16px] top-[35%] w-[38%]">
           <h1 className="text-3xl">
             Start Your Awesome Drone Survey Project With Us
           </h1>

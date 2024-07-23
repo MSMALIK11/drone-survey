@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 const initialState = {
   new_member_email: ``,
-  upload_permission: "",
+  upload_permission: "read",
   analysis_permission: "",
   report_permission: "",
   new_member_name: "",
@@ -298,7 +298,7 @@ const UserList = () => {
                   name={"upload_permission"}
                   onChange={handlePermissionChange}
                   disabled={newUser.admin_permission}
-                  value={newUser.upload_permission || "default"}
+                  value={newUser.upload_permission || "read"}
                 />
               </div>
             </div>

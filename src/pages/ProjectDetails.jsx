@@ -18,17 +18,12 @@ const ProjectDetails = () => {
   const auth = JSON.parse(localStorage.getItem("auth-user"));
   const [placeName, setPlaceName] = useState("");
   const navigate = useNavigate();
+  const res=useSelector((state)=>state.projectDetails.data)
   const dispatch=useDispatch()
   // const project=useSelector((state)=>state.projectDetails.data)
   const { t } = useTranslation();
-  const { isLoading,data, isError } = useQuery(["getProjectDetails"], () =>
+  const { isLoading,data, isError,isFetching } = useQuery(["getProjectDetails"], () =>
     api.dashboardApi.getProjectDetailsById(id, auth.email),
-    // {
-    //   staleTime: 0, // Data is considered stale immediately
-    //   cacheTime: 0, // Data is removed from the cache after 0 milliseconds
-    //   refetchOnMount: 'always', // Refetch data on every mount
-    //   refetchOnWindowFocus: true, // Refetch data when window regains focus
-    // }
   );
    useEffect(()=>{
     if(!isLoading){
@@ -39,19 +34,16 @@ const ProjectDetails = () => {
     navigate("/");
     return;
   }
-  if (isLoading) return <Loading isVisible={true} />;
+  if (isLoading && isFetching ) return <Loading isVisible={true} />;
 
   const project = data && data.data;
   const getPlaceName = (name) => {
     setPlaceName(name);
   };
-//  useEffect(()=>{
-//   dispatch(setProjectDetails(data.data))
-//  },[])
   return (
     <div>
       <header className="bg-black text-white h-[60px] flex items-center px-4 justify-between">
-        <p>Project Details Dashboard </p>
+        <p>{t('project.headerTitle')} </p>
         <BackButton path="/" label={"Back to project"} />
       </header>
       {project ? (
@@ -72,6 +64,7 @@ const ProjectDetails = () => {
                     placeName={placeName}
                     active={project?.active}
                     name={project.name}
+                    estimated_date={project?.estimated_date}
                   />
                   <div>
                     <Map
@@ -81,8 +74,11 @@ const ProjectDetails = () => {
                     />
                   </div>
                 </div>
-            
-              <UserList />
+                {
+                  res && !isLoading && !isFetching ?  <UserList /> :<Loading isVisible={true} />
+                }
+           
+              
               </div>
 
             </div>

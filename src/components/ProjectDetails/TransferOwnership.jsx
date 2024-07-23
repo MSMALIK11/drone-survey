@@ -32,6 +32,7 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
         toast(t('messages.ownershipTransferSuccessMessage',{email:memberEmail}),"success")
         queryClient.invalidateQueries(["getProjectUsersList"]);
         setLoading(false);
+        window.location.reload(); 
         onClose();
       }
     } catch (error) {

@@ -2,7 +2,7 @@ import { FormControl, MenuItem, Select, styled } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const CompoBox = ({ options, onChange, name, label, value, disabled = false,selectLabel="label",selectValue="value" }) => {
+const CompoBox = ({ options, onChange, name, label, value, disabled = false,selectLabel="label",selectValue="value",isDefaultVisible=true }) => {
   const [val, setValue] = useState("");
 const { t }=useTranslation()
   const handleChange = (e) => {
@@ -30,7 +30,10 @@ const { t }=useTranslation()
         disabled={disabled}
     
       >
-         <MenuItem value="" >{t('label.select')}</MenuItem>
+        {
+          isDefaultVisible &&          <MenuItem value="default" >{t('label.select')}</MenuItem> 
+        }
+
         {
           options?.map((option)=>  <MenuItem className='hover:text-softBlue' key={option.value} value={option[selectValue]}>
           {option[selectLabel]}

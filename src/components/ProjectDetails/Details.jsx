@@ -26,6 +26,7 @@ import ReadMoreReadLess from "../ui/ReadMoreReadLess";
 import TextareaControl from "../ui/TextareaControl";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { changeDateType } from "../../helper/changeDateType";
 const options = [
   { value: "INITIATED", label: "Initiated" },
   { value: "IN-PROGRESS", label: "In progress" },
@@ -48,7 +49,6 @@ const ProjectDetails = ({
   project_name,
   category,
   description = "",
-  trashed_time,
   created_at,
   status,
   estimated_date,
@@ -88,6 +88,7 @@ const ProjectDetails = ({
       console.error("Error::while deactivating project", error);
       const message = errorHandler(error);
       toast(message, "error");
+    
     }
   };
   const handleActivateConfirm = async () => {
@@ -153,19 +154,20 @@ const ProjectDetails = ({
       project_status: status,
       active,
       progress: "",
-      estimated_date: estimated_date || "",
+      estimated_date: estimated_date,
     });
   };
   const handleDateChange = (e) => {
     const { value, name } = e.target;
-    setProject((prev) => ({ ...prev, [name]: value }));
+    const date=changeDateType(value)
+    setProject((prev) => ({ ...prev, [name]: date }));
   };
   useEffect(() => {
     if (!active) {
       setShowMessageCard(true);
       const timer = setTimeout(() => {
         setShowMessageCard(false);
-      }, 5000);
+      }, 7000);
 
       return () => clearTimeout(timer);
     }
@@ -173,7 +175,7 @@ const ProjectDetails = ({
  
   const DetailRow = ({ label, value, extraClasses = "" }) => (
     <div
-      className={`text-md flex  min-h-[40px]  items-center   min-w-[320px]    ${extraClasses}`}
+      className={`text-md flex  min-h-[44px]  items-center   min-w-[320px]    ${extraClasses}`}
     >
       <p className="w-[300px]">{label}:</p>
       <div>
@@ -181,14 +183,15 @@ const ProjectDetails = ({
       </div>
     </div>
   );
-  const DateRow = ({ label, date }) => (
-    <p className="text-md mt-4 flex flex-col gap-2">
+  const DateRow = ({ label, date,normal }) => (
+    <p className="text-md mt-4 flex flex-col gap-1">
       {label}:
-      <span className="bg-[#e3e3e1] shadow-sm border border-softgray min-w-[274px] !text-background px-4 py-1 rounded-full flex gap-2 items-center">
-        <AccessTimeIcon /> {formatDate(date)}
+      <span className="bg-[#e3e3e1] shadow-sm border border-softgray inline-flex !text-background px-4 py-1 rounded-full  gap-1 items-center">
+        <AccessTimeIcon /> { normal?date:formatDate(date)}
       </span>
     </p>
   );
+  
   return (
     <div>
       <main className="relative">
@@ -196,20 +199,38 @@ const ProjectDetails = ({
     <div className="absolute top-0 left-0 right-0 bg-red-200 text-yellow-800 border border-red-500 rounded-md p-4 shadow-md z-10">
       <div className="flex items-center">
         <InfoIcon className="mr-2" />
-        <p className="flex-1">
+        <p className="flex-1 whitespace-nowrap">
           {t("project.inactiveMessage")}
         </p>
         <IconButton onClick={()=>setShowMessageCard(false)}><CloseIcon /></IconButton>
       </div>
     </div>
   )}
-        <div className="bg-customGray text-background shadow-lg  pb-6  min-h-[380px] !min-w-[600px]  w-[40vw] rounded-lg p-5 border border-softgray relative">
-          <div>
-            <p className="text-background text-lg mb-2">
+        <div className="bg-customGray text-background shadow-lg  min-h-[380px] !min-w-[600px]  w-[766px] rounded-lg p-[22px] border border-softgray relative">
+          <div className="flex justify-between items-center">
+            <p className="text-background text-lg">
               {t("project.projectDetails")}
             </p>
+               {
+            user.userRole!=="user" &&
+          
+          <div>
+            <Tooltip title="Edit details" arrow>
+              <Button
+                onClick={handleShowEditDetailsModal}
+                variant="outlined"
+                sx={{ borderRadius: "25px" }}
+                className="flex items-center gap-2"
+              
+              >
+                <EditIcon />
+                Edit
+              </Button>
+            </Tooltip>
           </div>
-          <hr />
+}
+          </div>
+          <hr className="mt-2" />
           <DetailRow label="Project Name" value={project_name} />
           <hr />
           <div className="flex min-h-[44px] items-center">
@@ -225,10 +246,9 @@ const ProjectDetails = ({
             value={<span className=" text-background">{category}</span>}
           />
           <hr />
-          <hr />
-
+       
           <DetailRow
-            label="Created By"
+            label="Owner"
             value={<span className=" text-background">{name}</span>}
           />
           <hr />
@@ -248,14 +268,14 @@ const ProjectDetails = ({
                     <Tooltip title="Project activate">
 
                     <span className="text-green-500">
-                      <CheckCircleIcon className="text-green-400" /> Activate
+                      <CheckCircleIcon className="text-green-400" /> {t('label.activated')}
                     </span>
                     </Tooltip>
                   ) : (
                     <Tooltip title="Project deactivate">
                     <span className="flex gap-1 items-center text-red-400">
                       <BlockIcon />
-                      Deactivate
+                      {t('label.deactivated')}
                     </span>
 
                     </Tooltip>
@@ -266,13 +286,17 @@ const ProjectDetails = ({
           />
           <hr />
           <div className="lg:flex gap-4 lg:space-x-5 ">
-            <DateRow label="Created At" date={created_at} />
-            <DateRow label="Updated At" date={updated_at} />
+            <DateRow label={t('project.createdAt')} date={created_at} />
+            <DateRow label={t('project.updatedAt')} date={updated_at} />
+            {
+              estimated_date &&  <DateRow label="Estimated Date" date={estimated_date} normal={true} />
+            }
+            
           </div>
-          {
+          {/* {
             user.userRole!=="user" &&
           
-          <div className="absolute top-2 right-1 flex items-center gap-2">
+          <div className="absolute top-2 right-[22px] flex items-center gap-2">
             <Tooltip title="Edit details" arrow>
               <Button
                 onClick={handleShowEditDetailsModal}
@@ -286,10 +310,10 @@ const ProjectDetails = ({
               </Button>
             </Tooltip>
           </div>
-}
+} */}
         </div>
       </main>
-
+{/* Update Project details */}
       <Modal
         isOpen={showEditModal}
         title="Update project details"
@@ -297,12 +321,16 @@ const ProjectDetails = ({
         onClose={() => setShowEditModal(false)}
         onClick={handleUpdateProjectDetails}
         loading={isLoading}
-        // width={"600px"}
+
+        width={"560px"}
       >
-        <div className="w-[440px] flex flex-col gap-3.5">
+        <div className=" flex flex-col gap-3.5">
+          
+         
           <hr />
           <div className="">
             <TextareaControl
+            disabled={!project.active}
               value={project.description}
               label={"Description :"}
               name={"description"}
@@ -313,10 +341,11 @@ const ProjectDetails = ({
           </div>
           <hr />
           <ComboBox
+           disabled={!project.active}
             name="progress"
             label={"Project progress :"}
             options={options}
-            value={project.project_status || "default"}
+            value={project.project_status || ""}
             selectedOption={project.project_status}
             onChange={handlePermissionChange}
           />
@@ -327,6 +356,7 @@ const ProjectDetails = ({
             label={"Status :"}
             options={activeOptions}
             value={project.active}
+        
             onChange={handlePermissionChange}
           />
           <hr />
@@ -337,6 +367,8 @@ const ProjectDetails = ({
               className="!bg-white !border-2 !border-softgray"
               onChange={handleDateChange}
               name="estimated_date"
+              disabled={!project.active}
+              // value={project?.estimated_date}
             />
           </div>
         </div>

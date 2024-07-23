@@ -9,7 +9,7 @@ const mapContainerStyle = {
     height: "100%",
     borderRadius: "20px",
     marginLeft: "10px",
-    marginTop: "-10px",
+    // marginTop: "10px",
     flex:1
   };
 const Map = ({lat=78.9629,lng=20.5937,getPlaceName}) => {
@@ -64,9 +64,9 @@ const [locationName,setLocationName]=useState("")
   }, [lng, lat, zoom, defaultLng, defaultLat]);
     
   return (
-    <div className='mt-9'>
+    <div className='mt-[22px]'>
         <div
-                style={{ height: "31vh", width: "99%" }}>
+                style={{ height: "27vh", width: "99%" }}>
                 <div style={mapContainerStyle} ref={mapContainer} />
               </div>
     </div>

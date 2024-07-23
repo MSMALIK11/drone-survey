@@ -3,7 +3,7 @@ import {getUserPermissions} from '../helper/getProjectUserPermission'
 const projectDetailsSlice=createSlice({
     name:"Project details",
     initialState:{
-        data:{},
+        data:null,
         permissions:{}
     },
     reducers:{
@@ -12,7 +12,7 @@ const projectDetailsSlice=createSlice({
             state.permissions=getUserPermissions(action.payload)
         },
         resetProjectDetails:(state)=>{
-        state.data={}
+        state.data=null
 
         }
      

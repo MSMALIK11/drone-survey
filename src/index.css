@@ -250,3 +250,12 @@ border: 1px solid #177CF0;
   background-color: #F8F8F8 !important;
 }
 
+
+.right-side {
+  background-image: url('./assets/rightSide.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top;
+  width: 100%;
+
+}
