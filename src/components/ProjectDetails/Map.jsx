@@ -66,7 +66,7 @@ const [locationName,setLocationName]=useState("")
   return (
     <div className='mt-[22px]'>
         <div
-                style={{ height: "27vh", width: "99%" }}>
+                style={{ height: "25vh", width: "99%" }}>
                 <div style={mapContainerStyle} ref={mapContainer} />
               </div>
     </div>

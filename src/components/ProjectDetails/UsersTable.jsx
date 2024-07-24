@@ -344,7 +344,7 @@ function UsersTable({
       onDeleteSelection();
       setSelected([]);
     };
-    console.log("isActive", isActive);
+ 
 
     return (
       <Toolbar
@@ -395,6 +395,7 @@ function UsersTable({
                 <FilterMenu
                   onItemClick={onFilterMenuItemClick}
                   onResetFilter={onResetFilter}
+                  
                 />
               )}
 
@@ -533,39 +534,44 @@ function UsersTable({
                           ) : (
                             <div className="flex gap-4">
                               <Tooltip
-                                title={`Upload photo / ${row?.is_uploader}`}
+                                title={`Upload photo - ${row?.is_uploader}`}
                                 arrow
                               >
                                 <IconButton
                                   sx={{
                                     background: "#EFF6FF",
                                     border: "1px solid #177CF0",
+                                    opacity:row?.is_uploader?'':'0.4'
+        
                                   }}
+                                
                                 >
                                   <InsertPhotoIcon color="primary" />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip
-                                title={`Analyze photo / ${row?.is_analyzer}`}
+                                title={`Analyze photo - ${row?.is_analyzer}`}
                                 arrow
                               >
                                 <IconButton
                                   sx={{
                                     background: "#EFF6FF",
                                     border: "1px solid #177CF0",
+                                      opacity:row?.is_analyzer?'':'0.4'
                                   }}
                                 >
                                   <AnalyticsIcon color="primary" />
                                 </IconButton>
                               </Tooltip>
                               <Tooltip
-                                title={`Generate report / ${row.is_reporter}`}
+                                title={`Generate report - ${row.is_reporter}`}
                                 arrow
                               >
                                 <IconButton
                                   sx={{
                                     background: "#EFF6FF",
                                     border: "1px solid #177CF0",
+                                    opacity:row?.is_reporter?'':'0.4'
                                   }}
                                 >
                                   <DescriptionIcon color="primary" />

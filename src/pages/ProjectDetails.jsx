@@ -23,7 +23,10 @@ const ProjectDetails = () => {
   // const project=useSelector((state)=>state.projectDetails.data)
   const { t } = useTranslation();
   const { isLoading,data, isError,isFetching } = useQuery(["getProjectDetails"], () =>
-    api.dashboardApi.getProjectDetailsById(id, auth.email),
+    api.dashboardApi.getProjectDetailsById(id, auth.email),{
+      refetchOnWindowFocus:false,
+      cacheTime:0
+    }
   );
    useEffect(()=>{
     if(!isLoading){
@@ -63,7 +66,7 @@ const ProjectDetails = () => {
                     status={project?.progress}
                     placeName={placeName}
                     active={project?.active}
-                    name={project.name}
+                    name={project.owner_email}
                     estimated_date={project?.estimated_date}
                   />
                   <div>

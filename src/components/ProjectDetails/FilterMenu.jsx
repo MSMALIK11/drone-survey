@@ -41,10 +41,8 @@ const filterMenuItems = [
 const FilterMenu = ({ onItemClick,onResetFilter }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [selectedFilter, setSelectedFilter] = useState(filterInitialState);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const queryClient=useQueryClient()
 const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.userFilter)
+const active =useSelector((state)=>state.projectDetails?.data?.active)
   const [filtersData,setFiltersData]=useState({
     is_admin:false,
     is_owner:false,
@@ -97,7 +95,6 @@ const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.
   };
 
   const handleResetClick = () => {
-    setSelectedItems([]);
     onItemClick(filterInitialState);
     dispatch(resetFilters())
     onResetFilter()
@@ -125,8 +122,10 @@ const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.
     <div>
 
       <Tooltip title="Filter Users" arrow>
+        <span>
         <Button
           onClick={onMenuClick}
+          disabled={!active}
           id="basic-button"
           variant="outlined"
           aria-controls={open ? "basic-menu" : undefined}
@@ -147,6 +146,7 @@ const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.
           )}
           Filter
         </Button>
+        </span>
       </Tooltip>
       <Menu
         id="basic-menu"
@@ -194,16 +194,6 @@ const {totalActiveFilterCount:selectedCount,filters}=useSelector((state)=>state.
 
   </div>
         
-
-
-        {/* <div className="flex flex-col">
-          <MenuItem sx={{ marginLeft: "-10px" }} className=" h-[40px]">
-            <Checkbox size="small" /> Read
-          </MenuItem>
-          <MenuItem sx={{ marginLeft: "-10px" }} className=" h-[40px]">
-            <Checkbox size="small" /> Write
-          </MenuItem>
-        </div> */}
 
         <Divider />
         <div className="flex  justify-end gap-2 px-3 py-3">

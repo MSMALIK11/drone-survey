@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getRefreshToken } from '../helper/cookies';
+import {refreshAccessToken} from  '../helper/refreshToken'
 const timeout=15000
 const headers={
     Accept:'application/json',
@@ -13,6 +14,35 @@ export const mappingService=axios.create({
     headers
 })
 
+// Add a response interceptor
+mappingService.interceptors.response.use(
+    (response) => {
+      // Return the response if no error
+      return response;
+    },
+    async (error) => {
+      const originalRequest = error.config;
+  
+      if (
+        error.response &&
+        error.response.status === 500 &&
+        error.response.data === 'Access token is missing.'
+      ) {
+        try {
+          const newAccessToken = await refreshAccessToken();
+          // Update the original request with the new token
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          // Retry the original request with the new token
+          return axios(originalRequest);
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
+        }
+      }
+  
+      // If the error does not match the criteria, reject it as usual
+      return Promise.reject(error);
+    }
+  );
 // mappingService.interceptors.request.use(
 //   async  config => {
 //     const token = getRefreshToken();

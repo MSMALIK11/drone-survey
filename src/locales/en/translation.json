@@ -6,6 +6,7 @@
     "projectDetails":"Project details",
     "editUser": "Edit User",
     "inactiveMessage": "This project is currently inactive. Please activate it to make changes by clicking the 'Edit' button.",
+    "inactiveUserMessage": "This project is currently inactive. You do not have the necessary permissions to make changes.",
     "projectName":"Project Name",
     "description":"Description",
     "category":"Category",
@@ -76,7 +77,8 @@
     "userUpdatedSuccess": "User has been successfully updated.",
     "deleteUserSuccess":"The user has been successfully deleted.",
     "multipleUserDeleteSuccess":"{{count}} Users have been successfully deleted.",
-    "usersNotFound":"Users not found"
+    "usersNotFound":"Users not found",
+    "projectStatusUpdate":"Project status has been updated successfully."
   },
   "passwordRequirements": {
     "atLeastOneLowercase": "At least one lowercase letter",

@@ -66,7 +66,7 @@ const App = () => {
       <Route path="/password-reset/verify" element={<Suspense fallback={<LoadingScreen />}><ResetPasswordForm /></Suspense>} />
       <Route path="/uploadDataProcessing" element={<Suspense fallback={<LoadingScreen />}><UploadDataProcessing /></Suspense>} />
       <Route path="/project/upload" element={<Suspense fallback={<LoadingScreen />}><UploadImageDashboard /></Suspense>} />
-      <Route path="/dron-survey" element={<Suspense fallback={<LoadingScreen />}><LandingPage /></Suspense>} />
+      <Route path="/drone-survey" element={<Suspense fallback={<LoadingScreen />}><LandingPage /></Suspense>} />
 
       <Route path="/" element={<SideBar />}>
         <Route

@@ -17,7 +17,7 @@ const LandingPage = () => {
         <div>
           <div className="ms-52">
             <h1 className="text-3xl">Get Started Now</h1>
-            <h1 className="mt-2">Be a part of the Drone Survey REVOLUTION.</h1>
+            <h1 className="mt-2">Be a part of the Drone Survey revolution.</h1>
           </div>
           <div className="flex mt-4 justify-center items-center flex-col">
             <motion.img
@@ -29,18 +29,22 @@ const LandingPage = () => {
               alt="Drone Shadow"
             />
             <div className="flex flex-col mt-6 gap-4">
+              <NavLink to={"/login"}>
               <Button
                 sx={{ borderRadius: "25px", width: "425px" }}
                 variant="outlined"
               >
-                <NavLink to={"/login"}>Login</NavLink>
+                Login
               </Button>
+                </NavLink>
+                <NavLink to={"/newSignUp"}>
               <Button
                 sx={{ borderRadius: "25px", width: "425px" }}
                 variant="outlined"
               >
-                <NavLink to={"/newSignUp"}>Sign up</NavLink>
+                Sign up
               </Button>
+              </NavLink>
               <Button
                 sx={{ borderRadius: "25px", width: "425px" }}
                 variant="contained"
@@ -60,7 +64,7 @@ const LandingPage = () => {
           <h1 className="text-3xl">
             Start Your Awesome Drone Survey Project With Us
           </h1>
-          <p className="mt-4">Be a part of the Drone survey REVOLUTION.</p>
+          <p className="mt-4">Be a part of the Drone survey revolution.</p>
         </div>
       {/* <img src={dronAnimation} width={400} /> */}
       </div>
