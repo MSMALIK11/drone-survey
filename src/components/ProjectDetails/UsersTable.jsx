@@ -327,6 +327,8 @@ function UsersTable({
   const handleMenuClick = (event, item) => {
     event.stopPropagation();
     onMenuClick(event, item);
+    setSelected([])
+
   };
 
   const onResetFilter = () => {

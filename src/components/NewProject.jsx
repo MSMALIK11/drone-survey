@@ -287,16 +287,17 @@ const NewProject = () => {
         
       >
         <Grid container style={{ backgroundColor: "#F5F6FF" }}>
-          <Grid item lg={5}>
+          <Grid item lg={4}>
             <Box className="relative overflow-hidden newProjectFormWrapper ">
-              <div className="left-form-wraper  overflow-auto p-5 flex flex-col gap-5">
+              <div className="overflow-auto p-5 flex flex-col gap-4">
                 
-             
               <InputControl
+       
                 name={"name"}
                 placeholder={"Project Name"}
                 value={formData.project_name}
                 onChange={handleChange}
+                primary
               />
               <CompoBox
                 selectLabel={"category_name"}
@@ -304,7 +305,8 @@ const NewProject = () => {
                 onChange={handleCategoryChange}
                 options={categories}
                 name="category"
-               
+                value={formData.category}
+              isDefaultVisible={false}
 
               />
               <TextareaControl
@@ -320,6 +322,7 @@ const NewProject = () => {
                 value={formData.latitude}
                 onChange={handleLatitudeChange}
                 helperText="  Drag the marker on the map to set the Latitude*"
+                primary
               />
 
               <InputControl
@@ -329,6 +332,7 @@ const NewProject = () => {
                 value={formData.longitude}
                 onChange={handleLongitudeChange}
                 helperText="Drag the marker on the map to set the Longitude*"
+                primary
               />
               <InputControl
                 placeholder="Longitude"
@@ -337,6 +341,7 @@ const NewProject = () => {
                 onChange={handleLongitudeChange}
                 disabled
                 helperText="Drag the marker on the map to set the Longitude*"
+                primary
               />
 
               <InputControl
@@ -344,6 +349,7 @@ const NewProject = () => {
                 value={locationName}
                 disabled
                 helperText="Drag the marker on the map to set the Location Name*"
+                primary
               />
                </div>
               <div className="absolute w-full bottom-0 left-0 p-5 bg-white">
@@ -356,7 +362,7 @@ const NewProject = () => {
             </Box>
           </Grid>
 
-          <Grid item lg={7}>
+          <Grid item lg={8}>
             <Box className="Right_map">
               <p
                 style={{

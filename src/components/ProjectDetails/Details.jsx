@@ -242,6 +242,13 @@ const ProjectDetails = ({
     handleClose();
   };
 
+  function changeDateFormat(dateStr) {
+    // Split the input date string by hyphens
+    const [day, month, year] = dateStr.split('-');
+    
+    // Rearrange the parts into the desired format and return
+    return `${year}-${month}-${day}`;
+  }
   return (
     <div>
       <main className="relative">
@@ -260,7 +267,7 @@ const ProjectDetails = ({
             </div>
           </div>
         )}
-        <div className="bg-customGray text-background shadow-lg  min-h-[380px] !min-w-[600px]  w-[766px] rounded-lg p-[22px] border border-softgray relative">
+        <div className="lg:bg-customGray text-background shadow-lg  min-h-[380px]   w-[40vw] rounded-lg p-[22px] border border-softgray relative">
           <div className="flex justify-between items-center">
             <p className="text-background text-lg">
               {t("project.projectDetails")}
@@ -367,7 +374,7 @@ const ProjectDetails = ({
             }
           />
           <hr />
-          <div className="lg:flex gap-4 lg:space-x-5 ">
+          <div className="lg:flex xs:flex-wrap gap-4 lg:space-x-5 ">
             <DateRow label={t("project.createdAt")} date={created_at} />
             <DateRow label={t("project.updatedAt")} date={updated_at} />
             {estimated_date && (
@@ -439,6 +446,7 @@ const ProjectDetails = ({
             options={activeOptions}
             value={project.active}
             onChange={handlePermissionChange}
+            isDefaultVisible={false}
           />
           <hr />
           <div className="flex flex-col gap-1">
@@ -450,7 +458,8 @@ const ProjectDetails = ({
               name="estimated_date"
               disabled={!project.active}
               min={minDate}
-              // value={project?.estimated_date}
+              value={changeDateFormat(project?.estimated_date)}
+
             />
           </div>
         </div>

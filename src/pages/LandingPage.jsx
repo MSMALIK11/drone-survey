@@ -28,10 +28,10 @@ const LandingPage = () => {
               transition={{ duration: 0.5 }}
               alt="Drone Shadow"
             />
-            <div className="flex flex-col mt-6 gap-4">
+            <div className="flex flex-col mt-[-30px] gap-4">
               <NavLink to={"/login"}>
               <Button
-                sx={{ borderRadius: "25px", width: "425px" }}
+                sx={{ borderRadius: "25px", width: "425px",background:'white' }}
                 variant="outlined"
               >
                 Login
@@ -39,7 +39,7 @@ const LandingPage = () => {
                 </NavLink>
                 <NavLink to={"/newSignUp"}>
               <Button
-                sx={{ borderRadius: "25px", width: "425px" }}
+                sx={{ borderRadius: "25px", width: "425px",background:'white'  }}
                 variant="outlined"
               >
                 Sign up

@@ -146,7 +146,7 @@ const UserList = () => {
     setNewUser((prev) => ({ ...prev, admin_permission: event.target.checked }));
   };
   const onFilterMenuItemClick = () => {};
-  const isDisabledBtn = !newUser.new_member_email ? true : false;
+  const isDisabledBtn = !newUser.new_member_email || !newUser.new_member_name;
   const handleSelection = (selection) => {
     setSelected(selection);
   };
