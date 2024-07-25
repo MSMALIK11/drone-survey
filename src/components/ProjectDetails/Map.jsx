@@ -52,11 +52,14 @@ const Map = ({ lat = 78.9629, lng = 20.5937, getPlaceName }) => {
     });
 
     getPlacename();
+    const currentMarkers = markers.current;
+
     return () => {
-      markers.current.forEach((marker) => marker.remove());
+      currentMarkers.forEach((marker) => marker.remove());
       map.current.remove();
     };
-  }, [lng, lat, zoom, defaultLng, defaultLat]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lng, lat, zoom, defaultLng, defaultLat, mapCenter]);
 
   return (
     <div className="mt-[22px]">

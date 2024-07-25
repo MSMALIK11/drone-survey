@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -379,7 +379,7 @@ function UsersTable({
     );
   }
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (tableContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } =
         tableContainerRef.current;
@@ -387,14 +387,19 @@ function UsersTable({
         setSelectedFilter((prev) => ({ ...prev, initial: false }));
       }
     }
-  };
+  }, [setSelectedFilter]);
+
   useEffect(() => {
-    if (tableContainerRef.current) {
-      tableContainerRef.current.addEventListener("scroll", handleScroll);
-      return () => {
-        tableContainerRef?.current?.removeEventListener("scroll", handleScroll);
-      };
+    const tableContainer = tableContainerRef.current;
+    if (tableContainer) {
+      tableContainer.addEventListener("scroll", handleScroll);
     }
+
+    return () => {
+      if (tableContainer) {
+        tableContainer.removeEventListener("scroll", handleScroll);
+      }
+    };
   }, [handleScroll]);
   const renderSkeleton = () =>
     Array.from(new Array(5)).map((_, index) => (
