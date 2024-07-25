@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -36,37 +36,8 @@ import {
 import FilterMenu from "./FilterMenu";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import RemoveUser from "./RemoveUser";
 import { getUserType } from "../../helper/getUserType";
 import { useSelector } from "react-redux";
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 
 const headCells = [
   {
@@ -113,7 +84,7 @@ function EnhancedTableHead(props) {
     onRequestSort,
     isActive,
     isVisible,
-    user
+    user,
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -121,22 +92,20 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        {
-          user.userRole!=="user" && 
-        
-        <TableCell padding="checkbox">
-          <Checkbox
-            disabled={!isActive}
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              "aria-label": "select all desserts",
-            }}
-          />
-        </TableCell>
-        }
+        {user.userRole !== "user" && (
+          <TableCell padding="checkbox">
+            <Checkbox
+              disabled={!isActive}
+              color="primary"
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{
+                "aria-label": "select all desserts",
+              }}
+            />
+          </TableCell>
+        )}
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -150,7 +119,7 @@ function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            {!headCell.sortable  && headCell.label}
+            {!headCell.sortable && headCell.label}
             {headCell.sortable && (
               <TableSortLabel
                 active={orderBy === headCell.id}
@@ -227,21 +196,19 @@ function UsersTable({
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
   const [selected, setSelected] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const { t } = useTranslation();
   const [tableData, setTableData] = useState([]);
   const isActive = useSelector((state) => state?.projectDetails?.data?.active);
   const { totalActiveFilterCount } = useSelector((state) => state.userFilter);
   const [selectedFilter, setSelectedFilter] = useState(initialPayload);
-  const res=useSelector((state)=>state.projectDetails.data)
+  const res = useSelector((state) => state.projectDetails.data);
   const tableContainerRef = useRef(null);
   const user = useSelector((state) => state.projectDetails.permissions);
   const { isLoading, data, refetch } = useQuery(
     ["getProjectUsersList"],
     () => api.user.getListOfUsers(selectedFilter),
     {
-      enabled:!!res,
+      enabled: !!res,
       onSuccess: (res) => {
         const data = res.data;
         if (Array.isArray(data)) {
@@ -256,10 +223,9 @@ function UsersTable({
           console.error("Expected an array but got something else:", data.data);
         }
       },
-     
     }
   );
-  
+
   const usersList =
     !isLoading && data && Array.isArray(data?.data) ? data?.data : [];
 
@@ -312,23 +278,10 @@ function UsersTable({
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage
-      ),
-    [order, orderBy, page, rowsPerPage]
-  );
-
   const handleMenuClick = (event, item) => {
     event.stopPropagation();
     onMenuClick(event, item);
-    setSelected([])
-
+    setSelected([]);
   };
 
   const onResetFilter = () => {
@@ -346,7 +299,6 @@ function UsersTable({
       onDeleteSelection();
       setSelected([]);
     };
- 
 
     return (
       <Toolbar
@@ -397,7 +349,6 @@ function UsersTable({
                 <FilterMenu
                   onItemClick={onFilterMenuItemClick}
                   onResetFilter={onResetFilter}
-                  
                 />
               )}
 
@@ -499,26 +450,23 @@ function UsersTable({
                         selected={isItemSelected}
                         sx={{ cursor: "pointer" }}
                       >
-                        {
-                          user.userRole!=="user" &&
-                        <StyledTableCell
-                          padding="checkbox"
-                          onClick={(event) =>
-                            handleClick(event, row?.user_email)
-                          }
-                        >
-                          
-                          <Checkbox
-                            disabled={!isActive}
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              "aria-labelledby": labelId,
-                            }}
-                            
-                          />
-                        </StyledTableCell>
-                }
+                        {user.userRole !== "user" && (
+                          <StyledTableCell
+                            padding="checkbox"
+                            onClick={(event) =>
+                              handleClick(event, row?.user_email)
+                            }
+                          >
+                            <Checkbox
+                              disabled={!isActive}
+                              color="primary"
+                              checked={isItemSelected}
+                              inputProps={{
+                                "aria-labelledby": labelId,
+                              }}
+                            />
+                          </StyledTableCell>
+                        )}
                         <StyledTableCell
                           component="th"
                           id={labelId}
@@ -543,10 +491,8 @@ function UsersTable({
                                   sx={{
                                     background: "#EFF6FF",
                                     border: "1px solid #177CF0",
-                                    opacity:row?.is_uploader?'':'0.4'
-        
+                                    opacity: row?.is_uploader ? "" : "0.4",
                                   }}
-                                
                                 >
                                   <InsertPhotoIcon color="primary" />
                                 </IconButton>
@@ -559,7 +505,7 @@ function UsersTable({
                                   sx={{
                                     background: "#EFF6FF",
                                     border: "1px solid #177CF0",
-                                      opacity:row?.is_analyzer?'':'0.4'
+                                    opacity: row?.is_analyzer ? "" : "0.4",
                                   }}
                                 >
                                   <AnalyticsIcon color="primary" />
@@ -573,7 +519,7 @@ function UsersTable({
                                   sx={{
                                     background: "#EFF6FF",
                                     border: "1px solid #177CF0",
-                                    opacity:row?.is_reporter?'':'0.4'
+                                    opacity: row?.is_reporter ? "" : "0.4",
                                   }}
                                 >
                                   <DescriptionIcon color="primary" />
@@ -618,7 +564,10 @@ function UsersTable({
                                 onClick={() =>
                                   onMenuItemClick(TRANSFER_OWNERSHIP)
                                 }
-                                sx={{display:user.userRole==="admin"?"none":''}}
+                                sx={{
+                                  display:
+                                    user.userRole === "admin" ? "none" : "",
+                                }}
                               >
                                 <SyncAltIcon sx={{ marginRight: "8px" }} />{" "}
                                 {t("actions.transferOwnership")}

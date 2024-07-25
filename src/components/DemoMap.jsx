@@ -8,7 +8,7 @@ const DemoMap = () => {
 
   const [lng, setLng] = useState(78.9629);
   const [lat, setLat] = useState(20.5937);
-  const [zoom, setZoom] = useState(4);
+  const [zoom] = useState(4);
 
   useEffect(() => {
     mapboxgl.accessToken =
