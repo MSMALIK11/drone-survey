@@ -7,7 +7,7 @@ const headers={
 }
 
 export const mappingService=axios.create({
-    baseURL:'/api',
+    baseURL:'https://4h4k6l4naxdt4cgtcepmxtqave0cbmdw.lambda-url.ap-south-1.on.aws',
     credentials:true ,
     timeout,
     headers
