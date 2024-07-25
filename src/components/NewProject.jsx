@@ -1,18 +1,9 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
-import {
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Box,
-} from "@mui/material";
+import { Button, Box } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
-import CircularProgress from "@mui/material/CircularProgress";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../style/newproject.css";
@@ -29,13 +20,9 @@ const NewProject = () => {
 
   const [lng, setLng] = useState(78.9629);
   const [lat, setLat] = useState(20.5937);
-  const [zoom, setZoom] = useState(4);
-
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [zoom] = useState(4);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [isLocationEditable, setIsLocationEditable] = useState(false);
-
   const handleNavigationHome = () => {
     navigate("/");
   };
@@ -48,7 +35,7 @@ const NewProject = () => {
     description: "",
     project_status: "",
     location: "",
-    progress:""
+    progress: "",
   });
 
   const [locationName, setLocationName] = useState("");
@@ -71,20 +58,10 @@ const NewProject = () => {
     fetchCategories();
   }, []);
 
-  const handleChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-
-      // Check the textField if empty disabled the button
-      const anyFieldEmpty = Object.values({
-        ...formData,
-        [name]: value,
-      }).some((value) => value === "");
-      setIsButtonDisabled(anyFieldEmpty);
-    },
-    [formData]
-  );
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  }, []);
 
   const handleCategoryChange = (value, name) => {
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
@@ -135,7 +112,7 @@ const NewProject = () => {
     setLoading(true);
     try {
       const response = await api.dashboardApi.addProject(formData);
-      if (response.status == 201) {
+      if (response.status === 201) {
         toast.success("Project added successfully");
         navigate("/");
         // Reset all form fields
@@ -152,7 +129,6 @@ const NewProject = () => {
 
         setLat(0);
         setLng(0);
-        setIsLocationEditable(false);
       } else {
         throw new Error("Failed to send data");
       }
@@ -220,7 +196,6 @@ const NewProject = () => {
         latitude: lat.toString(),
         longitude: lng.toString(),
       }));
-      setIsLocationEditable(true);
       getReverseGeocode(lat, lng).then((locationName) => {
         setLocationName(locationName || "Location not found");
       });
@@ -232,11 +207,11 @@ const NewProject = () => {
       // Cleanup function to remove the map when the component is unmounted
       map.current.remove();
     };
-  }, []);
+  }, [lat, lng, zoom]);
 
   const mapContainerStyle = {
     position: "relative",
-  
+
     width: "100%",
     height: "80vh",
     borderRadius: "20px",
@@ -282,83 +257,80 @@ const NewProject = () => {
           </Button>
         </Box>
       </Box>
-      <div
-        className="newproject_head mt-4 p-4"
-        
-      >
+      <div className="newproject_head mt-4 p-4">
         <Grid container style={{ backgroundColor: "#F5F6FF" }}>
           <Grid item lg={4}>
             <Box className="relative overflow-hidden newProjectFormWrapper ">
               <div className="overflow-auto p-5 flex flex-col gap-4">
-                
-              <InputControl
-       
-                name={"name"}
-                placeholder={"Project Name"}
-                value={formData.project_name}
-                onChange={handleChange}
-                primary
-              />
-              <CompoBox
-                selectLabel={"category_name"}
-                selectValue={"category_name"}
-                onChange={handleCategoryChange}
-                options={categories}
-                name="category"
-                value={formData.category}
-              isDefaultVisible={false}
+                <InputControl
+                  name={"name"}
+                  placeholder={"Project Name"}
+                  value={formData.project_name}
+                  onChange={handleChange}
+                  primary
+                />
+                <CompoBox
+                  selectLabel={"category_name"}
+                  selectValue={"category_name"}
+                  onChange={handleCategoryChange}
+                  options={categories}
+                  name="category"
+                  value={formData.category}
+                  isDefaultVisible={false}
+                />
+                <TextareaControl
+                  name="description"
+                  placeholder="Project Description (Optional)"
+                  value={formData.description}
+                  onChange={handleChange}
+                />
+                <InputControl
+                  disabled
+                  name="latitude"
+                  placeholder="Latitude"
+                  value={formData.latitude}
+                  onChange={handleLatitudeChange}
+                  helperText="  Drag the marker on the map to set the Latitude*"
+                  primary
+                />
 
-              />
-              <TextareaControl
-                name="description"
-                placeholder="Project Description (Optional)"
-                value={formData.description}
-                onChange={handleChange}
-              />
-              <InputControl
-                disabled
-                name="latitude"
-                placeholder="Latitude"
-                value={formData.latitude}
-                onChange={handleLatitudeChange}
-                helperText="  Drag the marker on the map to set the Latitude*"
-                primary
-              />
+                <InputControl
+                  disabled
+                  placeholder="Longitude"
+                  name="longitude"
+                  value={formData.longitude}
+                  onChange={handleLongitudeChange}
+                  helperText="Drag the marker on the map to set the Longitude*"
+                  primary
+                />
+                <InputControl
+                  placeholder="Longitude"
+                  name="longitude"
+                  value={formData.longitude}
+                  onChange={handleLongitudeChange}
+                  disabled
+                  helperText="Drag the marker on the map to set the Longitude*"
+                  primary
+                />
 
-              <InputControl
-                disabled
-                placeholder="Longitude"
-                name="longitude"
-                value={formData.longitude}
-                onChange={handleLongitudeChange}
-                helperText="Drag the marker on the map to set the Longitude*"
-                primary
-              />
-              <InputControl
-                placeholder="Longitude"
-                name="longitude"
-                value={formData.longitude}
-                onChange={handleLongitudeChange}
-                disabled
-                helperText="Drag the marker on the map to set the Longitude*"
-                primary
-              />
-
-              <InputControl
-                placeholder="Location Name"
-                value={locationName}
-                disabled
-                helperText="Drag the marker on the map to set the Location Name*"
-                primary
-              />
-               </div>
+                <InputControl
+                  placeholder="Location Name"
+                  value={locationName}
+                  disabled
+                  helperText="Drag the marker on the map to set the Location Name*"
+                  primary
+                />
+              </div>
               <div className="absolute w-full bottom-0 left-0 p-5 bg-white">
                 <div className="w-full form-container">
-                <PrimaryButton onClick={handleSubmit} isLoading={loading} disabled={isDisabled} label={"Create New Project"} />
-                 
+                  <PrimaryButton
+                    onClick={handleSubmit}
+                    isLoading={loading}
+                    disabled={isDisabled}
+                    label={"Create New Project"}
+                  />
                 </div>
               </div>
-    
             </Box>
           </Grid>
 

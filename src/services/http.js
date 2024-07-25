@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { getRefreshToken } from '../helper/cookies';
 import {refreshAccessToken} from  '../helper/refreshToken'
 const timeout=15000
 const headers={

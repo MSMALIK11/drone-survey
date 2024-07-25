@@ -1,4 +1,9 @@
- [[redirects]]
-    from = "/*"
-    to = "/index.html"
-    status = 200
+[build]
+  command = "npm run build"
+  publish = "build"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://4h4k6l4naxdt4cgtcepmxtqave0cbmdw.lambda-url.ap-south-1.on.aws"
+  status = 200
+  force = true

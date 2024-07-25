@@ -6,14 +6,17 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { CANCEL, CONFIRM } from "../../constant/constant";
-import api from "../../services";
-import { errorHandler } from "../../helper/handleError";
+
 import useToast from "../../hooks/useToast";
 import { CircularProgress } from "@mui/material";
 import { blue } from "@mui/material/colors";
-const DeleteMultipleUserModal = ({ isOpen, onClose,delUsersList,handleRemoveUser }) => {
-  const [loading, setLoading] = useState(false);
-  const toast = useToast();
+const DeleteMultipleUserModal = ({
+  isOpen,
+  onClose,
+  delUsersList,
+  handleRemoveUser,
+}) => {
+  const [loading] = useState(false);
 
   return (
     <div className="mt-6">
@@ -22,8 +25,11 @@ const DeleteMultipleUserModal = ({ isOpen, onClose,delUsersList,handleRemoveUser
         <DialogContent>
           <DialogContentText>
             Are you sure you want to remove{" "}
-            <span className="font-semibold text-black">{delUsersList.length>1?delUsersList.length:delUsersList[0]} {delUsersList.length>1?'users':'user'}</span> from
-            the project? This will remove their access and permissions.
+            <span className="font-semibold text-black">
+              {delUsersList.length > 1 ? delUsersList.length : delUsersList[0]}{" "}
+              {delUsersList.length > 1 ? "users" : "user"}
+            </span>{" "}
+            from the project? This will remove their access and permissions.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

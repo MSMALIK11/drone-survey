@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import LinearProgress from '@mui/material/LinearProgress';
 import { CANCEL, CONFIRM } from "../../constant/constant";
-import api from "../../services";
-import { errorHandler } from "../../helper/handleError";
-import useToast from "../../hooks/useToast";
 import { CircularProgress } from "@mui/material";
 import { blue } from "@mui/material/colors";
-const RemoveUser = ({ isOpen, onClose, loading,delUsersList,handleRemoveUser }) => {
-  const toast = useToast();
+const RemoveUser = ({
+  isOpen,
+  onClose,
+  loading,
+  delUsersList,
+  handleRemoveUser,
+}) => {
   return (
     <div className="mt-6">
       <Dialog open={isOpen} onClose={onClose}>
@@ -21,8 +22,11 @@ const RemoveUser = ({ isOpen, onClose, loading,delUsersList,handleRemoveUser }) 
         <DialogContent>
           <DialogContentText>
             Are you sure you want to remove{" "}
-            <span className="font-semibold text-black">{delUsersList.length>1?delUsersList.length:delUsersList[0]} {delUsersList.length>1?'users':'user'}</span> from
-            the project? This will remove their access and permissions.
+            <span className="font-semibold text-black">
+              {delUsersList.length > 1 ? delUsersList.length : delUsersList[0]}{" "}
+              {delUsersList.length > 1 ? "users" : "user"}
+            </span>{" "}
+            from the project? This will remove their access and permissions.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

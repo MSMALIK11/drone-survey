@@ -1,13 +1,11 @@
 
 import React, { useEffect, useState, Suspense } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import SideBar from "./components/SideBar";
 import ProtectedRoute from "./protectedRoute/ProtectedRoute";
 import LoadingScreen from "./components/LoadingScreen";
 import api from './services';
 import { startTokenRefreshInterval } from "./helper/refreshToken";
-import Test from './components/ProjectDetails/Test'
-import useToast from "./hooks/useToast";
 import LandingPage from "./pages/LandingPage";
 
 // Lazy-loaded components
@@ -17,7 +15,7 @@ const Dashbord = React.lazy(() => import("./pages/Dashbord"));
 const SignUp = React.lazy(() => import("./components/SignUp"));
 const Login = React.lazy(() => import("./components/Login"));
 const NewProject = React.lazy(() => import("./components/NewProject"));
-const UploadDataProcessing = React.lazy(() => import("./components/UploadDataProcessing"));
+// const UploadDataProcessing = React.lazy(() => import("./components/UploadDataProcessing"));
 const ForgetPassword = React.lazy(() => import("./components/ForgetPassword"));
 const NewSignUp = React.lazy(() => import("./components/NewSignUp"));
 const OtpModel = React.lazy(() => import("./components/OtpModel"));
@@ -64,7 +62,7 @@ const App = () => {
       <Route path="/otp" element={<Suspense fallback={<LoadingScreen />}><OtpModel /></Suspense>} />
       <Route path="/password-reset/request" element={<Suspense fallback={<LoadingScreen />}><ResetPasswordRequest /></Suspense>} />
       <Route path="/password-reset/verify" element={<Suspense fallback={<LoadingScreen />}><ResetPasswordForm /></Suspense>} />
-      <Route path="/uploadDataProcessing" element={<Suspense fallback={<LoadingScreen />}><UploadDataProcessing /></Suspense>} />
+      {/* <Route path="/uploadDataProcessing" element={<Suspense fallback={<LoadingScreen />}><UploadDataProcessing /></Suspense>} /> */}
       <Route path="/project/upload" element={<Suspense fallback={<LoadingScreen />}><UploadImageDashboard /></Suspense>} />
       <Route path="/drone-survey" element={<Suspense fallback={<LoadingScreen />}><LandingPage /></Suspense>} />
 
@@ -95,16 +93,6 @@ const App = () => {
             <ProtectedRoute>
               <Suspense fallback={<LoadingScreen />}>
                 <ProjectDetails />
-              </Suspense>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/project/users"
-          element={
-            <ProtectedRoute>
-              <Suspense fallback={<LoadingScreen />}>
-                <Test />
               </Suspense>
             </ProtectedRoute>
           }

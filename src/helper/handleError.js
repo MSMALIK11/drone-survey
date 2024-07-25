@@ -17,11 +17,13 @@ export const errorHandler = (error) => {
           break;
         case 404:
           message = "Not Found";
+          break;
         case 422:
           message = "Unprocessable Entity, Please try again";
           break;
         case 500:
           message = "Internal Server Error";
+          break;
         case 502:
           message = "Internal Server Error";
           break;

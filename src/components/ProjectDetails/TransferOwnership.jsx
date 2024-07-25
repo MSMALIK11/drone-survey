@@ -17,7 +17,6 @@ import Close from "@mui/icons-material/Close";
 const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-  const [email, setEmail] = useState(null);
   const [isValid, setIsValid] = useState(false);
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -28,7 +27,7 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
     });
     try {
       const res = await api.user.transferOwnership(payload);
-      if (res.status == 201) {
+      if (res.status === 201) {
         toast(
           t("messages.ownershipTransferSuccessMessage", { email: memberEmail }),
           "success"
@@ -49,29 +48,31 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
 
   const handleChange = (event) => {
     const { value } = event.target;
-    if (memberEmail != value) {
+    if (memberEmail !== value) {
       setIsValid(false);
     } else {
       setIsValid(true);
     }
-    setEmail(value);
   };
   return (
     <div className="mt-6">
       <Dialog open={isOpen} onClose={onClose}>
-        <DialogTitle> Transfer Ownership 
+        <DialogTitle>
+          {" "}
+          Transfer Ownership
           <IconButton
-          aria-label="close"
-          onClick={onClose}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: "inherit",
-          }}
-        >
-          <Close />
-        </IconButton> </DialogTitle>
+            aria-label="close"
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: "inherit",
+            }}
+          >
+            <Close />
+          </IconButton>{" "}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Are you sure you want to assign project ownership to{" "}
@@ -87,7 +88,7 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={onClose}>
-            {t('actions.cancel')}
+            {t("actions.cancel")}
           </Button>
           <Button
             variant="contained"
@@ -97,7 +98,7 @@ const TransferOwnership = ({ isOpen, onClose, memberEmail }) => {
             {loading && (
               <CircularProgress size={22} sx={{ color: blue[500], mr: 2 }} />
             )}{" "}
-            {t('actions.assign')}
+            {t("actions.assign")}
           </Button>
         </DialogActions>
       </Dialog>

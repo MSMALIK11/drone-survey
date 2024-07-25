@@ -1,36 +1,31 @@
-import React, { useRef, useState ,useEffect} from 'react'
+import React, { useRef, useState, useEffect } from "react";
 import mapboxgl from "mapbox-gl";
-import { getGeolocation } from '../../helper/getGeolocation';
+import { getGeolocation } from "../../helper/getGeolocation";
 const mapContainerStyle = {
-    position: "relative",
-    top: "0%",
-    bottom: "0%",
-    width: "800",
-    height: "100%",
-    borderRadius: "20px",
-    marginLeft: "10px",
-    // marginTop: "10px",
-    flex:1
-  };
-const Map = ({lat=78.9629,lng=20.5937,getPlaceName}) => {
-      const mapContainer = useRef(null);
-const [locationName,setLocationName]=useState("")
+  position: "relative",
+  top: "0%",
+  bottom: "0%",
+  width: "800",
+  height: "100%",
+  borderRadius: "20px",
+  marginLeft: "10px",
+  // marginTop: "10px",
+  flex: 1,
+};
+const Map = ({ lat = 78.9629, lng = 20.5937, getPlaceName }) => {
+  const mapContainer = useRef(null);
   const map = useRef(null);
   const markers = useRef([]);
-  const [mapCenter, setMapCenter] = useState([lat,lng]);
-//   const [lng, setLng] = useState(78.9629);
-//   const [lat, setLat] = useState(20.5937);
-  const [zoom, setZoom] = useState(17);
+  const [mapCenter] = useState([lat, lng]);
+  const [zoom] = useState(17);
 
-  const [defaultLng, setDefaultLng] = useState(78.9629);
-  const [defaultLat, setDefaultLat] = useState(20.5937);
-  const getPlacename=async()=>{
-    const  placeName=await getGeolocation(lat,lng)
-    getPlaceName(placeName)
-    setLocationName(placeName)
+  const [defaultLng] = useState(78.9629);
+  const [defaultLat] = useState(20.5937);
+  const getPlacename = async () => {
+    const placeName = await getGeolocation(lat, lng);
+    getPlaceName(placeName);
+  };
 
-  }
- 
   useEffect(() => {
     mapboxgl.accessToken =
       "pk.eyJ1IjoicmF3YXRhbW1pZSIsImEiOiJjbG5rNzgzN28wandvMnFwMm1qbWduZ25hIn0.zjWDLv9gL6YI1uIIwPgA7A";
@@ -55,22 +50,21 @@ const [locationName,setLocationName]=useState("")
       center: [markerLng, markerLat],
       essential: true,
     });
-   
-    getPlacename()
+
+    getPlacename();
     return () => {
       markers.current.forEach((marker) => marker.remove());
       map.current.remove();
     };
   }, [lng, lat, zoom, defaultLng, defaultLat]);
-    
-  return (
-    <div className='mt-[22px]'>
-        <div
-                style={{ height: "25vh", width: "99%" }}>
-                <div style={mapContainerStyle} ref={mapContainer} />
-              </div>
-    </div>
-  )
-}
 
-export default Map
+  return (
+    <div className="mt-[22px]">
+      <div style={{ height: "25vh", width: "99%" }}>
+        <div style={mapContainerStyle} ref={mapContainer} />
+      </div>
+    </div>
+  );
+};
+
+export default Map;

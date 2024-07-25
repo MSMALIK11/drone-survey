@@ -8,13 +8,26 @@ import { CANCEL } from "../../constant/constant";
 import { CircularProgress, IconButton } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import Close from "@mui/icons-material/Close";
-const Modal = ({ isOpen, onClose, onClick, loading, submitText, children,title,disabled,width }) => {
+const Modal = ({
+  isOpen,
+  onClose,
+  onClick,
+  loading,
+  submitText,
+  children,
+  title,
+  disabled,
+  width,
+}) => {
   return (
-    <Dialog open={isOpen} onClose={onClose}
-
-    sx={{ '& .MuiDialog-paper': { width: width,background:'#F8F8F8' } }}
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      sx={{ "& .MuiDialog-paper": { width: width, background: "#F8F8F8" } }}
     >
-      <DialogTitle>{ title}  <IconButton
+      <DialogTitle>
+        {title}{" "}
+        <IconButton
           aria-label="close"
           onClick={onClose}
           sx={{
@@ -25,13 +38,24 @@ const Modal = ({ isOpen, onClose, onClick, loading, submitText, children,title,d
           }}
         >
           <Close />
-        </IconButton>  </DialogTitle>
+        </IconButton>{" "}
+      </DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions className="mb-3 mx-4">
-        <Button variant="outlined" size="" sx={{borderRadius:'25px'}} onClick={onClose}>
+        <Button
+          variant="outlined"
+          size=""
+          sx={{ borderRadius: "25px" }}
+          onClick={onClose}
+        >
           {CANCEL}
         </Button>
-        <Button variant="contained"  sx={{borderRadius:'25px',padding:"4px 16px",minWidth:'100px'}} disabled={loading || disabled} onClick={onClick}>
+        <Button
+          variant="contained"
+          sx={{ borderRadius: "25px", padding: "4px 16px", minWidth: "100px" }}
+          disabled={loading || disabled}
+          onClick={onClick}
+        >
           {" "}
           {loading && (
             <CircularProgress size={22} sx={{ color: blue[500], mr: 2 }} />

@@ -78,7 +78,8 @@
     "deleteUserSuccess":"The user has been successfully deleted.",
     "multipleUserDeleteSuccess":"{{count}} Users have been successfully deleted.",
     "usersNotFound":"Users not found",
-    "projectStatusUpdate":"Project status has been updated successfully."
+    "projectStatusUpdate":"Project status has been updated successfully.",
+    "OTPSentSuccess":"OTP has been resent to your registered email."
   },
   "passwordRequirements": {
     "atLeastOneLowercase": "At least one lowercase letter",

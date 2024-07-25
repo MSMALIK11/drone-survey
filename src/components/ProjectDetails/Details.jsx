@@ -25,7 +25,6 @@ import BlockIcon from "@mui/icons-material/Block";
 import InfoIcon from "@mui/icons-material/Info";
 import ComboBox from "../../components/ui/CompoBox";
 import CloseIcon from "@mui/icons-material/Close";
-import Status from "./Status";
 import ReadMoreReadLess from "../ui/ReadMoreReadLess";
 import TextareaControl from "../ui/TextareaControl";
 import { useTranslation } from "react-i18next";
@@ -90,7 +89,7 @@ const ProjectDetails = ({
     setIsLoading(true);
     try {
       const res = await api.user.deactiveProject();
-      if (res.status == 204) {
+      if (res.status === 204) {
         setIsLoading(false);
         setShowAlert(false);
         toast(PROJECT_DACTIVATION_SUCCESS, "success");
@@ -109,7 +108,7 @@ const ProjectDetails = ({
 
     try {
       const res = await api.user.activeProject();
-      if (res.status == 201) {
+      if (res.status === 201) {
         setIsLoading(false);
         setShowActivateAlert(false);
         toast(PROJECT_ACTIVATION_SUCCESS, "success");
@@ -124,12 +123,6 @@ const ProjectDetails = ({
     }
   };
 
-  const handleShowActivateConfirm = () => {
-    setShowActivateAlert(true);
-  };
-  const onShowDeactivateAlert = () => {
-    setShowAlert(true);
-  };
   const handleCloseAlert = () => {
     setShowAlert(false);
   };
@@ -145,7 +138,7 @@ const ProjectDetails = ({
     try {
       const payload = JSON.stringify(project);
       const res = await api.dashboardApi.updateProjectDetails(payload);
-      if (res.status == 201) {
+      if (res.status === 201) {
         toast(PROJECT_UPDATED_SUCCESS_MESSAGE, "SUCCESS");
         queryClient.invalidateQueries(["getProjectDetails"]);
         setShowEditModal(false);
@@ -226,7 +219,7 @@ const ProjectDetails = ({
     try {
       const payload = JSON.stringify(data);
       const res = await api.dashboardApi.updateProjectDetails(payload);
-      if (res.status == 201) {
+      if (res.status === 201) {
         toast(t("messages.projectStatusUpdate"), "SUCCESS");
         queryClient.invalidateQueries(["getProjectDetails"]);
         setShowEditModal(false);
@@ -244,8 +237,8 @@ const ProjectDetails = ({
 
   function changeDateFormat(dateStr) {
     // Split the input date string by hyphens
-    const [day, month, year] = dateStr.split('-');
-    
+    const [day, month, year] = dateStr.split("-");
+
     // Rearrange the parts into the desired format and return
     return `${year}-${month}-${day}`;
   }
@@ -257,7 +250,7 @@ const ProjectDetails = ({
             <div className="flex items-center">
               <InfoIcon className="mr-2" />
               <p className="flex-1 whitespace-nowrap">
-                {user.userRole === "admin" || user.userRole == "owner"
+                {user.userRole === "admin" || user.userRole === "owner"
                   ? t("project.inactiveMessage")
                   : t("project.inactiveUserMessage")}
               </p>
@@ -345,9 +338,6 @@ const ProjectDetails = ({
                   {option.label}
                 </MenuItem>
               ))}
-              {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem> */}
             </Menu>
           </div>
           <hr />
@@ -385,24 +375,6 @@ const ProjectDetails = ({
               />
             )}
           </div>
-          {/* {
-            user.userRole!=="user" &&
-          
-          <div className="absolute top-2 right-[22px] flex items-center gap-2">
-            <Tooltip title="Edit details" arrow>
-              <Button
-                onClick={handleShowEditDetailsModal}
-                variant="outlined"
-                sx={{ borderRadius: "25px" }}
-                className="flex items-center gap-2"
-              
-              >
-                <EditIcon />
-                Edit
-              </Button>
-            </Tooltip>
-          </div>
-} */}
         </div>
       </main>
       {/* Update Project details */}
@@ -459,7 +431,6 @@ const ProjectDetails = ({
               disabled={!project.active}
               min={minDate}
               value={changeDateFormat(project?.estimated_date)}
-
             />
           </div>
         </div>

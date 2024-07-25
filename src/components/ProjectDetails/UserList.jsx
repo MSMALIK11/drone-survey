@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import { Checkbox } from "@mui/material";
 import TransferOwnership from "./TransferOwnership";
 import RemoveUser from "./RemoveUser";
@@ -16,9 +16,8 @@ import {
 } from "../../constant/constant";
 import { permissionOptionsList, analysisOptionsList } from "./data";
 import UsersTable from "./UsersTable";
-import { useQuery, useQueryClient } from "react-query";
+import { useQueryClient } from "react-query";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 const initialState = {
   new_member_email: ``,
   upload_permission: "read",
@@ -27,7 +26,6 @@ const initialState = {
   new_member_name: "",
   admin_permission: false,
 };
-console.log(new  Date().getTime())
 
 const UserList = () => {
   const [showTransferOwnershipModal, setShowTransferOwnership] =
@@ -40,7 +38,7 @@ const UserList = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [newUser, setNewUser] = useState(initialState);
- 
+
   const { t } = useTranslation();
   const toast = useToast();
   const open = Boolean(anchorEl);
@@ -58,7 +56,7 @@ const UserList = () => {
       };
       setNewUser(editData);
       setMemberEmail(user.user_email);
-      if (selected.length == 0) {
+      if (selected.length === 0) {
         setSelected([user.user_email]);
       }
 
@@ -140,12 +138,12 @@ const UserList = () => {
       case EDIT_USER:
         handleEditUser();
         break;
+      default:
     }
   };
   const handleIsAdminChange = (event) => {
     setNewUser((prev) => ({ ...prev, admin_permission: event.target.checked }));
   };
-  const onFilterMenuItemClick = () => {};
   const isDisabledBtn = !newUser.new_member_email || !newUser.new_member_name;
   const handleSelection = (selection) => {
     setSelected(selection);
@@ -179,7 +177,7 @@ const UserList = () => {
       const res = isMultipleUsers
         ? await api.user.removeMultipleProjectUser(payload)
         : await api.user.removeUser(payload);
-      if (res.status == 201) {
+      if (res.status === 201) {
         const length = res?.data[0]?.delete_users_list?.length ?? 0;
         toast(
           t("messages.multipleUserDeleteSuccess", { count: length }),

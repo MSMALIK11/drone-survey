@@ -6,7 +6,7 @@ let refreshTokenInterval;
 export const refreshAccessToken=async()=>{
   try {
     const token=getRefreshToken()
-    const res=await api.register.refreshAccessToken(token)
+    await api.register.refreshAccessToken(token)
     startTokenRefreshInterval()
     
   } catch (error) {

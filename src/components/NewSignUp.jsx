@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Box, Button, Link } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Logo from "../Images/logo2.png";
 import Turnstile from "react-turnstile";
 import "../style/login.css";
@@ -23,10 +23,9 @@ const NewSignUp = () => {
     password: "",
   });
   const [error, setError] = useState(null);
-  const [nameError,setNameError]=useState()
+  const [nameError, setNameError] = useState();
   const [loading, setLoading] = useState(false);
   const [showPasswordIfo, setShowPasswordInfo] = useState(false);
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const [validation, setValidation] = useState({
     lowercase: false,
@@ -39,12 +38,12 @@ const NewSignUp = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "name" && !validateName(value)) {
-      setNameError(t('errorMessage.invalidString'));
+      setNameError(t("errorMessage.invalidString"));
     } else {
       setNameError(null);
     }
     if (name === "email" && !isValidEmail(value)) {
-      setError(t('errorMessage.invalidEmailError'));
+      setError(t("errorMessage.invalidEmailError"));
     } else {
       setError(null);
     }
@@ -85,21 +84,21 @@ const NewSignUp = () => {
     }
   };
   const handleVerify = async (token) => {
-    const SECRET_KEY = "0x4AAAAAAAc19MLJ4z2_D4v-oDvm2R_Gv1o";
+    // const SECRET_KEY = "0x4AAAAAAAc19MLJ4z2_D4v-oDvm2R_Gv1o";
     setToken(token);
     try {
       // const res=await api.register.verifyTurnstile(secretkey,token)
       // console.log('transtile res',res)
-      const response = await fetch(
-        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: `secret=${SECRET_KEY}&response=${token}`,
-        }
-      );
+      // const response = await fetch(
+      //   "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/x-www-form-urlencoded",
+      //     },
+      //     body: `secret=${SECRET_KEY}&response=${token}`,
+      //   }
+      // );
     } catch (error) {
       console.error("Error::", error);
     }
@@ -112,20 +111,20 @@ const NewSignUp = () => {
             <img src={Logo} alt="botlab" width={360} />
           </div>
 
-          <h2 className="text-3xl font-semibold mt-9">{t('label.signup')}</h2>
-          <p className="text-muted mt-2 text-md">{t('label.accessMessage')}</p>
+          <h2 className="text-3xl font-semibold mt-9">{t("label.signup")}</h2>
+          <p className="text-muted mt-2 text-md">{t("label.accessMessage")}</p>
 
           <div className="flex flex-col gap-4 mt-11">
             <InputControl
-            error={nameError?nameError:null}
-              placeholder={t('placeholder.name')}
-              name="name" 
+              error={nameError ? nameError : null}
+              placeholder={t("placeholder.name")}
+              name="name"
               value={user.name}
               onChange={handleChange}
             />
             <InputControl
               error={error ? error : null}
-              placeholder={t('placeholder.email')}
+              placeholder={t("placeholder.email")}
               name={"email"}
               value={user.email}
               onChange={handleChange}
@@ -135,7 +134,7 @@ const NewSignUp = () => {
                 onFocus={() => setShowPasswordInfo(!showPasswordIfo)}
                 value={user.password}
                 name="password"
-                placeholder={t('placeholder.enterPassword')}
+                placeholder={t("placeholder.enterPassword")}
                 onChange={handleChange}
               />
               <div className="flex justify-end">
@@ -166,7 +165,7 @@ const NewSignUp = () => {
                     ) : (
                       <CloseIcon sx={{ color: "red", fontSize: "16px" }} />
                     )}{" "}
-                  {t('passwordRequirements.atLeastOneLowercase')}
+                    {t("passwordRequirements.atLeastOneLowercase")}
                   </p>
                   <p className="text-xs flex items-center gap-1">
                     {validation.uppercase ? (
@@ -174,7 +173,7 @@ const NewSignUp = () => {
                     ) : (
                       <CloseIcon sx={{ color: "red", fontSize: "16px" }} />
                     )}{" "}
-                  {t('passwordRequirements.atLeastOneUppercase')}
+                    {t("passwordRequirements.atLeastOneUppercase")}
                   </p>
                   <p className="text-xs flex items-center gap-1">
                     {validation.number ? (
@@ -182,8 +181,7 @@ const NewSignUp = () => {
                     ) : (
                       <CloseIcon sx={{ color: "red", fontSize: "16px" }} />
                     )}
-                     {t('passwordRequirements.atLeastOneNumber')}
-                  
+                    {t("passwordRequirements.atLeastOneNumber")}
                   </p>
                   <p className="text-xs flex items-center gap-1">
                     {" "}
@@ -192,7 +190,7 @@ const NewSignUp = () => {
                     ) : (
                       <CloseIcon sx={{ color: "red", fontSize: "16px" }} />
                     )}{" "}
-                      {t('passwordRequirements.minimumLength')}
+                    {t("passwordRequirements.minimumLength")}
                   </p>
                 </div>
               )}

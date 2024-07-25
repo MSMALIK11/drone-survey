@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 
-const TextareaControl = ({ name, value, onChange, placeholder, label,disabled=false }) => {
+const TextareaControl = ({
+  name,
+  value,
+  onChange,
+  placeholder,
+  label,
+  disabled = false,
+}) => {
   const [isFocused, setIsFocused] = useState(false);
   const handleFocus = () => {
     setIsFocused(true);
@@ -13,8 +20,7 @@ const TextareaControl = ({ name, value, onChange, placeholder, label,disabled=fa
     <div>
       <label className="text-md text-background">{label}</label>
       <textarea
-      disabled={disabled}
-      
+        disabled={disabled}
         placeholder={placeholder}
         type="text"
         name={name}

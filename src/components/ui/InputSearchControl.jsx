@@ -1,6 +1,6 @@
-import React from 'react'
-import SearchIcon from '@mui/icons-material/Search';
-import { InputAdornment, TextField } from '@mui/material';
+import React from "react";
+import SearchIcon from "@mui/icons-material/Search";
+import { InputAdornment, TextField } from "@mui/material";
 
 const InputSearchControl = ({ handleSearch, hintText }) => {
   return (
@@ -18,7 +18,7 @@ const InputSearchControl = ({ handleSearch, hintText }) => {
       }}
       className="inputSearchControl"
     />
-  )
-}
+  );
+};
 
-export default InputSearchControl
+export default InputSearchControl;

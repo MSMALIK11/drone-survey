@@ -18,23 +18,21 @@ import { formatDate } from "../../helper/formateDate";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useTranslation } from "react-i18next";
 const LoginInfo = ({ user, open, onClose, isLoading }) => {
-  const [userData,setUserData]=useState(user)
+  // const [userData, setUserData] = useState(user);
   const [isShowUpload, setIsShowUpload] = useState(false);
-  const {t}= useTranslation()
+  const { t } = useTranslation();
   const onShowToggleUpload = () => {
     setIsShowUpload(!isShowUpload);
-
   };
-  const handleInputChange=(event)=>{
-    const{name,value}=event.target
-    setUserData((prev)=>({...prev,[name]:value}))
-    
-  }
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setUserData((prev) => ({ ...prev, [name]: value }));
+  // };
   const handleSaveChanges = () => {};
-  const handleClose=()=>{
-    setIsShowUpload(false)
-    onClose()
-  }
+  const handleClose = () => {
+    setIsShowUpload(false);
+    onClose();
+  };
 
   return (
     <Modal
@@ -71,7 +69,6 @@ const LoginInfo = ({ user, open, onClose, isLoading }) => {
         </IconButton>
 
         <Box className="p-4">
-       
           <Box>
             <Box className="flex gap-6 ">
               <div className="relative bg-[#D9D9D9] w-[108px] flex items-center justify-center h-[108px] rounded-full p-2">
@@ -90,19 +87,26 @@ const LoginInfo = ({ user, open, onClose, isLoading }) => {
                 variant="h5"
                 className="pt-4 text-background !font-semibold"
               >
-                {t('label.userInfo')}
+                {t("label.userInfo")}
               </Typography>
             </Box>
-            
 
             <div className="px-4  text-background flex flex-col gap-4">
               <hr className="mt-4" />
-              <InputControl label={t('label.name')} primary value={user?.name} />
+              <InputControl
+                label={t("label.name")}
+                primary
+                value={user?.name}
+              />
               <hr />
-              <InputControl label={t('label.email')} primary value={user?.email} />
+              <InputControl
+                label={t("label.email")}
+                primary
+                value={user?.email}
+              />
               <hr />
               <div className="flex flex-col gap-1">
-                <label>{t('label.dob')}</label>
+                <label>{t("label.dob")}</label>
                 <input
                   type="date"
                   className="!bg-white !border-2 !border-softgray"
@@ -111,7 +115,7 @@ const LoginInfo = ({ user, open, onClose, isLoading }) => {
               </div>
               <hr />
               <div className="flex flex-col gap-1">
-                <label>{t('label.about')}</label>
+                <label>{t("label.about")}</label>
                 <textarea
                   value={user?.about}
                   rows={3}
@@ -120,12 +124,14 @@ const LoginInfo = ({ user, open, onClose, isLoading }) => {
                 />
               </div>
               <div>
-              <p className="text-md mt-4 flex flex-col gap-2">
-   <label className="text-background text-md">{t('label.createdAt')}</label>
-      <span className="bg-blueTag w-[274px] !text-white px-4 py-1 rounded-full flex gap-2 items-center">
-        <AccessTimeIcon /> {formatDate(user?.created_at)}
-      </span>
-    </p>
+                <p className="text-md mt-4 flex flex-col gap-2">
+                  <label className="text-background text-md">
+                    {t("label.createdAt")}
+                  </label>
+                  <span className="bg-blueTag w-[274px] !text-white px-4 py-1 rounded-full flex gap-2 items-center">
+                    <AccessTimeIcon /> {formatDate(user?.created_at)}
+                  </span>
+                </p>
               </div>
             </div>
           </Box>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const ReadMoreReadLess = ({ description }) => {
   const [showFullText, setShowFullText] = useState(false);
@@ -15,19 +15,23 @@ const ReadMoreReadLess = ({ description }) => {
     if (showFullText) {
       return description;
     } else {
-      return description?.slice(0,80) + (description.length > 80 ? '...' : '');
+      return description?.slice(0, 80) + (description.length > 80 ? "..." : "");
     }
   };
 
   return (
-    <div className='flex gap-2'>
-      <p style={{whiteSpace:'wrap'}}>{displayText()}
-         {isLongText && (
-        <button onClick={toggleText} className='text-softBlue ms-2 hover:underline'>
-          {showFullText ? ' Show less' : 'Read more'}
-        </button>
-      )}</p>
-      
+    <div className="flex gap-2">
+      <p style={{ whiteSpace: "wrap" }}>
+        {displayText()}
+        {isLongText && (
+          <button
+            onClick={toggleText}
+            className="text-softBlue ms-2 hover:underline"
+          >
+            {showFullText ? " Show less" : "Read more"}
+          </button>
+        )}
+      </p>
     </div>
   );
 };

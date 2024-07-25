@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { Badge, Button, Divider, Menu, MenuItem, Tooltip } from "@mui/material";
+import React, { useState } from "react";
+import { Badge, Button, Divider, Menu, Tooltip } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import Checkbox from "@mui/material/Checkbox";
 import { getAccessLevel } from "../../helper/getAccessLevel";
-import { useQueryClient } from "react-query";
 import {
   setFilters,
   setActiveFilterCount,
@@ -97,7 +96,7 @@ const FilterMenu = ({ onItemClick, onResetFilter }) => {
     onClose();
   };
   const handleReadWriteClick = (e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
     const [key, subKey] = name.split(".");
 
     setFiltersData((prev) => ({
