@@ -18,14 +18,15 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function ConfirmationAlert({open,message,onClose,onConfirm,isLoading}) {
+export default function ConfirmationAlert({open,message,onClose,onConfirm,isLoading,width}) {
   return (
     <React.Fragment>
       <BootstrapDialog
         onClose={onClose}
         aria-labelledby="customized-dialog-title"
         open={open}
-        maxWidth="md"
+              sx={{ "& .MuiDialog-paper": { width: width, background: "#F8F8F8" } }}
+
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           Confirmation

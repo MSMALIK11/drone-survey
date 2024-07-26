@@ -244,7 +244,7 @@ const ProjectDetails = ({
   }
   return (
     <div>
-      <main className="relative">
+      <main className="relative ">
         {showMessageCard && !active && (
           <div className="absolute top-0 left-0 right-0 bg-red-200 text-yellow-800 border border-red-500 rounded-md p-4 shadow-md z-10">
             <div className="flex items-center">
@@ -260,7 +260,7 @@ const ProjectDetails = ({
             </div>
           </div>
         )}
-        <div className="lg:bg-customGray text-background shadow-lg  min-h-[380px]   w-[40vw] rounded-lg p-[22px] border border-softgray relative">
+        <div className="lg:bg-customGray  text-background shadow-lg  min-h-[380px]   w-[40vw] min-w-[440px] rounded-lg p-[22px] border border-softgray relative">
           <div className="flex justify-between items-center">
             <p className="text-background text-lg">
               {t("project.projectDetails")}

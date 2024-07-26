@@ -90,9 +90,10 @@ const UserList = () => {
   }, []);
 
   const handlePermissionChange = (val, name) => {
+    const value = val === "default" ? "" : val;
     setNewUser((prev) => ({
       ...prev,
-      [name]: val,
+      [name]: value,
     }));
   };
   const handleAddUserSubmit = async () => {

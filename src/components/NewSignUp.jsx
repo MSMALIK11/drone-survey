@@ -201,7 +201,7 @@ const NewSignUp = () => {
               className="mb-4 !w-full !rounded-lg"
               // executution="execute"
               // appearance="always"
-              sitekey="0x4AAAAAAAc19PLhfHqn4C6y"
+              sitekey={process.env.REACT_APP_CAPTCHA_KEY}
               onVerify={handleVerify}
             />
           </div>

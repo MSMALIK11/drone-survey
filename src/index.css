@@ -259,3 +259,17 @@ border: 1px solid #177CF0;
   width: 100%;
 
 }
+
+#wrapper{
+  height:calc(100vh - 60px);
+  /* overflow-y: auto; */
+  background-color: #F5F6FF;
+  /* background-color: red; */
+  padding-bottom: 20px;
+ 
+}
+
+
+
+
+
