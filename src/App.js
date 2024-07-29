@@ -56,7 +56,6 @@ const App = () => {
   return (
     <Routes>
       <Route path="/login" element={<Suspense fallback={<LoadingScreen />}><Login  /></Suspense>} />
-      <Route path="/signUp" element={<Suspense fallback={<LoadingScreen />}><SignUp /></Suspense>} />
       <Route path="/newSignUp" element={<Suspense fallback={<LoadingScreen />}><NewSignUp /></Suspense>} />
       <Route path="/ForgetPassword" element={<Suspense fallback={<LoadingScreen />}><ForgetPassword /></Suspense>} />
       <Route path="/otp" element={<Suspense fallback={<LoadingScreen />}><OtpModel /></Suspense>} />
