@@ -12,7 +12,6 @@ import LandingPage from "./pages/LandingPage";
 const Home = React.lazy(() => import("./pages/Home"));
 const Dataprocessing = React.lazy(() => import("./pages/Dataprocessing"));
 const Dashbord = React.lazy(() => import("./pages/Dashbord"));
-const SignUp = React.lazy(() => import("./components/SignUp"));
 const Login = React.lazy(() => import("./components/Login"));
 const NewProject = React.lazy(() => import("./components/NewProject"));
 // const UploadDataProcessing = React.lazy(() => import("./components/UploadDataProcessing"));
