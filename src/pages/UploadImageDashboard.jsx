@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const UploadImageDashboard = () => {
-  return (
-    <div>UploadImageDashboard</div>
-  )
-}
+  return <div>UploadImageDashboard</div>;
+};
 
-export default UploadImageDashboard
+export default UploadImageDashboard;
