@@ -24,11 +24,6 @@ jobs:
       - name: Build the React app
         run: npm run build
 
-      - name: Create build artifact
-        run: |
-          mkdir -p artifacts
-          zip -r artifacts/build_artifact.zip build/
-
       - name: Install AWS CLI
         run: |
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -45,7 +40,3 @@ jobs:
       - name: Deploy to S3
         run: |
           aws s3 sync build/ s3://drone-survey-mapping --delete
-
-      - name: Upload build artifact to S3
-        run: |
-          aws s3 cp artifacts/build_artifact.zip s3://drone-survey-mapping-artifacts/
