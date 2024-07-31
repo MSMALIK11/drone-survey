@@ -52,4 +52,4 @@ jobs:
 
       - name: Upload build artifact to S3
         run: |
-          aws s3 cp artifacts/$ARTIFACT_NAME s3://drone-survey-mapping-artifacts/
+          aws s3 cp artifacts/$ARTIFACT_NAME s3://drone-survey-mapping/artifacts/
