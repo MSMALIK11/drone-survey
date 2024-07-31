@@ -4,7 +4,7 @@ export function getUserPermissions(apiResponse) {
     canAnalyze: { read: false, write: false,all:false },
     canReport: { read: false, write: false ,all:false},
     canUpload: { read: false, write: false,all:false },
-    isOwner: apiResponse.is_owner,
+    isOwner: apiResponse?.is_owner,
     canTransferOwnership: false,
     isVisibleAnalyze :true,
     isVisibleReport :true,
@@ -23,9 +23,9 @@ export function getUserPermissions(apiResponse) {
     // Set analyzer permissions
     if (apiResponse.is_analyzer === "read") {
       permissions.canAnalyze.read = true;
-    } else if (apiResponse.is_analyzer === "write") {
+    } else if (apiResponse?.is_analyzer === "write") {
       permissions.canAnalyze = { read: true, write: true };
-    } else if (apiResponse.is_analyzer === "") {
+    } else if (apiResponse?.is_analyzer === "") {
       permissions.canAnalyze = { read: false, write: false,all:false };
       permissions.isVisibleAnalyze=false
     }
@@ -33,26 +33,26 @@ export function getUserPermissions(apiResponse) {
     // Set reporter permissions
     if (apiResponse.is_reporter === "read") {
       permissions.canReport.read = true;
-    } else if (apiResponse.is_reporter === "write") {
+    } else if (apiResponse?.is_reporter === "write") {
       permissions.canReport = { read: true, write: true };
-    } else if (apiResponse.is_reporter === "") {
+    } else if (apiResponse?.is_reporter === "") {
       permissions.canReport = { read: false, write: false,all:false };
       permissions.isVisibleReport=false
     }
 
     // Set uploader permissions
-    if (apiResponse.is_uploader === "read") {
+    if (apiResponse?.is_uploader === "read") {
       permissions.canUpload.read = true;
-    } else if (apiResponse.is_uploader === "write") {
+    } else if (apiResponse?.is_uploader === "write") {
       permissions.canUpload = { read: true, write: true };
-    } else if (apiResponse.is_uploader === "") {
+    } else if (apiResponse?.is_uploader === "") {
       permissions.canUpload = { read: false, write: false,all:false };
       permissions.isVisibleUpload=false
     }
   }
 
   // If the user is an owner, they have all permissions including transferring ownership
-  if (apiResponse.is_owner) {
+  if (apiResponse?.is_owner) {
     permissions.userRole = "owner";
     permissions.canAnalyze = { read: true, write: true };
     permissions.canReport = { read: true, write: true };
