@@ -24,6 +24,15 @@ jobs:
       - name: Build the React app
         run: npm run build
 
+      - name: Create unique artifact filename
+        id: artifact_info
+        run: echo "ARTIFACT_NAME=build_artifact_$(date +%Y%m%d%H%M%S).zip" >> $GITHUB_ENV
+
+      - name: Create build artifact
+        run: |
+          mkdir -p artifacts
+          zip -r artifacts/$ARTIFACT_NAME build/
+
       - name: Install AWS CLI
         run: |
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -40,3 +49,7 @@ jobs:
       - name: Deploy to S3
         run: |
           aws s3 sync build/ s3://drone-survey-mapping --delete
+
+      - name: Upload build artifact to S3
+        run: |
+          aws s3 cp artifacts/$ARTIFACT_NAME s3://drone-survey-mapping-artifacts/
